@@ -75,30 +75,6 @@ html {
 	top: 3px;
 	font-size: 1.25em;
 } 
-#time {
-	position: absolute;
-	height: auto;
-	width: auto;
-	left: calc(50% - 1.3em);
-	top: calc(50% - 1.0em);
-	font-size: 3.5em;
-} 
-#start{
-	position: absolute;
-	height: auto;
-	width: auto;
-	left: 3px;
-	bottom: 3px;
-	font-size: 3.0em;
-} 
-#stop{
-	position: absolute;
-	height: auto;
-	width: auto;
-	right: 3px;
-	bottom: 3px;
-	font-size: 3.0em;
-} 
 .unit{
 	font-size: 0.4em;
 }

@@ -1,67 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-<style type="text/css">
-  html {
-    margin:  0;
-  } 
-   .grid-container {
-      background-color: white;
-      height: 100%;
-      width: 100%;
-    }
-    .grid-item {
-      background-color: white;
-      position: absolute;
-      height: auto;
-      width: auto;
-      font-size: 1.2rem;
-      text-align: center;
-      font-weight: bold;
-      width: 1.7rem;
-      height: 1.7rem;
-    }
-
-/*-------------------------------------
-------  Button Positions  -------------
---------------------------------------*/
-    .button_ok {
-      left: calc(50% - 0.45em);
-      top:  calc(50% - 0.65em);
-      width:  1.4rem;
-      height:  1.4rem;
-    }
-    .button_delete {
-      right: 5px;
-      top:  5px;
-    }
-    .button_right {
-      transform: rotate(90deg);
-      right: 5px;
-      top:  calc(50% - 0.65em);
-    }
-    .button_left {
-      transform: rotate(-90deg);
-      left: 5px;
-      top:  calc(50% - 0.65em);
-    }
-    .button_up{
-      left: calc(50% - 0.6em);
-      top:  5px;
-    }
-    .button_down { 
-      transform: rotate(180deg);
-      left: calc(50% - 0.6em);
-      bottom:  5px;
-    }
-    #name {
-
-      width: 95%;
-      opacity: 25%;
-      position: absolute;
-      align-content: center;
-      font-size: 1.5rem;
-    }
-</style>
+  <link rel="stylesheet" href="style/move_with_arrows.css">
 <body>
 <?php
     $id = 0;
@@ -80,7 +19,6 @@
   buttons return their ID(Number) + their ID(name) through postMessage to dashboard 
   the buttons are from font-awesome 
 -->
- 
   <!-- up -->
   <img src="/HomeDashboard/images/arrow_up.svg" class="grid-item button_up" aria-hidden="true" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_up', 'http://'+location.host+'/HomeDashboard/dashboard.php')">
   <!-- down -->

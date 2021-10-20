@@ -1,0 +1,60 @@
+html{
+	font-family: Arial;
+	display: inline-block;
+	margin: 0px auto;
+	text-align: center;
+	background-color: white;
+	align-self: center;
+	justify-self: center;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	border: none;
+	color: #000000;
+	font-size: 1.8rem;
+	height: auto;
+	width: auto;
+	outline: none;
+}
+#header_text {
+	position: absolute;
+	top: calc(45% - 1.1em);
+	left:  calc(50% - 1.5rem);
+}
+#time {
+	position: absolute;
+	top: 47%;
+	left:  calc(50% - 2.6rem);	
+}
+.button{
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	margin: 0;
+	padding: 0;
+	width: 1.0rem;
+	height: 1.0rem;	
+}
+#start{
+	display:  block;
+}
+#stop{
+	display:  none;
+}
+.time_select{
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	border: none;
+	background: white;
+	color: #000000;
+	cursor: pointer;
+	font-family: Arial;
+	font-size: 1rem;
+	width: auto;
+	outline: none;
+}
+.dots{
+	margin: 0;
+	paddding: 0;
+}

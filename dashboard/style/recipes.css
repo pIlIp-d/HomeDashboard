@@ -1,0 +1,109 @@
+a { 
+  text-decoration: none; 
+  color: black;
+}
+/*share*/
+#share_table{
+  display: none;
+  position: absolute;
+  top: calc(6px + 2rem);
+  right: 6px;
+  font-family: Arial;
+  z-index: 100;
+}
+#share_button{
+  position: absolute;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding:  10px;
+  top: 6px;
+  right: 6px;
+}
+#hidden_canvas {
+  position: fixed;
+  visibility: hidden;
+}
+.table_item{
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  right: 6px;
+  padding: 0.5rem;
+  background-color: #ffffff;
+
+  width: 6.8rem;
+  height: 1rem;
+}
+.table_item:hover{
+  background-color: #f4f4f4;
+}
+#share_1{
+  top: 0.1rem;
+}
+#share_2{
+  top: 2.4rem;
+}
+#share_3{
+  top: 4.7rem;
+}
+
+/*-- Arrows --*/  
+#last_rec {
+  transform: rotate(-90deg);
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  padding: 10px;
+  top: 15px;
+  left: 5%;
+}
+#next_rec {
+  transform: rotate(90deg);
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  padding: 10px;
+  top: 15px;
+  left: 5%;
+}
+#config{
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  padding: 10px;
+  top: 15px;
+  left: 5%;
+}
+/* content */
+.rec_bakingtime {
+  position: relative;
+  left: 1%;
+  top: 11%;
+}
+.rec_bakingtemperature {
+  position: relative;
+  left: 16%;
+  top: 11%;
+}
+#clock{
+  position:  relative;
+  top: 3px;
+  height: 1.2rem;
+  width:  1.2rem;
+}
+#bakingtemperature{
+  position:  relative;
+  top: 3px;
+  left: -4px;
+  height: 1.2rem;
+  width:  1.2rem;
+}
+.main {
+  z-index: 0;
+  pointer-events:none;
+  font-family: Arial;
+  top:  30px;
+  left:  4%;
+  position: absolute;
+  height: auto;
+}

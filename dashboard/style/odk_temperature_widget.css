@@ -1,0 +1,97 @@
+.button {
+	background-color: #bbbbbb;
+	border: none;
+	color: black;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 1rem;
+	position: relative;
+	padding: 3px;
+	top: 1.5rem;
+	left: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+.button:hover {
+	background-color: #dddddd;
+}
+
+/*-----------------------------------
+---------- Select obj ---------------
+-------------------------------------*/
+#multiselect {
+	width: 8rem;
+	font-size: 0.8rem;
+}
+.selectBox {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.selectBox select {
+	width: 100%;
+	font-weight: bold;
+}
+.overSelect {/* hide original select obj */
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+#checkboxes {
+	background-color: #ffffff;
+	position: absolute;
+	top: 1.15rem;
+	width: 7rem;
+	font-size: 0.8rem;
+	display: none;
+	border: 0.8px #dadada solid;
+}
+#checkboxes label {
+	display: block;
+}
+#checkboxes label:hover {
+	background-color: #eeeeee;
+}
+.label_text{
+	position: relative;
+	top:  -0.12rem;
+}
+/*-----------------------------------
+-------- GRID obj -------------------
+-------------------------------------*/
+
+.c0{
+	top: calc(25% - 0.5rem);
+	left: 1rem;
+}
+.c1{
+	top: calc(25% - 0.5rem);
+	left:  47%;
+}
+.c2{
+	top: calc(75% - 0.5rem);
+	left: 1rem;
+}
+.c3{
+	top: calc(75% - 0.5rem);
+	left: 47%;
+}
+.c4{
+	top: calc(50% - 0.5rem);
+	left: 30%;
+}
+.tact{
+	position: absolute;
+	font-size: 0.9rem;
+	text-align: center;
+}
+.grid{
+	top: 0;
+	left:  0;
+	width: 100%;
+	height: calc(75% + 1rem);
+	font-family: Arial;
+}
