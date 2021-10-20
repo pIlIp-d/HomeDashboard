@@ -1,0 +1,97 @@
+{
+  "handler": {
+    "export": {
+      "name": "export",
+      "filename": "export.php"
+    }
+  },
+  "widget": [
+    {
+      "name": "odk_temperature",
+      "display_name": "sensor",
+      "default": {
+        "type": "temp",
+        "filename": "odk_temperature.php",
+        "sizes": "all"
+      }
+    },
+    {
+      "name": "odk_timer",
+      "display_name": "Timer",
+      "default": {
+        "filename": "odk_timer_wfo.html",
+        "sizes": "12,13,14,24"
+      },
+      "special": {
+        "filename": "odk_timer_wfo_quadrat.html",
+        "sizes": "11,44"
+      }
+    },
+    {
+      "name": "recipes",
+      "display_name": "Rezepte",
+      "default": {
+        "filename": "recipes.php",
+        "sizes": "all",
+        "scrolling": "yes"
+      }
+    },
+    {
+      "name": "notes",
+      "attributes": "yes",
+      "display_name": "Notizen",
+      "default": {
+        "filename": "",
+        "type": "inline-editor"
+      }
+    },
+    {
+      "name": "website",
+      "display_name": "Website",
+      "default": {
+        "type":"url",
+        "filename": "https://duckduckgo.com/"
+      }
+    },
+    {
+      "name": "dummy",
+      "attributes": "yes",
+      "display_name": "Dummy 1x1",
+      "default": {
+        "filename": "",
+        "sizes": "11"
+      }
+    },
+    {
+      "name": "move",
+      "widget": "no",
+      "display_name": "",
+      "default": {
+        "type": "move",
+        "filename": "move_with_arrows.php"
+      }
+    }
+  ],
+  "sensor_names": [
+    {
+      "name": "wfo_top",
+      "display_name": "Backofen Oben"
+    },
+    {
+      "name": "wfo_bottom",
+      "display_name": "Backofen Unten"
+    },
+    {
+      "name": "grill_left",
+      "display_name": "Grill Links"
+    },
+    {
+      "name": "grill_right",
+      "display_name": "Grill Rechts"
+    },
+    {
+      "name": "meat",
+      "display_name": "Fleisch"
+    }
+  ]
+}

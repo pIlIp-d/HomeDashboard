@@ -1,0 +1,119 @@
+html {
+	font-family: Arial;
+}		
+* {
+	margin:0;
+	padding:0;
+	color: black;
+}
+#container { 
+	width: 100%;
+	height: 100%;
+	font-size: 5vw;
+}		
+#header_text { 
+	position: absolute;
+	height: auto;
+	width: auto;
+	left: 3px;
+	top: 0px;
+	font-size: 1.3em;
+} 
+#header_symbol {
+	position: absolute;
+	height: 7%;
+	width: 7%;
+	right: 3px;
+	top: 3px;
+	font-size: 1.25em;
+} 
+#tact {
+	position: absolute;
+	height: auto;
+	width: auto;
+	left: calc(50% - 1.3em);
+	top: calc(50% - 0.5em);
+	font-size: 3.0em;
+} 
+#tmin_label{
+	position: absolute;
+	height: auto;
+	width: auto;
+	left: 3px;
+	bottom: calc(1.7em + 3px);
+	font-size: 1.25em;
+} 
+#tmax_label{
+	position: absolute;
+	height: auto;
+	width: auto;
+	right: 3px;
+	bottom: calc(1.7em + 3px);
+	font-size: 1.25em;
+} 
+#tmin{
+	position: absolute;
+	height: auto;
+	width: auto;
+	left: 3px;
+	bottom: -3px;
+	font-size: 3.0em;
+} 
+#tmax{
+	position: absolute;
+	height: auto;
+	width: auto;
+	right: 3px;
+	bottom: -3px;
+	font-size: 3.0em;
+} 
+#bell {
+	position: absolute;
+	height: auto;
+	width: auto;
+	right: 3px;
+	top: 3px;
+	font-size: 1.25em;
+} 
+#time {
+	position: absolute;
+	height: auto;
+	width: auto;
+	left: calc(50% - 1.3em);
+	top: calc(50% - 1.0em);
+	font-size: 3.5em;
+} 
+#start{
+	position: absolute;
+	height: auto;
+	width: auto;
+	left: 3px;
+	bottom: 3px;
+	font-size: 3.0em;
+} 
+#stop{
+	position: absolute;
+	height: auto;
+	width: auto;
+	right: 3px;
+	bottom: 3px;
+	font-size: 3.0em;
+} 
+.unit{
+	font-size: 0.4em;
+}
+.select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	border: none;
+	border-radius: 0px;
+	color: #000000;
+	cursor: pointer;
+	font-family: Arial;
+	width: auto;
+	font-size: 0.8em;
+	outline: none;
+	margin-right: -5px;
+	padding: 0px;
+}

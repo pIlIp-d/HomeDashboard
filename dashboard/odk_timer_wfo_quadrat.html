@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		#Clock{
+			width: 100%;
+			height: 100%;
+		}		
+	</style>
+</head>
+<body>
+	<canvas id="Clock" width="200" height="150" style="border:0px">Your browser does not support the HTML5 canvas tag.</canvas>
+</body>
+<script>
+	const HOMESERVER_URL= "/HomeDashboard/";
+	const DEVICE_ID = "001";
+	const DEVICE_NAME = "Backofen";
+	const INTERVALL_MAIN_TICKER = 1000;
+	var INTERVALL_MAIN;
+	var canvas = document.getElementById("Clock");
+	
+	document.addEventListener("DOMContentLoaded", init());
+
+
+//--------------------------------------
+//------ init --------------------------
+//--------------------------------------
+	function init(){
+		document.getElementById("Clock").width = window.innerWidth;
+		document.getElementById("Clock").height = window.innerHeight;
+		INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
+	}
+
+	function interval_main_tick(){
+		check_clock();
+	}
+
+//---------------------------------------
+//------- Request ----------------------- 
+//---------------------------------------
+
+	function check_clock(){
+		var xhttp = new XMLHttpRequest();
+		var json_string = "{\"device_id\":\""+DEVICE_ID+"\"";
+		json_string += ",\"device_name\":\""+DEVICE_NAME+"\"";
+		json_string += ",\"event\":\"get_allvalues\"";
+		json_string += ",\"timeout\":\"30\"}";
+
+		xhttp.onreadystatechange = function(){
+			if (this.readyState == 4 && this.status == 200) {
+			    json_response = this.responseText;
+					set_time(JSON.parse(json_response));
+		    }
+		}
+		xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json="+json_string,true);
+		xhttp.send();
+	}
+
+//--------------------------------------
+//-------- clock -----------------------
+//--------------------------------------
+
+	function set_time(json_response){
+		var timestop = json_response.timer_stop_wfo;
+		var timenow = new Date();
+		timenow = parseInt(timenow.getTime());
+		var diff = Math.round((timestop - timenow) / 1000);
+		var canv_context = canvas.getContext("2d");
+		//clear
+		canv_context.clearRect(0, 0, canvas.width, canvas.height);
+		//hour
+		canv_context.lineWidth = 5;
+			
+		if (diff > 0){
+			//Timer-Uhr setzten
+			var h = parseInt((diff / 3600) % 24);
+			var m = parseInt((diff / 60) % 60);
+			var s = parseInt(diff % 60);
+			
+			//0 = 1.5Pi -- 3 = 0Pi -- 6 = 0.5Pi -- 9 = 1Pi
+			if (h>24){
+				h=24;//allowed maximum
+			}
+			var h_deg = (h / 24) * 2 * Math.PI;
+			var m_deg = (m / 60) * 2 * Math.PI;
+			var s_deg = (s / 60) * 2 * Math.PI;
+			//korrektur, weil Arc rechts startet, die uhr aber oben starten soll 
+			if (h_deg < 0.5 * Math.PI){
+				h_deg = h_deg + 1.5 * Math.PI;
+			}
+			else {
+				h_deg = h_deg - 0.5 * Math.PI;	
+			}
+			if (m_deg < 0.5 * Math.PI){
+				m_deg = m_deg + 1.5 * Math.PI;
+			}
+			else {
+				m_deg = m_deg - 0.5 * Math.PI;	
+			}
+			if (s_deg < 0.5 * Math.PI){
+				s_deg = s_deg + 1.5 * Math.PI;
+			}
+			else {
+				s_deg = s_deg - 0.5 * Math.PI;
+			}
+			try{
+				canv_context.strokeStyle = "red";
+				canv_context.beginPath();
+				canv_context.arc(canvas.width / 2,canvas.height / 2, window.innerHeight / 3, 1.5 * Math.PI,s_deg);
+				canv_context.stroke();
+				canv_context.strokeStyle = "blue";
+				canv_context.beginPath();
+				canv_context.arc(canvas.width / 2,canvas.height / 2, window.innerHeight / 3 -10, 1.5 * Math.PI,m_deg);
+				canv_context.stroke();
+				canv_context.strokeStyle = "green";
+				canv_context.beginPath();
+				canv_context.arc(canvas.width / 2,canvas.height / 2, window.innerHeight / 3 -20, 1.5 * Math.PI,h_deg);
+				canv_context.stroke();
+			}catch {
+				console.log("window to small to dislpay all times");
+			}
+		}
+		else {//if timer == 00:00:00
+			try{
+				canv_context.strokeStyle = "red";
+				canv_context.beginPath();
+				canv_context.arc(canvas.width / 2,canvas.height / 2, window.innerHeight / 3,1.5*Math.PI ,1*Math.PI);
+				canv_context.stroke();
+				canv_context.strokeStyle = "blue";
+				canv_context.beginPath();
+				canv_context.arc(canvas.width / 2,canvas.height / 2, window.innerHeight / 3 -10,0 ,2*Math.PI);
+				canv_context.stroke();
+				canv_context.strokeStyle = "green";
+				canv_context.beginPath();
+				canv_context.arc(canvas.width / 2,canvas.height / 2, window.innerHeight / 3 -20,0 ,1.5*Math.PI);
+				canv_context.stroke();
+			}catch {
+				console.log("window to small to dislpay all times at timer 1x1");
+			}
+		}
+	}
+
+</script>
+</html>

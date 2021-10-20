@@ -1,0 +1,234 @@
+html{
+			font-family: Arial;
+			display: inline-block;
+			margin: 10px 5px 5px 8px;
+			padding 0;
+		}		
+		* {
+			margin:0;
+			padding:0;
+			color: black;
+		}
+		
+/*--------------------------------------------
+Settings Menu 			TODO: Colors;
+-------------------------------------------*/
+
+		.button {
+  			background-color: #bbbbbb;
+  			border: none;
+	 		color: black;
+	 		cursor: pointer;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 1rem;
+			position: relative;
+			padding: 3px;
+			top: 1rem;
+			left: 1rem;
+			margin-left: 0.25rem;
+		}
+		.button:hover {
+			background-color: #dddddd;
+		}
+
+		.menu-toggle {
+			cursor: pointer;
+		}
+		.settings-menu {
+			position:  fixed;
+			display: block;
+			background-color: #eeeeee;
+			top:  0;
+			left:  0;
+			width: 100%;			
+			height: auto;
+
+			margin-bottom: 1rem;
+			transform:  translateX(100%);
+			transition:  0.6s ease;
+		}
+
+		.settings-menu.open {
+			transform:  translateX(30%);
+		}
+		.settings-menu-select{
+			margin-top: 1rem;
+			margin-bottom:  1rem;
+			margin-left: 1rem;
+		}
+		.select {
+			-moz-appearance: none;
+			-webkit-appearance: none;
+			appearance: none;
+			border: none;
+			background: #bbbbbb;
+			color: #000000;
+			cursor: pointer;
+			text-align: center;
+			font-family: Arial;
+			font-size: 1.0rem;
+			height: 1.5rem;
+			width: auto;
+			outline: none;
+			margin-top: 0.5rem;
+			margin-left: 0.25rem;
+
+		}
+
+
+
+/*--------------------------------------------------------------------------------------*/
+/* Grid */
+/*--------------------------------------------------------------------------------------*/		
+
+		.container {
+			display: grid;
+			grid-gap: 5px 5px;
+			--width1: calc(25vw - 8px);
+			--width2: calc(12.5vw - 8px);
+			/*vertical*/
+			--height1: calc(25vw - 10px);
+			--height4: calc(95vw - 10px);
+			/*horizontal*/
+			--height2: calc(12.5vw - 10px);
+			--height3: calc(48.5vw - 10px);
+			--width3: calc(48.5vw - 10px);
+		}
+		.grid-container {
+ 			display: grid;
+ 			flex-shrink: 0;
+		}
+		.grid-item {
+			padding: 0.45rem;
+  			font-size: 1.5rem;
+  			text-align: auto;
+		}
+		.editor {
+			border: none;
+			width: 98%;
+			height: 98%;
+		}
+		
+		@media only screen and (max-width: 600px){
+			.container {
+				grid-template-columns: repeat(auto-fill, var(--width1));
+			}
+			.tile_11 {
+				height: var(--height1);
+				grid-row: span 1;
+				grid-column: span 1;
+			}
+			.tile_12 {
+				height: var(--height1);
+				grid-row: span 1;
+				grid-column: span 2;
+			}
+			.tile_13 {
+				height:  var(--height1);
+				gid-row:  span 1;
+				grid-column: span 3;
+			}
+			.tile_14 {
+				height: var(--height1);
+				grid-row: span 1;
+				grid-column: span 4;
+			}
+			.tile_22 {
+				height: var(--height1 * 2);
+				grid-row: span 2;
+				grid-column: span 2;
+			}
+			.tile_42 {
+				height: var(--height1 * 4);
+				grid-row: span 4;
+				grid-column: span 2;
+			}
+			.tile_24 {
+				height: var(--height1 * 2);
+				grid-row: span 2;
+				grid-column: span 4;
+			}
+			.tile_44 {
+				height:  var(--height4);
+				grid-row: span 4;
+				grid-column: span 4;
+			}
+		}
+		@media only screen and (min-width: 601px){
+			.container {
+				grid-template-columns: repeat(auto-fill, var(--width2));
+			}
+			.tile_11 {
+				height: var(--height2);
+				grid-row: span 1;
+				grid-column: span 1;
+			}
+			.tile_12 {
+				height: var(--height2);
+				grid-row: span 1;
+				grid-column: span 2;
+			}
+			.tile_13 {
+				height:  var(--height2);
+				gid-row:  span 1;
+				grid-column: span 3;
+			}
+			.tile_14 {
+				height: var(--height2);
+				grid-row: span 1;
+				grid-column: span 4;
+			}
+			.tile_22 {
+				height: var(--height2 * 2);
+				grid-row: span 2;
+				grid-column: span 2;
+			}
+			.tile_42 {
+				height: var(--height2 * 4);
+				grid-row: span 4;
+				grid-column: span 2;
+			}
+			.tile_24 {
+				height: var(--height1);
+				grid-row: span 2;
+				grid-column: span 4;
+			}
+			.tile_44 {
+				height:  var(--height3);
+				grid-row: span 4;
+				grid-column: span 4;
+			}
+		}
+
+		.tile{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content : center;
+ 			border: thin solid lightgray;
+			border-radius: 5px;
+			box-shadow: 2px 2px 5px 1px rgba(0,0,0,.3);
+			background-color: white;
+			margin:0;
+			padding:0;
+		}
+		.msg { 
+			position: absolute;
+			top: calc(50% - 30px);
+			left: calc(50% - 80px);
+    	font-size: 2.0rem;
+		}
+		.iframe {
+			display:  flex;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+			overflow: hidden;
+		}
+		.dummy{
+			visibility: hidden;
+		}
