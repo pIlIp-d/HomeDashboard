@@ -14,8 +14,8 @@ Beispiel:
 	// aktuellen Request ermitteln
 	$request_name = $json_decoded->request_name;
 	// Konstanten für DB-Verbindung
-	$username = "mysqladmin";
-	$password = "";//your password
+	$username = "sql";
+	$password = "your_password";
 	$dbname = "wfoven"; //TODO datenbank umbennenen
 	// DB-Verbindung aufbauen
 	$dbcon = db_connect($username, $password, $dbname);

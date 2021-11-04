@@ -4,6 +4,13 @@
 		<meta charset="utf-8">
  		<link rel="stylesheet" href="style/export.css">
 	</head>
+	<style type="text/css">
+		#container{
+			position: absolute;
+			top:  5px;
+			left: 5px;
+		}
+	</style>
 <body>
 	<?php
 		$recipe = 0;

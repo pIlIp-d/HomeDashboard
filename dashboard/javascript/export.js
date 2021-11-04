@@ -24,6 +24,7 @@ var server_url = "/HomeDashboard/";
 
 	function act_recipe_to_html(){
 	    var html = "";
+	    html += "<div id='container'>";
 	    html += "<h2 class=\"rec_name\">"+ base64_2_specialchars(recipe_object[act_recipe].name) +"</h1>";
 	    html += "<span class=\"rec_bakingtime\">"+ base64_2_specialchars(recipe_info[0].bakingtime) + "  <img id='clock' src=\"/HomeDashboard/images/clock_black.svg\"></span>";
 	    html += "<span class=\"rec_bakingtemperature\">"+ base64_2_specialchars(recipe_info[0].bakingtemperature) +"  <img id='bakingtemperature' src=\"/HomeDashboard/images/sym_thermo_black.svg\"></span><br>";
@@ -33,7 +34,7 @@ var server_url = "/HomeDashboard/";
 	      	html += "<td>"+base64_2_specialchars(recipe_ingredients[i].name)+"</td></tr>";
 	    }
 	    html += "</table>";
-	    html += "<p class=\"content\">"+ recipe_info[0].preparation +"</p>";
+	    html += "<p class=\"content\">"+ recipe_info[0].preparation +"</p></div>";
 	    document.getElementById("main").innerHTML = html;
   	}
 

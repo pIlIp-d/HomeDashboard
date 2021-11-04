@@ -31,7 +31,7 @@
       "name": "recipes",
       "display_name": "Rezepte",
       "default": {
-        "filename": "recipes.php",
+        "filename": "recipes.html",
         "sizes": "all",
         "scrolling": "yes"
       }
