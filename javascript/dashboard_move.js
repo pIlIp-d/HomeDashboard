@@ -6,19 +6,12 @@
 		console.log(pos);
 		for (i=0;i<pos.length;i++)
 			pos[i] = Number(pos[i]);
-		if (view === "vertical"){
-			var swap_1 = grid[pos[0]].pos_v;
-			for (i=0;i<pos.length-1;i++)
-				grid[pos[i]].pos_v = grid[pos[i+1]].pos_v;
-			grid[pos[pos.length-1]].pos_v = swap_1;
-		}
-		else if (view === "horizontal"){
-			var swap_1 = grid[pos[0]].pos_h;
-			for (i=0;i<pos.length-1;i++)
-				grid[pos[i]].pos_h = grid[pos[i+1]].pos_h;
-			grid[pos[pos.length-1]].pos_h = swap_1;
-		}
+		var swap_1 = grid[pos[0]].pos;
+		for (i=0;i<pos.length-1;i++)
+			grid[pos[i]].pos = grid[pos[i+1]].pos;
+		grid[pos[pos.length-1]].pos = swap_1;
 	}
+
 
 	function gridsize_at_id(size_,id_){
 		for (s in size_){//more than one returns disjunct
@@ -28,8 +21,7 @@
 		return false;
 	}
 	function width_is_four(id){
-		size = grid[id].size;
-		if (size == "14" || size == "24" || size == "44")
+		if (grid[id].size[1] === "4")
 			return true;
 		else
 			return false;	
@@ -83,12 +75,12 @@
 							changed = true;
 							if (grid[ele].size === "12" && grid[id+1].size === "11" ||
 								grid[ele].size === "13" && grid[id+1].size === "12"){
-								let swap1 = grid[id].pos_v;//"12"over"11","11" or "13"over "11","12" or big over "11","13" 
+								let swap1 = grid[id].pos;//"12"over"11","11" or "13"over "11","12" or big over "11","13" 
 								for (i=0;i<id-ele-1;i++)
-									grid[id-i].pos_v = grid[id-1-i].pos_v;
-								grid[Number(ele)+1].pos_v = grid[id+1].pos_v;
-								grid[id+1].pos_v = grid[ele].pos_v;
-								grid[ele].pos_v = swap1;
+									grid[id-i].pos = grid[id-1-i].pos;
+								grid[Number(ele)+1].pos = grid[id+1].pos;
+								grid[id+1].pos = grid[ele].pos;
+								grid[ele].pos = swap1;
 							}	
 							else if (width_is_four(ele) && grid[id+1].size === "13")
 								swap([id+1,id,ele]);		
@@ -111,12 +103,12 @@
 							changed = true;
 							if (grid[ele].size === "11" && grid[Number(ele)+1].size === "11"){
 								changed = true;//"11","11"over"12"
-								let swap1 = grid[id].pos_v;
-								grid[id].pos_v = grid[Number(ele)+1].pos_v;
+								let swap1 = grid[id].pos;
+								grid[id].pos = grid[Number(ele)+1].pos;
 								for (i=1;i<id-ele-1;i++)
-									grid[Number(ele)+i].pos_v = grid[Number(ele)+i+1].pos_v;
-								grid[id-1].pos_v = grid[ele].pos_v;
-								grid[ele].pos_v = swap1;
+									grid[Number(ele)+i].pos = grid[Number(ele)+i+1].pos;
+								grid[id-1].pos = grid[ele].pos;
+								grid[ele].pos = swap1;
 							}
 							else if(grid[ele].size === "11" && grid[Number(ele)+1].size === "12" && grid[id+1].size === "11" ||
 									grid[ele].size === "11" && grid[Number(ele)+1].size === "13" && grid[id+1].size === "12" ||
@@ -190,7 +182,7 @@
 			}
 		}
 		if (changed)
-			grid_update();
+			grid.update();
 	}
 
 	//---- Down ----
@@ -254,109 +246,109 @@
 					else if (grid[id].size === "11" && (grid[ele].size === "12" && grid[id+1].size === "11" || grid[ele].size === "13" && grid[id+1].size === "12" || grid[ele].size === "14" && grid[id+1].size === "13")){ 
 						//11,11 \n 12 --or-- 11,12 \n 13
 						console.log("11,11,12/11,12,13");
-						let swap1 = grid[ele].pos_h;
-						grid[ele].pos_h = grid[id].pos_h;
-						grid[id].pos_h = grid[ele-1].pos_h;
+						let swap1 = grid[ele].pos;
+						grid[ele].pos = grid[id].pos;
+						grid[id].pos = grid[ele-1].pos;
 						for (i=1;i<ele-id-1;i++)
-							grid[ele-i].pos_h = grid[ele-1-i].pos_h;
-						grid[id+1].pos_h = swap1;
+							grid[ele-i].pos = grid[ele-1-i].pos;
+						grid[id+1].pos = swap1;
 					}
 					else if (grid[id].size === "11" && (grid[ele].size === "13" && grid[id+1].size === "11" && grid[id+2].size === "11" || grid[ele].size === "14" && grid[id+1].size === "12" && grid[id+2].size === "11" || grid[ele].size === "14" && grid[id+1].size === "11" && grid[id+2].size === "12")){
 						//3x11 \n 13 --or-- 11,12,11 \n 14 --or-- 11,11,12 \n 14
 						console.log("11,11,11,13");
-						let swap1 = grid[id].pos_h;
-						let swap2 = grid[ele-1].pos_h;
-						grid[id].pos_h = grid[ele-2].pos_h;
+						let swap1 = grid[id].pos;
+						let swap2 = grid[ele-1].pos;
+						grid[id].pos = grid[ele-2].pos;
 						for (i=1;i<ele-id-2;i++) {
-							grid[ele-i].pos_h = grid[ele-i-2].pos_h;
+							grid[ele-i].pos = grid[ele-i-2].pos;
 						}
-						grid[id+1].pos_h = swap2;
-						grid[id+2].pos_h = grid[ele].pos_h;
-						grid[ele].pos_h = swap1;
+						grid[id+1].pos = swap2;
+						grid[id+2].pos = grid[ele].pos;
+						grid[ele].pos = swap1;
 					}
 					else if (grid[id].size === "11" && grid[ele].size === "14" && grid[id+1].size === "11" && grid[id+2].size === "11" && grid[id+3].size === "11"){
 						//4x11 \n 14
 						console.log("11,11,11,11,14");
-						let swap1 = grid[id].pos_h;
-						let swap2 = grid[ele-1].pos_h;
-						let swap3 = grid[ele-2].pos_h;
-						grid[id].pos_h = grid[ele-3].pos_h;
+						let swap1 = grid[id].pos;
+						let swap2 = grid[ele-1].pos;
+						let swap3 = grid[ele-2].pos;
+						grid[id].pos = grid[ele-3].pos;
 						for (i=1;i<ele-id-2;i++) {
-							grid[ele-i].pos_h = grid[ele-i-3].pos_h;
+							grid[ele-i].pos = grid[ele-i-3].pos;
 						}
-						grid[id+1].pos_h = swap3;
-						grid[id+2].pos_h = swap2;
-						grid[id+3].pos_h = grid[ele].pos_h;
-						grid[ele].pos_h = swap1;
+						grid[id+1].pos = swap3;
+						grid[id+2].pos = swap2;
+						grid[id+3].pos = grid[ele].pos;
+						grid[ele].pos = swap1;
 					}
 			//------12------	
 					else if (grid[id].size === "12" && grid[ele].size === "11" && grid[ele+1].size === "11"){
 						//"12"over "11","11"
 						console.log("12,11,11");
-						let swap1 = grid[ele].pos_h;
-						grid[ele].pos_h = grid[id].pos_h;
-						grid[id].pos_h = grid[ele+1].pos_h;
-						grid[ele+1].pos_h = grid[id+1].pos_h;
+						let swap1 = grid[ele].pos;
+						grid[ele].pos = grid[id].pos;
+						grid[id].pos = grid[ele+1].pos;
+						grid[ele+1].pos = grid[id+1].pos;
 						for (i=1;i<ele-id-1;i++)
-							grid[id+i].pos_h = grid[id+1+i].pos_h;
-						grid[ele-1].pos_h = swap1;
+							grid[id+i].pos = grid[id+1+i].pos;
+						grid[ele-1].pos = swap1;
 					}
 					else if (grid[id].size === "12" && (grid[id+1].size === "11" && grid[ele].size === "13" || grid[id+1].size === "12" && grid[ele].size === "14")){
 						//12,11 \n 13 --or-- 12,12,14
 						console.log("12,11,13/12,12,14");
-						let swap1 = grid[ele].pos_h;
-						grid[ele].pos_h = grid[id].pos_h;
-						grid[id].pos_h = grid[ele-1].pos_h;
+						let swap1 = grid[ele].pos;
+						grid[ele].pos = grid[id].pos;
+						grid[id].pos = grid[ele-1].pos;
 						for (i=1;i<ele-id-1;i++)
-							grid[ele-i].pos_h = grid[ele-1-i].pos_h;
-						grid[id+1].pos_h = swap1;
+							grid[ele-i].pos = grid[ele-1-i].pos;
+						grid[id+1].pos = swap1;
 					}
 					else if (grid[id].size === "12" && grid[id+1].size === "11" && grid[id+2].size === "11" && grid[ele].size === "14"){
 					//12,11,11 \n 14
 						console.log("12,11,11,14");
-						let swap1 = grid[id].pos_h;
-						let swap2 = grid[ele-1].pos_h;
-						grid[id].pos_h = grid[ele-2].pos_h;
+						let swap1 = grid[id].pos;
+						let swap2 = grid[ele-1].pos;
+						grid[id].pos = grid[ele-2].pos;
 						for (i=1;i<ele-id-2;i++) {
-							grid[ele-i].pos_h = grid[ele-i-2].pos_h;
+							grid[ele-i].pos = grid[ele-i-2].pos;
 						}
-						grid[id+1].pos_h = swap2;
-						grid[id+2].pos_h = grid[ele].pos_h;
-						grid[ele].pos_h = swap1;
+						grid[id+1].pos = swap2;
+						grid[id+2].pos = grid[ele].pos;
+						grid[ele].pos = swap1;
 					}
 			//------13------		
 					else if (grid[id].size === "13" && (grid[ele].size === "12" && grid[ele+1].size === "11") || (grid[ele].size === "11" && grid[ele+1].size === "12")){
 						//13 over "12","11" or "11","12"
 						console.log("13, 12,11/ 13, 11,12");
-						let swap1 = grid[ele].pos_h;
-						grid[ele].pos_h = grid[id].pos_h;
-						grid[id].pos_h = grid[ele+1].pos_h;
-						grid[ele+1].pos_h = grid[id+1].pos_h;
+						let swap1 = grid[ele].pos;
+						grid[ele].pos = grid[id].pos;
+						grid[id].pos = grid[ele+1].pos;
+						grid[ele+1].pos = grid[id+1].pos;
 						for (i=1;i<ele-id-1;i++)
-							grid[id+i].pos_h = grid[id+1+i].pos_h;
-						grid[ele-1].pos_h = swap1;
+							grid[id+i].pos = grid[id+1+i].pos;
+						grid[ele-1].pos = swap1;
 					}
 					else if (grid[id].size === "13" && (grid[ele].size === "11" && grid[ele+1].size === "11" && grid[ele+2].size === "11")){
 						//"13" over 3x"11"
 						console.log(13, 11,11,11);
-						let swap1 = grid[id].pos_h;
-						grid[id].pos_h = grid[ele+2].pos_h;
-						grid[ele+2].pos_h = grid[id+2].pos_h;	
-						let swap2 = grid[id+1].pos_h;
+						let swap1 = grid[id].pos;
+						grid[id].pos = grid[ele+2].pos;
+						grid[ele+2].pos = grid[id+2].pos;	
+						let swap2 = grid[id+1].pos;
 						for (i=1;i<ele-id;i++)
-							grid[id+i].pos_h = grid[id+i+2].pos_h;
-						grid[ele].pos_h = swap1;
-						grid[ele+1].pos_h = swap2;
+							grid[id+i].pos = grid[id+i+2].pos;
+						grid[ele].pos = swap1;
+						grid[ele+1].pos = swap2;
 					}
 					else if (grid[id].size === "13" && grid[id+1].size === "11" && grid[ele].size === "14"){
 						//13,11 \n 14
 						console.log("13,11,14");
-						let swap1 = grid[ele].pos_h;
-						grid[ele].pos_h = grid[id].pos_h;
-						grid[id].pos_h = grid[ele-1].pos_h;
+						let swap1 = grid[ele].pos;
+						grid[ele].pos = grid[id].pos;
+						grid[id].pos = grid[ele-1].pos;
 						for (i=1;i<ele-id-1;i++)
-							grid[ele-i].pos_h = grid[ele-1-i].pos_h;
-						grid[id+1].pos_h = swap1;
+							grid[ele-i].pos = grid[ele-1-i].pos;
+						grid[id+1].pos = swap1;
 					}
 			//------14------
 					else if (grid[id].size === "14" && 
@@ -365,13 +357,13 @@
 						grid[ele].size === "11" && grid[ele+1].size === "13")){
 						//14 \n 12,12 --or-- 14 \n 13,11 --or 14 \n 11,13
 						console.log("14, 12,12 / 14,13,11 / 14,11,13");
-						let swap1 = grid[ele].pos_h;
-						grid[ele].pos_h = grid[id].pos_h;
-						grid[id].pos_h = grid[ele+1].pos_h;
-						grid[ele+1].pos_h = grid[id+1].pos_h;s
+						let swap1 = grid[ele].pos;
+						grid[ele].pos = grid[id].pos;
+						grid[id].pos = grid[ele+1].pos;
+						grid[ele+1].pos = grid[id+1].pos;s
 						for (i=1;i<ele-id-1;i++)
-							grid[id+i].pos_h = grid[id+1+i].pos_h;
-						grid[ele-1].pos_h = swap1;
+							grid[id+i].pos = grid[id+1+i].pos;
+						grid[ele-1].pos = swap1;
 					}
 					else if (grid[id].size === "14" && 
 							(grid[ele].size === "11" && grid[ele+1].size === "12" && grid[ele+2].size === "11" ||
@@ -379,29 +371,29 @@
 							grid[ele].size === "12" && grid[ele+1].size === "11" && grid[ele+2].size === "11")){
 						//14 \n 11,12,11 --or-- 14 \n 11,11,12 --or-- 14 \n 12,11,11
 						console.log("14, 11,12,11...");
-						let swap1 = grid[id].pos_h;
-						grid[id].pos_h = grid[ele+2].pos_h;
-						grid[ele+2].pos_h = grid[id+2].pos_h;	
-						let swap2 = grid[id+1].pos_h;
+						let swap1 = grid[id].pos;
+						grid[id].pos = grid[ele+2].pos;
+						grid[ele+2].pos = grid[id+2].pos;	
+						let swap2 = grid[id+1].pos;
 						for (i=1;i<ele-id;i++)
-							grid[id+i].pos_h = grid[id+i+2].pos_h;
-						grid[ele].pos_h = swap1;
-						grid[ele+1].pos_h = swap2;
+							grid[id+i].pos = grid[id+i+2].pos;
+						grid[ele].pos = swap1;
+						grid[ele+1].pos = swap2;
 					}
 					else if (grid[id].size === "14" && grid[ele].size === "11" && grid[ele+1].size === "11" && grid[ele+2].size === "11" && grid[ele+3].size === "11"){
 						//14 \n 11,11,11,11
 						console.log("14, 11,11,11,11");
-						let swap1 = grid[id].pos_h;
-						let swap2 = grid[id+1].pos_h;
-						let swap3 = grid[id+2].pos_h;
-						let swap4 = grid[id+3].pos_h;
-						grid[id].pos_h = grid[ele+3].pos_h;
+						let swap1 = grid[id].pos;
+						let swap2 = grid[id+1].pos;
+						let swap3 = grid[id+2].pos;
+						let swap4 = grid[id+3].pos;
+						grid[id].pos = grid[ele+3].pos;
 						for (i=1;i<ele-id;i++)
-							grid[id+i].pos_h = grid[id+i+3].pos_h;
-						grid[ele].pos_h = swap1;
-						grid[ele+1].pos_h = swap2;
-						grid[ele+2].pos_h = swap3;
-						grid[ele+3].pos_h = swap4;
+							grid[id+i].pos = grid[id+i+3].pos;
+						grid[ele].pos = swap1;
+						grid[ele+1].pos = swap2;
+						grid[ele+2].pos = swap3;
+						grid[ele+3].pos = swap4;
 					}
 					else 
 						changed = false;
@@ -452,7 +444,7 @@
 		}
 						
 		if (changed)
-			grid_update();
+			grid.update();
 		
 	}
 
@@ -536,7 +528,7 @@
 			else if (view === "horizontal")
 				click_right(id-1);//TODO f.e. "44" jump
 			if (changed) 
-				grid_update();
+				grid.update();
 		}
 	}
 
@@ -626,21 +618,21 @@
 			}
 		}
 		if (changed)
-			grid_update();
+			grid.update();
 		
 	}
 
 	//---- ok ----
 	function click_ok(id){
 		mode = "show";
-		for (i=grid.length-1;i>=0;i--){//delete all dummies are at the end
+		for (i=grid.length-1;i>0;i--){//delete all dummies are at the end
 			//begins at the last element
 			if (grid[i].name != "dummy"){
 				grid.splice(i+1,grid.length-(i-1));
 				i=0;
 			}
 		}
-		grid_update();
+		grid.update();
 	}
 
 	//---- delete  ----
@@ -650,7 +642,7 @@
 				grid.splice(id,1);	//dummies are deleted automatically, when they are at the end
 			else if (view =="horizontal")
 				grid.splice(id,1);//wird noch erweitert, für spezielle fälle
-			grid_update();		
+			grid.update();		
 		}
 	}
 

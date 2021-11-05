@@ -29,8 +29,8 @@ Slide-over / Settings
 		<span class="settings-menu-content" id="head-container">
 			
 			<input type="button" class="button" id="button_back" onclick="click_sidebar('button');" value=" Back ">
-			<input type="button" class="button" id="add_button" onclick="select_add_element()" value=" Add ">
-			<input type="button" class="button" id="move_button" onclick="mode='move';grid_update();click_sidebar('button');" value=" Move ">
+			<input type="button" class="button" id="add_button" onclick="grid.add_element()" value=" Add ">
+			<input type="button" class="button" id="move_button" onclick="mode='move';grid.update();click_sidebar('button');" value=" Move ">
 			<br>
 			<div class="settings-menu-select">
 				<select class="select settings-menu-content" id="select_type">
@@ -41,11 +41,11 @@ Slide-over / Settings
 				</select>	
 				<br>
 				<!--load-->
-				<input type="button" style="left:0;" class="button" value=" Load " onclick="preset_action('','load');">
+				<input type="button" style="left:0;" class="button" value=" Load " onclick="presets.action('','load');">
 				<!--save-->
-				<input type="button" style="left:0;" class="button" value=" Save " onclick="preset_action('','save');">
+				<input type="button" style="left:0;" class="button" value=" Save " onclick="presets.action('','save');">
 				<!--delete-->
-				<input type="button" style="left:0;" class="button" value=" Delete " onclick="preset_action('','delete');">
+				<input type="button" style="left:0;" class="button" value=" Delete " onclick="presets.action('','delete');">
 				<br>
 				<select class="select" id="select_preset" style="margin-top: 1.5rem">
 					<option value='null' id="null">- select preset -</option>

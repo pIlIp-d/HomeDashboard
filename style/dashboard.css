@@ -90,11 +90,8 @@ Settings Menu 			TODO: Colors;
 			--width2: calc(12.5vw - 8px);
 			/*vertical*/
 			--height1: calc(25vw - 10px);
-			--height4: calc(95vw - 10px);
 			/*horizontal*/
 			--height2: calc(12.5vw - 10px);
-			--height3: calc(48.5vw - 10px);
-			--width3: calc(48.5vw - 10px);
 		}
 		.grid-container {
  			display: grid;
@@ -136,22 +133,27 @@ Settings Menu 			TODO: Colors;
 				grid-column: span 4;
 			}
 			.tile_22 {
-				height: var(--height1 * 2);
+				height: calc(var(--height1) * 2);
 				grid-row: span 2;
 				grid-column: span 2;
 			}
 			.tile_42 {
-				height: var(--height1 * 4);
+				height: calc(var(--height1) * 4);
 				grid-row: span 4;
 				grid-column: span 2;
 			}
 			.tile_24 {
-				height: var(--height1 * 2);
+				height: calc(var(--height1) * 2);
 				grid-row: span 2;
 				grid-column: span 4;
 			}
+			.tile_34 {
+				height: calc(var(--height1) * 3);
+				grid-row: span 3;
+				grid-column: span 4;
+			}
 			.tile_44 {
-				height:  var(--height4);
+				height:  calc(var(--height1) * 4);
 				grid-row: span 4;
 				grid-column: span 4;
 			}
@@ -181,22 +183,27 @@ Settings Menu 			TODO: Colors;
 				grid-column: span 4;
 			}
 			.tile_22 {
-				height: var(--height2 * 2);
+				height: calc(var(--height2) * 2);
 				grid-row: span 2;
 				grid-column: span 2;
 			}
 			.tile_42 {
-				height: var(--height2 * 4);
+				height: calc(var(--height2) * 4);
 				grid-row: span 4;
 				grid-column: span 2;
 			}
 			.tile_24 {
-				height: var(--height1);
+				height: calc(var(--height2) * 2);
 				grid-row: span 2;
 				grid-column: span 4;
 			}
+			.tile_34 {
+				height: calc(var(--height2) * 3);
+				grid_row: span 3;
+				grid_column:  span 4;
+			}
 			.tile_44 {
-				height:  var(--height3);
+				height: calc(var(--height2) * 4);
 				grid-row: span 4;
 				grid-column: span 4;
 			}

@@ -10,11 +10,16 @@
 	-->
 	<?php
 		$sensor = 0;
+		$display_name = "...";
 		if (isset($_GET["sensor"])) {
 			$sensor = $_GET["sensor"];
 		}
+		if (isset($_GET["sensor"])) {
+			$display_name = $_GET["display_name"];
+		}
 	?>
 	<div id="sensor_id" hidden><?php echo $sensor; ?></div>
+	<div id="display_name" hidden><?php echo $display_name; ?></div>
 	<div id="container"> 
 		<div id="header_text">
 			...

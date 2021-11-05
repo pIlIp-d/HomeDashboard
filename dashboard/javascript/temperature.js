@@ -36,23 +36,7 @@ function interval_main_tick(){
 }
 	
 function set_headername(){
-	switch(SENSOR_ID){
-		case "wfo_top":
-			document.getElementById("header_text").innerHTML = "Backfach oben"
-			break;
-		case "wfo_bottom":
-			document.getElementById("header_text").innerHTML = "Backfach unten"
-			break;
-		case "bbq_left":
-			document.getElementById("header_text").innerHTML = "Grill links"
-			break;
-		case "bbq_right":
-			document.getElementById("header_text").innerHTML = "Grill rechts"
-			break;
-		case "meat":
-			document.getElementById("header_text").innerHTML = "Fleischthermometer"
-			break;
-	}
+	document.getElementById("header_text").innerHTML = document.getElementById("display_name").innerHTML;
 }
 	
 function temperature_set_color(){

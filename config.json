@@ -93,5 +93,8 @@
       "name": "meat",
       "display_name": "Fleisch"
     }
-  ]
+  ],
+  "sizes": ["11","12","13","24","34","44"]
+    
+  
 }
