@@ -7,6 +7,7 @@ var INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
 var REFRESHED = false;
 
 var view = "vertical";//orientation of phone / width: <600 or >600
+set_Orientation();
 var mode = "show";//or move
 
 class Grid extends Array{
@@ -96,7 +97,7 @@ class Grid extends Array{
 		let html = "", note = false;
 		for (var g = 0; g < grid.length; g++){
 			html += grid[g].createHTML();
-			if (grid[g].name === "notes")
+			if (grid[g].type === "notes")
 				note = true;	
 		}
 		document.getElementById("container").innerHTML = html;
@@ -113,7 +114,6 @@ class Grid extends Array{
 class GridObject {
 	constructor(type,size,pos=grid.length){
 		this.type = type;
-		this.name = type;//----replace
 		this.size = size;
 		this.pos = pos;
 		this.start = 0;
@@ -161,7 +161,7 @@ class GridObject {
 								source += "&display_name="+widget.display_name;
 								break;
 							case "move":
-								source +="?id="+ this.pos +"&name="+grid[this.pos].name;
+								source +="?id="+ this.pos +"&name="+grid[this.pos].type;
 								break;
 							case "url":
 								source = widget.default.filename;
@@ -423,10 +423,6 @@ class Presets extends Array{
 
 	window.addEventListener('DOMContentLoaded', init());
 
-	function init(){
-		set_Orientation();		
-	}
-
 	var window_width = window.innerWidth;
 	function interval_main_tick(){
 		if (window_width <= 600){//checks if orientation has been changed
@@ -443,7 +439,10 @@ class Presets extends Array{
 			grid = grid_vertical;
 			grid.update();
 		}
-	}			
+	}
+	function init(){
+
+	}	
 	
 	function body_onscroll(){
 	  	let box = document.getElementById('body').getBoundingClientRect();

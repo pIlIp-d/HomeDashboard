@@ -48,9 +48,7 @@
 ----------------------------------------- Header -----------------------------------------
 -->
 	<script src="javascript/odk.js"></script>
-	
-	<script src="http://code.jquery.com/jquery-git.js"></script>
-	<script src="libs/jquery_3_6_0/jquery-3.6.0.js"></script>
+		<script src="javascript/odk.js"></script>
 
  		<header class="unselectable">
 			<!-- 

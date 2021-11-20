@@ -12,10 +12,8 @@
 <!--
 ----------------------------------------- Header -----------------------------------------
 -->
-	<script src="http://code.jquery.com/jquery-git.js"></script>
-
 	<script src="javascript/odk.js"></script>
-	<script src="libs/jquery_3_6_0/jquery-3.6.0.js"></script>
+	<script src="libs/jquery-3.6.0.min.js"></script>
 	<script src="libs/ckeditor_classic_25_0_0/ckeditor.js"></script>
 
  		<header>
