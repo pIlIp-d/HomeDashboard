@@ -14,6 +14,7 @@ TMAX.addEventListener("change", tminmax_changed(TMAX.id));
 document.addEventListener("DOMContentLoaded", init());
 
 function init(){
+	change_view();
 	// Gerät festlegen
 	DEVICE_ID = "odk";
 	SENSOR_ID = document.getElementById("sensor_id").innerHTML;
@@ -211,4 +212,6 @@ function temperature_refresh(json_obj){
 			TMAX.value = json_obj.temp_max_meat;
 			break;
 	}
+
+
 }

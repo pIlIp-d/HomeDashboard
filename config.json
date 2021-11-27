@@ -8,7 +8,7 @@
   "widget": [
     {
       "name": "odk_temperature",
-      "display_name": "sensor",
+      "display_name": "temp_sensor",
       "default": {
         "type": "temp",
         "filename": "odk_temperature.php",
@@ -95,6 +95,5 @@
     }
   ],
   "sizes": ["11","12","13","24","34","44"]
-    
-  
+
 }

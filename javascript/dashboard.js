@@ -24,11 +24,9 @@ class Grid extends Array{
 	sort_asc(){
 		if (this.size === 0)
 			return;
-		this.sort((obj1,obj2) => {return obj1.pos - obj2.pos;});
-		for (var i = 0; i < this.length-2; i++){//removes gaps in order
-				if (this[i].pos+1 != this[i+1].pos)
-					this[i+1].pos--;
-		}
+		this.sort((obj1,obj2) => {return obj1.pos - obj2.pos;});//sort
+		for (var i = 0; i < this.length; i++)//remove gaps
+				this[i].pos = i;
 	}
 	add_element(){
 		let size = document.getElementById("select_size").value;
@@ -40,8 +38,8 @@ class Grid extends Array{
 			return;
 		}
  		if (size != "null" && type != "null") {
-			grid.push(new GridObject(type,size));
-			grid.update();
+			this.push(new GridObject(type,size));
+			this.update();
 	 	}
 		else
 	 		alert("you need to select \'type\' and \'size\' before you can add");
@@ -63,13 +61,14 @@ class Grid extends Array{
 	update(){
 		let grid_size = 1,grid_pos = 1, gaps = [], modulo = 4;
 		set_Orientation();
-		grid.sort_asc();
+		this.sort_asc();
+		console.log(grid);
 		if (view === "vertical")
 			modulo = 4;
 		else if (view === "horizontal")
 			modulo = 8;
-		for (var i=0;i<grid.length;i++){
-			grid_size = Number(grid[i].size[0])*Number(grid[i].size[1]);
+		for (var i=0;i<this.length;i++){
+			grid_size = Number(this[i].size[0])*Number(this[i].size[1]);
 			if (grid_pos % modulo === 0 && grid_size >= 2)
 				gaps[i] = 1;
 			else if (grid_pos % modulo > 5 % modulo && grid_size > 3 || grid_size === 3 && grid_pos % modulo > 6 % modulo)
@@ -78,26 +77,26 @@ class Grid extends Array{
 				gaps[i] = 0;
 			grid_pos += grid_size;
 			grid_pos += gaps[i];
-			grid[i].stop = grid_pos-1;
-			grid[i].start = grid_pos - grid_size;
+			this[i].stop = grid_pos-1;
+			this[i].start = grid_pos - grid_size;
 		}
-		grid.fill_gaps(gaps);
-		grid.sort_asc();
-		if (grid[grid.length-1].stop <= 32)
+		this.fill_gaps(gaps);
+		this.sort_asc();
+		if (this[this.length-1].stop <= 32)
 			this.render();
 		else {
 			alert("To big for current config!\nDelete existing elements to get enough space.");
-			grid[grid.length-1].remove();	
+			this[this.length-1].remove();	
 		}
-		console.log(JSON.stringify(grid));
-		console.log(grid);	
+		console.log(JSON.stringify(this));
+		console.log(this);	
 	}
 	render(){
 		document.getElementById("container").innerHTML = "";
 		let html = "", note = false;
-		for (var g = 0; g < grid.length; g++){
-			html += grid[g].createHTML();
-			if (grid[g].type === "notes")
+		for (var g = 0; g < this.length; g++){
+			html += this[g].createHTML();
+			if (this[g].type === "notes")
 				note = true;	
 		}
 		document.getElementById("container").innerHTML = html;
@@ -111,16 +110,17 @@ class Grid extends Array{
 	}
 }
 
-class GridObject {
-	constructor(type,size,pos=grid.length){
+class GridObject { //single widget with properties
+	constructor(type,size,pos=grid.length,display=0){
 		this.type = type;
 		this.size = size;
 		this.pos = pos;
 		this.start = 0;
 		this.stop = 0;
+		this.display=display;
 	}
 	remove(){
-		grid.splice(this.pos-1,1);
+		grid.splice(this.pos,1);
 	}
 	show(){
 		console.log(this);
@@ -159,8 +159,12 @@ class GridObject {
 							case "temp":
 								source += "?sensor="+widget.name;
 								source += "&display_name="+widget.display_name;
+								source += "&show="+this.display;
+								source += "&id="+this.pos;
+
 								break;
 							case "move":
+								console.log(this.pos);
 								source +="?id="+ this.pos +"&name="+grid[this.pos].type;
 								break;
 							case "url":
@@ -190,52 +194,72 @@ class GridObject {
 	}
 }
 
-class Widgets extends Array{
+class Widgets{ //all possible properties of widgets
 	constructor(){
-		super();
 		this.sensors = [];
 		this.widgets = [];
 	}
 	request(){
 		var xhttp = new XMLHttpRequest();
-		var obj;
+		var widgets;
+		var sensors;
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200)
-   	 			obj = JSON.parse(this.responseText);
+   	 			widgets = JSON.parse(this.responseText);
 		};
 		xhttp.open("GET", "config.json", false);
 		xhttp.send();
-		this.handle_response(obj);
+		var xhttp2 = new XMLHttpRequest();
+		xhttp2.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200)
+   	 			sensors = JSON.parse(this.responseText);
+		};
+		xhttp2.open("GET", "devices.json", false);
+		xhttp2.send();
+		this.handle_response(widgets, sensors);
 	}
-	handle_response(obj){
-		this.sensors = obj.sensor_names;
-		this.sizes = obj.sizes;
-		let html = "", count = 0;
-		for (let w=0;w<Object.keys(obj.widget).length;w++){
-			let special = null;
-			let default_ = obj.widget[w].default;
-			if (obj.widget[w].display_name != "sensor"){
-				if (obj.widget[w].display_name != "")
-					html+="<option value='"+ obj.widget[w].name +"'>"+ obj.widget[w].display_name +"</option>\n";
-				if ("special" in obj.widget[w])
-					special = obj.widget[w].special;
-				this.widgets.push(new Widget(obj.widget[w].name,
-											 obj.widget[w].display_name,
-											 default_,special
-											));
+	handle_response(widgets, sensors){
+		//---sensors--- 
+		for (let i = 0; i < Object.keys(sensors.devices).length; i++){
+			console.log(i);
+			for (let j = 0; j < sensors.devices[i].sensors.length; j++){
+				let s = sensors.devices[i].sensors[j];
+				this.sensors.push(new Sensor(
+					s.sensor_name,
+					s.display_name,
+					s.sensor_id,
+					s.type,
+					s.min_value,
+					s.max_value));
 			}
-			else {
-				for (let s=0;s<Object.keys(this.sensors).length-1;s++){
-					if (obj.widget[w].display_name != "")
+		}
+		//---widgets---
+		this.sizes = widgets.sizes;
+		let html = "";
+		for (let w=0;w<Object.keys(widgets.widget).length;w++){
+			let special = null;
+			let default_ = widgets.widget[w].default;
+			if (widgets.widget[w].display_name === "temp_sensor"){
+				for (let s=0;s<this.sensors.length-1;s++){
+					if (widgets.widget[w].display_name != "")
 						html+="<option value='"+ this.sensors[s].name +"'>"+ this.sensors[s].display_name +"</option>";
-					if ("special" in obj.widget[w])
-						special = obj.widget[w].special;
-					this.widgets.push(new Widget(this.sensors[count].name,
-											this.sensors[count].display_name,
+					if ("special" in widgets.widget[w])
+						special = widgets.widget[w].special;
+					this.widgets.push(new Widget(this.sensors[s].name,
+											this.sensors[s].display_name,
 											default_,special
 											));
-					count++;
 				}
+			}
+			else {
+				if (widgets.widget[w].display_name != "")
+					html+="<option value='"+ widgets.widget[w].name +"'>"+ widgets.widget[w].display_name +"</option>\n";
+				if ("special" in widgets.widget[w])
+					special = widgets.widget[w].special;
+				this.widgets.push(new Widget(widgets.widget[w].name,
+											 widgets.widget[w].display_name,
+											 default_,special
+											));
 			}
 		}
 		console.log(this.widgets);
@@ -247,7 +271,7 @@ class Widgets extends Array{
 	}
 }
 
-class Widget{
+class Widget{ //Object
 	constructor(name,display_name,default_,special=null){
 		this.name = name;
 		this.display_name = display_name;
@@ -257,6 +281,18 @@ class Widget{
 			this.special = special;
 	}
 }
+
+class Sensor{ //Object
+	constructor(name,display_name,id,type,min,max){
+		this.name = name;
+		this.display_name = display_name;
+		this.id = id;
+		this.type = type;
+		this.min_value = min;
+		this.max_value = max;
+	}
+}
+
 
 class Presets extends Array{
 	constructor(standard_value = 2){
@@ -338,16 +374,18 @@ class Presets extends Array{
 			if (response["grid_object_v"] != "" && response["grid_object_v"] != null && 
 				response["grid_object_h"] != "" && response["grid_object_h"] != null){
 				grid_vertical.reset();
-				grid_horizontal.reset(); 	
+				grid_horizontal.reset();
 				for (var key in response["grid_object_v"]){
-					grid_vertical.push(new GridObject(response["grid_object_v"][key].name,
+					grid_vertical.push(new GridObject(response["grid_object_v"][key].type,
 													  response["grid_object_v"][key].size,
-													  response["grid_object_v"][key].pos));
+													  response["grid_object_v"][key].pos,
+													  response["grid_object_v"][key].display));
 				}
 				for (key in response["grid_object_h"]){
-					grid_horizontal.push(new GridObject(response["grid_object_h"][key].name,
+					grid_horizontal.push(new GridObject(response["grid_object_h"][key].type,
 														response["grid_object_h"][key].size,
-														response["grid_object_h"][key].pos));
+														response["grid_object_h"][key].pos,
+													    response["grid_object_h"][key].display));
 				}
 				grid_horizontal.sort();
 				grid_vertical.sort();
@@ -359,6 +397,7 @@ class Presets extends Array{
 			if (view === "horizontal")
 				grid = grid_horizontal;
 			grid.update();
+			console.log(grid);
 		}
 		else if (request == "get_all_presets")
 			this.createHTML(json_response);
@@ -513,6 +552,9 @@ class Presets extends Array{
 				case "set_widget": //ssxxxxx s:size x:data
 					let size = parseInt(String(data_str[0][0])+String(data_str[0][1]));
 					widget_size[size] = data_str[0];	
+					break;
+				case "set_show"://for temp widget view
+					grid[data_str[0]].display = grid[data_str[0]].display ^ 1;
 					break;
 			}	  	
 		}

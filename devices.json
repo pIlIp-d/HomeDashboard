@@ -1,0 +1,99 @@
+{
+  "devices": [
+    {
+      "device_name": "odk",
+      "display_name": "Outdoor Kitchen",
+      "device_id": "001",
+      "sensors": [
+        {
+          "sensor_name": "wfo_top",
+          "display_name": "Backofen Oben",
+          "type":"temp",
+          "sensor_id": "001-1",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "wfo_bottom",
+          "display_name": "Backofen Unten",
+          "type":"temp",
+          "sensor_id": "001-2",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "grill_left",
+          "display_name": "Grill links",
+          "type":"temp",
+          "sensor_id": "001-3",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "wfo_bottom",
+          "display_name": "Grill Rechts",
+          "type":"temp",
+          "sensor_id": "001-4",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "meat",
+          "display_name": "Fleisch",
+          "type":"temp",
+          "sensor_id": "001-5",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        }
+      ]
+    },
+    {
+      "device_name": "pond",
+      "display_name": "Cleos Reich",
+      "device_id": "002",
+      "sensors": [
+        {
+          "sensor_name": "temp_water",
+          "display_name": "Wassertemperatur",
+          "type":"temp",
+          "sensor_id": "002-1",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "temp_air",
+          "display_name": "Lufttemperatur",
+          "type":"temp",
+          "sensor_id": "002-2",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "humidity",
+          "display_name": "Luftfeuchtigkeit",
+          "type":"humidity",
+          "sensor_id": "002-3",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        },
+        {
+          "sensor_name": "pressure",
+          "display_name": "Luftdruck",
+          "type":"pressure",
+          "sensor_id": "002-4",
+          "act_value": "",
+          "min_value": "",
+          "max_value": ""
+        }
+      ]
+    }
+  ]
+}

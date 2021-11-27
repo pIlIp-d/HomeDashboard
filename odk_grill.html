@@ -324,7 +324,7 @@ function check_DB(){
 			document.getElementById("bp_container").style.display = "none";
 		}
 	}
-	xhttp.open("GET", DBSERVER_URL + "wfo_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);  
+	xhttp.open("GET", DBSERVER_URL + "odk_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);  
 	xhttp.send();
 }
 
@@ -547,7 +547,7 @@ function bakingplan_get_recipes(){
 			bakingplan_fill_table();
 		}
 	}
-	xhttp.open("GET", DBSERVER_URL + "wfo_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);  
+	xhttp.open("GET", DBSERVER_URL + "odk_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);  
 	xhttp.send();
 }
 

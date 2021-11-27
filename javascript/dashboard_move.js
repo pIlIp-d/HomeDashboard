@@ -33,9 +33,13 @@
 		var changed = false;
 		if (view === "vertical" && id != 0){
 			if (width_is_four(id)){
+				console.log("big");
 				changed = true;
 				switch(grid[id-1].size){
-					case "14","24","44":
+					case "14":
+					case "24":
+					case "44":
+					case "34":
 						swap([id, id-1]);//big one over big one	
 						break;
 					case "11":
@@ -194,7 +198,7 @@
 			var num = get_row_below(id);//amount of items in next row
 			var start = start_of_next_row(id);
 			if (id < grid.length-1){
-				if (grid[id].size === "14" || grid[id].size === "24" ||grid[id].size === "44"){
+				if (grid[id].size === "14" || grid[id].size === "24" ||grid[id].size === "44" || grid[id].size === "34"){
 				 	changed = true;
 				 	if (num === 1)
 				 		swap([id,id+1]); 
@@ -507,7 +511,7 @@
 		id = Number(id);
 		if (id > 0){
 			if (view === "vertical"){
-				if (grid[id].size === "14" || grid[id].size === "24" || grid[id].size === "44")
+				if (grid[id].size === "14" || grid[id].size === "24" || grid[id].size === "44" || grid[id].size === "34")
 					click_up(id);
 			 	var changed = true;
 			 	if ((grid[id].size === grid[id-1].size) ||//2x gleich
@@ -538,7 +542,7 @@
 		var changed = false;
 		if (view === "vertical"){
 			if (id < grid.length-1){
-				if (grid[id].size === "14" || grid[id].size === "24" || grid[id].size === "44")
+				if (grid[id].size === "14" || grid[id].size === "24" || grid[id].size === "44"|| grid[id].size === "34")
 					click_down(id);
 				else if (id < grid.length){//just for less loopthrough
 				 	changed = true;
