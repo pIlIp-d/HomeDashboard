@@ -20,7 +20,7 @@
 		return false;
 	}
 	function width_is_four(id){
-		if (grid[id].size[1] === "4")
+		if (grid[id].size.substring(1) === "4")
 			return true;
 		else
 			return false;	
@@ -58,7 +58,7 @@
 					click_up(id-1);
 				return;
 			}
-			else if (grid[id].size === grid[ele].size)
+			else if (grid[id].size === grid[ele].size || width_is_four(id) && width_is_four(ele))
 				swap([ele,id]);
 			else if ("11" === grid[ele].size && "12" === grid[ele+1].size && //special case
 					"12" === grid[id].size && "11" === grid[id+1].size ||
@@ -67,23 +67,24 @@
 				swap([id,ele]);//12,11 over 11,12 
 				swap([id+1,ele+1]);
 			}
-			else if (grid[id].size > grid[ele].size && grid[ele+1].size != "13" || grid[id].size == "11" && grid[id+1].size == "13"){//13 is part of special cases
+			else if (grid[id].size > grid[ele].size && (grid[ele+1].size != "13" || width_is_four(id)) || grid[id].size == "11" && grid[id+1].size == "13" && !width_is_four(ele) ){//13 is part of special cases
 				click_down(ele);
 				return;
 			}
 			else if ("11" === grid[ele].size && "13" === grid[ele+1].size || 
 					"13" === grid[ele].size && "11" === grid[ele+1].size){
 				//overlaps 11,13 -- 12,12/13,11 or 12,11,11
-				if (grid[id].start+3 === grid[id+1].stop){//two
+				if (grid[id+1] != null && grid[id].start+3 === grid[id+1].stop){//two
 					swap([id,ele]);
 					swap([id+1,ele+1]);
 				}
-				else if (grid[id].start+3 === grid[id+2].stop)//three
+				else if (grid[id+2] != null && grid[id].start+3 === grid[id+2].stop)//three
 					swap([ele,id+1,ele+1,id+2,id]);
 				else change = false;
 			}
 			else if ("12" === grid[ele].size){
-				if (grid[id].start+1 === grid[id+1].stop){//two in row
+				if (grid[id+1] != null && 
+					grid[id].start+1 === grid[id+1].stop){//two in row
 					var swap1 = grid[ele].pos;
 					grid[ele].pos = grid[id+1].pos;
 					grid[id+1].pos = grid[ele+1].pos;
@@ -95,9 +96,9 @@
 				else change = false;
 			}
 			else if ("13" === grid[ele].size){
-				if (grid[id].start+2 === grid[id+1].stop)//two in row
+				if (grid[id+1] != null && grid[id].start+2 === grid[id+1].stop)//two in row
 					swap([id,ele+1,id+1,ele]);
-				else if (grid[id].start+2 === grid[id+2].stop){//three in row
+				else if (grid[id+2] != null && grid[id].start+2 === grid[id+2].stop){//three in row
 					swap([ele,id,id+2]);
 					swap([ele+1,id+1]);
 				}
@@ -138,9 +139,9 @@
 	function get_below(id){
 		for (ele=id;ele<grid.length;ele++){
 			if (grid[id].start+4 === grid[ele].start || 
-				(grid[id].start+8 === grid[ele].start && grid[ele].size === "24")||
-				(grid[id].start+12 === grid[ele].start && grid[ele].size === "34") ||
-				(grid[id].start+16 === grid[ele].start && grid[ele].size === "44"))
+				(grid[id].start+8 === grid[ele].start && grid[id].size === "24")||
+				(grid[id].start+12 === grid[ele].start && grid[id].size === "34") ||
+				(grid[id].start+16 === grid[ele].start && grid[id].size === "44"))
 				return ele;
 		}
 		return -1;
@@ -160,20 +161,22 @@
 				return;
 			}
 			changed = true;
-			if (grid[id].size === grid[ele].size)
+			if (grid[id].size === grid[ele].size || width_is_four(id) && width_is_four(ele))
 				swap([ele,id]);
-			if (grid[id].size > grid[ele].size && grid[ele+1].size != "13" || grid[id].size == "11" && grid[id+1].size == "13"){
+			else if (grid[id].size > grid[ele].size && (grid[ele+1] != null && grid[ele+1].size != "13" || width_is_four(id))|| grid[id].size === "11" && grid[id+1] != null && grid[id+1].size === "13" && !width_is_four(ele)){
 				click_up(ele);
 				return;
 			}
-			else if ("11" === grid[ele].size && "13" === grid[ele+1].size || 
+			else if (grid[ele+1] != null && 
+					"11" === grid[ele].size && "13" === grid[ele+1].size || 
 					"13" === grid[ele].size && "11" === grid[ele+1].size){
 				//overlaps 11,13 -- 12,12/13,11 or 12,11,11
-				if (grid[id].start+3 === grid[id+1].stop){//two
+				if (grid[ele+1] != null && 
+					grid[id].start+3 === grid[id+1].stop){//two
 					swap([id,ele]);
 					swap([id+1,ele+1]);
 				}
-				else if (grid[id].start+3 === grid[id+2].stop)//three
+				else if (grid[ele+1] != null && grid[id].start+3 === grid[id+2].stop)//three
 					swap([ele,id+1,ele+1,id+2,id]);
 				else change = false;
 			}
@@ -187,7 +190,7 @@
 					grid[ele-1].pos = grid[id+1].pos;
 					grid[id+1].pos = swap1;
 				}
-				else if(grid[ele+1].size == "11" && grid[id].size == "11" && grid[id+1].size == "12"){
+				else if(grid[ele+1] != null && grid[ele+1].size == "11" && grid[id].size == "11" && grid[id+1].size == "12"){
 					swap([id,ele]);
 					swap([id+1,ele+1]);
 				}
@@ -200,11 +203,11 @@
 				else change = false;
 			}
 			else if (width_is_four(ele)){
-				if (grid[id].start+3 === grid[id+3].stop)//four in row
+				if (grid[id+3] != null && grid[id].start+3 === grid[id+3].stop)//four in row
 					swap([ele,id,id+1,id+2,id+3]);
-				else if(grid[id].start+3 === grid[id+2].stop)//three in row
+				else if(grid[id+2] != null && grid[id].start+3 === grid[id+2].stop)//three in row
 					swap([ele,id,id+1,id+2]);
-				else if(grid[id].start+3 === grid[id+1].stop)//two in row
+				else if(grid[id+1] != null && grid[id].start+3 === grid[id+1].stop)//two in row
 					swap([ele,id,id+1]);
 				else change = false;
 			}
