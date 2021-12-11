@@ -4,6 +4,9 @@ var recipe_info = [];
 var recipe_ingredients = [];
 var recipe_count;
 var act_recipe = 4;
+
+var bakingplan_is_active = false;
+
   //init
   window.addEventListener('DOMContentLoaded',  xhttp_request("get_list_of_recipes",""));
 
@@ -50,6 +53,14 @@ var act_recipe = 4;
 //---------------------------
 //------ HTML ---------------
 //---------------------------
+    function toogleBakingplan(){
+      bakingplan_is_active = bakingplan_is_active ^ 1;
+      if (bakingplan_is_active)
+        document.getElementById("btn_bakingplan").innerHTML = "Bakingplan: on";
+      else
+        document.getElementById("btn_bakingplan").innerHTML = "Bakingplan: off";
+      xhttp_request("get_list_of_recipes","");
+    }
 
   function get_full_recipe(){
     if (act_recipe < recipe_count) {
@@ -92,7 +103,9 @@ var act_recipe = 4;
     console.log(request +" "+id);
     var url = "";
     url = server_url + "odk_db.php?json={\"request_name\":\"";
-    if (request == "get_list_of_recipes")
+    if (bakingplan_is_active && request == "get_list_of_recipes")
+      url += "bakingplan_basic_get_all_recipes\"}";
+    else if (request == "get_list_of_recipes")
       url += "get_list_of_recipes\",\"id_list\":\"\",\"count\":\"\",\"filtermode\":\"none\"}";
     else if (request == "get_recipe_data" || request == "get_recipe_ingredients")
       url += request + "\",\"id\":\"" + id + "\"}";
@@ -104,13 +117,18 @@ var act_recipe = 4;
         if (response.substr(0, 8) == "DB_ERROR")
           alert("DB-Fehler bei Request: " + url);
         const json_object = JSON.parse(response);
+      
         //abspeichern in JS arrays
         switch (request){
           case "get_list_of_recipes":
-            recipe_object = [];
-            for (i=0; i < json_object.length; i++)
-              recipe_object[i] = json_object[i];
-            recipe_count = recipe_object.length; 
+            if (!bakingplan_is_active){
+              recipe_object = [];
+              for (i=0; i < json_object.length; i++)
+                recipe_object[i] = json_object[i];
+              recipe_count = recipe_object.length;
+            }
+            else{  
+            }
             get_full_recipe();//get list of all recepies
             break;
           case "get_recipe_data":

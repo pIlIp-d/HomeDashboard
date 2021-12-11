@@ -592,7 +592,7 @@ class Presets extends Array{
 //-------- Message Handling ---------------
 //-----------------------------------------
 
-	window.addEventListener('message', e => {
+	window.addEventListener('message', e => {//TODO session id for moving
 	  	if (e.origin == "http://"+location.host){
 			let data_str = e.data.split(" ");
 			switch (data_str[1]){
@@ -622,6 +622,9 @@ class Presets extends Array{
 					break;
 				case "set_show"://for temp widget view
 					grid[data_str[0]].display = grid[data_str[0]].display ^ 1;
+					break;
+				case "reload":
+					grid.update();
 					break;
 			}	  	
 		}

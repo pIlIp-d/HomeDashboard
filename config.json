@@ -19,7 +19,7 @@
       "display_name": "Timer",
       "default": {
         "filename": "odk_timer_wfo.html",
-        "sizes": "12,13,14,24"
+        "sizes": "12,13,14,24,34"
       },
       "special": {
         "filename": "odk_timer_wfo_quadrat.html",
@@ -67,6 +67,14 @@
       "default": {
         "type": "move",
         "filename": "move_with_arrows.php"
+      }
+    },
+     {
+      "name": "bakingplan",
+      "display_name": "Backplan",
+      "default": {
+        "filename": "bakingplan.php",
+        "scrolling": "yes"
       }
     }
   ],

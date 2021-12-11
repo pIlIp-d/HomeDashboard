@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
-  <head>
-		<link rel="stylesheet" href="style/odk.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="apple-mobile-web-app-capable" content="yes">	
-    <Title>Backplan</Title>
-  </head>
-  <style>
-		.rec_entity{
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+
+</head>
+<link rel="stylesheet" type="text/css" href="../style/odk.css">
+<style type="text/css">
+	.rec_entity{
 			border-bottom: thin solid lightgray;
 		}
 		.rec_name {
@@ -40,59 +41,47 @@
 			width: 100px;
 			height: 40px;
 		}
-		
-	</style>
-	<script src="libs/jquery-3.6.0.min.js"></script>
 
-  <body>
 
-<!--
------------------------------------------ Header -----------------------------------------
--->
-	<script src="javascript/odk.js"></script>
-
- 		<header class="unselectable">
-			<!-- 
-			einlesen der übergebenen Rezept-ID per PHP in unsichtbares DIV-Element
-			- kann später per JS ausgelesen werden
-			- Rezept-ID = 0 bedeutet "neues Rezept"
-			-->
-			<?php
-				$data = 0;
-				if (isset($_GET["data"])) {
-    			$data = $_GET["data"];
-				}
-			?>
-			<div id="data" hidden><?php echo $data; ?></div>
+</style>
+<script src="../libs/jquery-3.6.0.min.js"></script>
+<script src="../javascript/odk.js"></script>
+<body>
+	<header class="unselectable">
+	<!-- 
+		einlesen der übergebenen Rezept-ID per PHP in unsichtbares DIV-Element
+		- kann später per JS ausgelesen werden
+		- Rezept-ID = 0 bedeutet "neues Rezept"
+		-->
+		<?php
+			$data = 0;
+			if (isset($_GET["data"])) {
+			$data = $_GET["data"];
+			}
+		?>
+		<div id="data" hidden><?php echo $data; ?></div>
+		<div class="fl_header_footer">
+			<div class="btn_table" id="reload_button" onclick='location.reload(true)'>&#10226;</div>
+			<span class="flexitem" id="bp_name" style="font-size: 1.0rem;padding-right: 40px;" onclick='mm_clicked_bakingplan_toggle()'>Backplan</span>
+			<table class="flexitem "><tr><td></td></tr></table>
+			<span class="mm" id="mm"></span>
+			<span class="me" id="me" style="right: 50px; top: 50px;"></span>
+		</div>
+	</header>
+	
+	<main id="main" class="unselectable"></main>
+	
+	<footer class="unselectable">
 			<div class="fl_header_footer">
-  			<table class="flexitem btn_table" onclick=location.reload(true)><tr><td><b>&#10226;</b></td></tr></table>
-  			<span class="flexitem" id="bp_name" style="font-size: 1.0rem;" onclick="mm_clicked_bakingplan_toggle()">Backplan</span>
-  			<table class="flexitem btn_table"><tr><td></td></tr></table>
-				<span class="mm" id="mm"></span>
-				<span class="me" id="me" style="right: 50px; top: 50px;"></span>
-			</div>
-		</header>
-<!--
------------------------------------------- Main ------------------------------------------
--->
-		<main id="main" class="unselectable">
-		</main>
-<!--
------------------------------------------ Footer -----------------------------------------
--->
-		<footer class="unselectable">
-			<div class="fl_header_footer">
-				<span class="flexitem"><img class="img_btn" id="btn_f_cancel" src="images/btn_cancel.svg" alt="Abbruch" onclick="btn_f_cancel_clicked()"></span>
+				<span class="flexitem"><img class="img_btn" id="btn_f_cancel" src="../images/btn_cancel.svg" alt="Abbruch" onclick="btn_f_cancel_clicked()"></span>
   			<span class="flexitem" id="f_msg" style="font-size: 0.8rem;"></span>
-  			<span class="flexitem"><img class="img_btn" id="btn_f_save" src="images/btn_save.svg" alt="Speichern" onclick="btn_f_save_clicked()"></span>
+  			<span class="flexitem"><img class="img_btn" id="btn_f_save" src="../images/btn_save.svg" alt="Speichern" onclick="btn_f_save_clicked()"></span>
 			</div>
-		</footer>
-  </body>
-
-	<script>
-/* ----------------------------------- Drag'n Drop ------------------------------------ */
-
-		function menu_elem_init(){
+	</footer>
+</body>
+<script type="text/javascript">
+	
+	function menu_elem_init(){
 			var menu_items = [
 				// [mm_name, mm_function, mm_color]
 				["", "", ""],
@@ -419,8 +408,8 @@
 		html += " 				</tr>";
 		html += " 			</table>";
 		html += " 		 	<div class=\"rec_details\" id=\"rec_details_" + bpr_id + "\">";
-		html += "					<span class=\"flexitem rec_details\" id=\"rec_time_" + bpr_id + "\"><img class=\"img_btn\" id=\"sym_clock\" src=\"images/sym_clock.svg\" alt=\"sym_clock\" style=\"margin-right: 5px;\">" + base64_2_specialchars(r_bakingtime) + "</span>";
-		html += "					<span class=\"flexitem rec_details\" id=\"rec_temp_" + bpr_id + "\"><img id=\"sym_thermo\" src=\"images/sym_thermo.svg\" alt=\"sym_thermo\" style=\"margin-right: 5px; width:15px; hight:15px\">" + base64_2_specialchars(r_bakingtemperature) + "</span>";
+		html += "					<span class=\"flexitem rec_details\" id=\"rec_time_" + bpr_id + "\"><img class=\"img_btn\" id=\"sym_clock\" src=\"../images/sym_clock.svg\" alt=\"sym_clock\" style=\"margin-right: 5px;\">" + base64_2_specialchars(r_bakingtime) + "</span>";
+		html += "					<span class=\"flexitem rec_details\" id=\"rec_temp_" + bpr_id + "\"><img id=\"sym_thermo\" src=\"../images/sym_thermo.svg\" alt=\"sym_thermo\" style=\"margin-right: 5px; width:15px; hight:15px\">" + base64_2_specialchars(r_bakingtemperature) + "</span>";
 		html += "				</div>";
 		html += "	 		</div>";
 		html += " 		<div class=\"shaking_dummy\" id=\"dummy_" + bpr_id + "\" onclick=\"bakingplan_paste('" + bpr_id + "')\">";
@@ -434,7 +423,6 @@
 		gv_bpr_id = id_array[1];
 		me_show(id_array[1]);
 	}
+</script>
 
-	</script>
 </html>
-

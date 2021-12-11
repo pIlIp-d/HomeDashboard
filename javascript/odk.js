@@ -19,6 +19,9 @@ var gv_res = null;
 var gv_bpr_id;
 var gv_order_no;
 
+var btn_unselected_svg = "/HomeDashboard/images/btn_unselected.svg";
+var btn_selected_svg = "/HomeDashboard/images/btn_selected.svg";
+
 function sql_get_count(from, where){
 	var xhttp = new XMLHttpRequest();
 	var response;
@@ -185,9 +188,9 @@ class filter_dialog extends full_dialog{
 					alert("DB-Fehler bei Request: " + url);
 				}
 				const json_object = JSON.parse(res);
-				for (i = 0; i < json_object.length; ++i) {						
+				for (i = 0; i < json_object.length; ++i) {				
 					html += "<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dialog_filter.toggle_item(" + json_object[i].id + ")\">";
-					html += "	<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\"></span>";
+					html += "	<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>";
 					html += "	<span class=\"flexitem item\" align=\"left\">" + base64_2_specialchars(json_object[i].name) + "</span>";
 					html += "</div>";
 				}
@@ -209,17 +212,16 @@ class filter_dialog extends full_dialog{
 		if (item.title == "unselected"){
 			item.style.backgroundColor = "#B0B0B0";
 			item.title = "selected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_selected.svg";				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;				
 		}
 		else{
 			item.style.backgroundColor = "#F0F0F0";
 			item.title = "unselected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_unselected.svg";				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 		}
 	}
 
 } // class filter_dialog
-
 
 	function checkinput(value){
 		//alert(value);
@@ -229,7 +231,7 @@ class filter_dialog extends full_dialog{
 			for(var i = 0; i < allItems.length; i++) {
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = "images/btn_unselected.svg";				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
 			}
 		return;
 		}
@@ -237,12 +239,12 @@ class filter_dialog extends full_dialog{
 			if (regex.test(allItems[i].innerText)){
 				document.getElementById(allItems[i].id).style.backgroundColor = "#B0B0B0";
 				document.getElementById(allItems[i].id).title = "selected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = "images/btn_selected.svg";				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_selected_svg;				
 			}
 			else{
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = "images/btn_unselected.svg";				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
 			}
 		}
 	}
@@ -277,7 +279,7 @@ class ingredients_dialog extends full_dialog {
 					// Sonderzeichen im Zutaten-Name dekodieren
 					json_object[i].name = base64_2_specialchars(json_object[i].name);
 					html += "<div class=\"ingredient\" id=\"" + json_object[i].id + "\" title=\"unselected\" style=\"background-color: #F0F0F0;\">"
-					html += "	<span class=\"flexitem ingredient\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\" onclick=\"dialog_ingredients.toggle_ingredient(" + json_object[i].id + ")\"></span>"
+					html += "	<span class=\"flexitem ingredient\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\" onclick=\"dialog_ingredients.toggle_ingredient(" + json_object[i].id + ")\"></span>"
 					html += "	<span class=\"flexitem ingredient\" id=\"ingr_name_" + json_object[i].id + "\" style=\"margin-top: 4px; width:100%; text-align: left;\" onclick=\"dialog_ingredients.toggle_ingredient(" + json_object[i].id + ")\">" + json_object[i].name + "</span>"
 					html += "	<span class=\"flexitem ingredient\"><img class=\"img_btn_medium\" id=\"btn_del_" + json_object[i].id + "\" src=\"images/btn_close.svg\" onclick=\"dialog_ingredients.delete_ingredient(" + json_object[i].id + ")\"></span>"
 					html += "</div>"
@@ -314,7 +316,7 @@ class ingredients_dialog extends full_dialog {
 			for (var i = 0; i < ACT_REZIPE.ingredients.length; ++i) {
 				document.getElementById(ACT_REZIPE.ingredients[i].i_id).style.backgroundColor = "#B0B0B0";
 				document.getElementById(ACT_REZIPE.ingredients[i].i_id).title = "selected";
-				document.getElementById("btn_sel_unsel_" + ACT_REZIPE.ingredients[i].i_id + "").src="images/btn_selected.svg";
+				document.getElementById("btn_sel_unsel_" + ACT_REZIPE.ingredients[i].i_id + "").src=btn_selected_svg;
 			}
 		}
 	}
@@ -325,14 +327,14 @@ class ingredients_dialog extends full_dialog {
 			// Darstellung anpassen
 			ingredient.style.backgroundColor = "#B0B0B0";
 			ingredient.title = "selected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_selected.svg";	
+			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;	
 			// Zutat zum Rezept-Objekt hinzufügen	
 			ingredients_dialog.add_ingredient_to_recipe(id);
 		}
 		else{
 			ingredient.style.backgroundColor = "#F0F0F0";
 			ingredient.title = "unselected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_unselected.svg";				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 			// Zutat aus Rezept-Objekt entfernen	
 			ingredients_dialog.remove_ingredient_from_recipe(id);
 		}
@@ -993,12 +995,12 @@ function dlg_full_toggle_item(id){
 	if (item.title == "unselected"){
 		item.style.backgroundColor = "#B0B0B0";
 		item.title = "selected";
-		document.getElementById("btn_sel_unsel_" + id).src = "images/btn_selected.svg";				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 	}
 	else{
 		item.style.backgroundColor = "#F0F0F0";
 		item.title = "unselected";
-		document.getElementById("btn_sel_unsel_" + id).src = "images/btn_unselected.svg";				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 	}
 }
 
@@ -1021,11 +1023,11 @@ function dlg_select_bakingplan_create_HTML(headername){
 			for (i = 0; i < json_object.length; ++i) {						
 				if (json_object[i].type != "active"){
 					html += "					<div class=\"item\" id=\"item_" + json_object[i].id + "\" style=\"background-color: lightgray;\" onclick=\"dlg_select_bakingplan_close([" + json_object[i].id + ", '" + json_object[i].name + "'])\">\n";
-					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\"></span>\n";
+					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>\n";
 				}
 				else{
 					html += "					<div class=\"item\" id=\"item_" + json_object[i].id + "\" style=\"background-color: gray;\" onclick=\"dlg_select_bakingplan_close([" + json_object[i].id + ", '[active bakingplan]'])\">\n";
-					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_selected.svg\"></span>\n";
+					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_selected_svg+"\"></span>\n";
 				}
 				html += "						<span class=\"flexitem item\" align=\"left\">" + base64_2_specialchars(json_object[i].name) + "</span>\n";
 				html += "					</div>\n";
@@ -1051,8 +1053,8 @@ function dlg_select_bakingplan_close(id){
 				}
 				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);  
 				xhttp.send();	
-				//dlg_full_hide();
-				//bakingplan_get_all_recipes();
+				//send to dashboard
+				window.parent.postMessage('null reload', 'http://'+location.host+'/HomeDashboard/dashboard.php');
 				break;			
 			case "Backplan löschen":
 				if (id[1] == "[active bakingplan]"){
@@ -1118,7 +1120,7 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 				// Sonderzeichen im Rezept-Name dekodieren
 				json_object[i].name = base64_2_specialchars(json_object[i].name);
 				html += "					<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dlg_full_toggle_item(" + json_object[i].id + ")\">\n";
-				html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\"></span>\n";
+				html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>\n";
 				html += "						<span class=\"flexitem item\" align=\"left\">" + json_object[i].name + "</span>\n";
 				html += "					</div>\n";
 			}
