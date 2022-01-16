@@ -141,10 +141,12 @@ class GridObject { //single widget with properties
 			for (let g = 0; g < widgets.widgets.length; g++){
 				const widget = widgets.widgets[g];
 				if (type === widget.name){
-					if (!("sizes" in widget.default) || widget.default.sizes.includes(this.size))
+					if (!("sizes" in widget.default) || widget.default.sizes.includes(this.size)){
 						source += widget.default.filename;//size equals spec for default widget
-					else if ("special" in widget && widget.special.sizes.includes(this.size))
+					}
+					else if ("special" in widget && widget.special.sizes.includes(this.size)){
 						source += widget.special.filename;//size equals spec for special widget		
+					}
 					else if ("sizes" in widget.default && !(widget.default.sizes.includes(this.size))){
 						source += widget.default.filename;//no fitting this.size
 						for (d in this.sizes){//sets size to first allowed size
@@ -163,6 +165,7 @@ class GridObject { //single widget with properties
 								source += "&display_name="+widget.display_name;
 								source += "&show="+this.display;
 								source += "&id="+this.pos;
+								source += "&unit="+widget.unit;
 								break;
 							case "move":
 								//check for gray Arrows
@@ -175,12 +178,10 @@ class GridObject { //single widget with properties
 									mod = 4;
 								else if (view === "horizontal")
 									mod = 8;
-								if (this.start % mod === 1){
+								if (this.start % mod === 1)
 									left = 1;
-								}
-								if (this.stop % mod === 0 || this.pos === grid.length-1){
+								if (this.stop % mod === 0 || this.pos === grid.length-1)
 									right = 1;
-								}
 								if (this.stop <= mod)
 									top = 1;
 								for (let len = grid.length-1; len >= 0; len--){
@@ -248,7 +249,8 @@ class Widgets{ //all possible properties of widgets
 					s.sensor_id,
 					s.type,
 					s.min_value,
-					s.max_value));
+					s.max_value,
+					s.unit));
 			}
 		}
 		//---widgets---
@@ -257,7 +259,7 @@ class Widgets{ //all possible properties of widgets
 		for (let w=0;w<Object.keys(obj.widget).length;w++){
 			let special = null;
 			let default_ = obj.widget[w].default;
-			if (obj.widget[w].display_name === "temp_sensor"){
+			if (obj.widget[w].display_name === "sensor"){
 				for (let s=0;s<this.sensors.length-1;s++){
 					var widget_sizes = [];
 					if ("sizes" in obj.widget[w].default)
@@ -272,10 +274,9 @@ class Widgets{ //all possible properties of widgets
 							widget_sizes = add_string_to_array(widget_sizes,special.sizes);
 					}					
 					console.log(widget_sizes);
-
 					this.widgets.push(new Widget(this.sensors[s].name,
 											this.sensors[s].display_name,
-											default_,special,widget_sizes
+											default_,special,widget_sizes,this.sensors[s].unit
 											));
 				}
 			}
@@ -307,25 +308,27 @@ class Widgets{ //all possible properties of widgets
 	}
 }
 
-class Widget{//Object
-	constructor(name,display_name,default_,special=null,sizes){
+class Widget{//struct
+	constructor(name,display_name,default_,special=null,sizes,unit){
 		this.name = name;
 		this.display_name = display_name;
 		this.default = default_;
 		this.sizes = sizes.sort();
+		this.unit = unit;
 		if (special != null)
 			this.special = special;
 	}
 }
 
-class Sensor{ //Object
-	constructor(name,display_name,id,type,min,max){
+class Sensor{ //struct
+	constructor(name,display_name,id,type,min,max,unit){
 		this.name = name;
 		this.display_name = display_name;
 		this.id = id;
 		this.type = type;
 		this.min_value = min;
 		this.max_value = max;
+		this.unit = unit;
 	}
 }
 

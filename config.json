@@ -8,7 +8,7 @@
   "widget": [
     {
       "name": "odk_temperature",
-      "display_name": "temp_sensor",
+      "display_name": "sensor",
       "default": {
         "type": "temp",
         "filename": "odk_temperature.php"
@@ -19,11 +19,13 @@
       "display_name": "Timer",
       "default": {
         "filename": "odk_timer_wfo.html",
-        "sizes": "12,13,14,24,34"
+        "sizes": "12,13,14,24,34",
+        "bp_affected":"true"
       },
       "special": {
         "filename": "odk_timer_wfo_quadrat.html",
-        "sizes": "11,44"
+        "sizes": "11,44",
+        "bp_affected":"true"
       }
     },
     {
@@ -74,7 +76,8 @@
       "display_name": "Backplan",
       "default": {
         "filename": "bakingplan.php",
-        "scrolling": "yes"
+        "scrolling": "yes",
+        "bp_affected":"true"
       }
     }
   ],
@@ -89,6 +92,7 @@
           "sensor_name": "wfo_top",
           "display_name": "Backofen Oben",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "001-1",
           "act_value": "",
           "min_value": "",
@@ -98,6 +102,7 @@
           "sensor_name": "wfo_bottom",
           "display_name": "Backofen Unten",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "001-2",
           "act_value": "",
           "min_value": "",
@@ -107,6 +112,7 @@
           "sensor_name": "grill_left",
           "display_name": "Grill links",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "001-3",
           "act_value": "",
           "min_value": "",
@@ -116,6 +122,7 @@
           "sensor_name": "wfo_bottom",
           "display_name": "Grill Rechts",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "001-4",
           "act_value": "",
           "min_value": "",
@@ -125,6 +132,7 @@
           "sensor_name": "meat",
           "display_name": "Fleisch",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "001-5",
           "act_value": "",
           "min_value": "",
@@ -141,6 +149,7 @@
           "sensor_name": "temp_water",
           "display_name": "Wassertemperatur",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "002-1",
           "act_value": "",
           "min_value": "",
@@ -150,6 +159,7 @@
           "sensor_name": "temp_air",
           "display_name": "Lufttemperatur",
           "type":"temp",
+          "unit":"°C",
           "sensor_id": "002-2",
           "act_value": "",
           "min_value": "",
@@ -159,6 +169,7 @@
           "sensor_name": "humidity",
           "display_name": "Luftfeuchtigkeit",
           "type":"humidity",
+          "unit":"%",
           "sensor_id": "002-3",
           "act_value": "",
           "min_value": "",
@@ -167,6 +178,7 @@
         {
           "sensor_name": "pressure",
           "display_name": "Luftdruck",
+          "unit":"??",
           "type":"pressure",
           "sensor_id": "002-4",
           "act_value": "",

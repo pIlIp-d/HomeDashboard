@@ -139,7 +139,6 @@ var bakingplan_is_active = false;
             break;
           case "get_recipe_ingredients":
             recipe_ingredients = [];
-          console.log(recipe_ingredients);
             for (i=0; i < json_object.length; i++)
               recipe_ingredients[i] = json_object[i];
             act_recipe_to_html();

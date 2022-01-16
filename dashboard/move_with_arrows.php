@@ -32,14 +32,22 @@
   <!-- right -->
   <img src="/HomeDashboard/images/arrow_up.svg" class="grid-item button_right" id='<?php echo $id; ?>'>
   <!-- delete -->
+  <div id="btn_delete">
   <img src="/HomeDashboard/images/btn_close.svg" class="grid-item button_delete" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_delete', 'http://'+location.host+'/HomeDashboard/dashboard.php')">
+  </div>
   <!-- ok -->
   <img src="/HomeDashboard/images/btn_save.svg" class="grid-item button_ok" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_ok', 'http://'+location.host+'/HomeDashboard/dashboard.php')">
 </div>
 </body>
 <script type="text/javascript">
   window.addEventListener('DOMContentLoaded', init());
+  
   function init(){
+    remove_X_from_dummies();
+    grey_out_arrows();
+  }
+
+  function grey_out_arrows(){
     var arrows = document.getElementById("arrows").innerHTML;
     arrows = arrows.split("");
     const buttons = [document.querySelector('.button_up'),
@@ -53,6 +61,11 @@
         buttons[button].onclick = function(){click(buttons[button].classList[1]);};
       }
     }
+  }
+  function remove_X_from_dummies(){
+    let id = document.getElementById("button_id").innerHTML;
+    if (document.getElementById("name").innerHTML.substring(id.length) == "dummy")
+      document.getElementById("btn_delete").innerHTML = "";
   }
   function click(sender){
     console.log("------------------");

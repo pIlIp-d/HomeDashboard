@@ -752,54 +752,6 @@ function validate_number(evt) {
 	}
 }
 
-/* ----- Kodierung / Dekodierung ------------------------------------------------------ */
-
-function string_2_base64(string){
-// Dekodiert einen kompletten String aus Base64-Kodierung
-//			"&+#
-//	result = "[ENCODEDstring]" + btoa(string);
-	result = btoa(string);
-	return result;
-}
-
-function base64_2_string(string){
-// Kodiert einen kompletten String mit Base64-Kodierung
-//			"&+'#
-/*
-	if (string.substr(0,15) == "[ENCODEDstring]"){
-		var result = string.replace("[ENCODEDstring]", "");
-		result = atob(result);
-		return result;
-	}
-	else{
-		return string;
-	}
-*/
-	result = atob(string);
-	return result;
-}
-
-function specialchars_2_base64(string){
-// ersetzt die folgenden Sonderzeichen durch eine Base64-Kodierung in eckige Klammen gehüllt
-// " , & , + , #
-	string = string + "";//force string-type
-	string = string.replace(/\"/g, btoa("[\"]"));
-	string = string.replace(/&/g, btoa("[&]"));
-	string = string.replace(/\+/g, btoa("[+]"));
-	string = string.replace(/#/g, btoa("[#]"));
-	return string;
-}
-
-function base64_2_specialchars(string){
-// ersetzt die folgenden in eckige Klammen gehüllten kodierten Sonderzeichen durch den eigentlichen Wert
-// "(WyJd) , &(WyZd) , +(Wytd) , #(WyNd)
-	string = string + "";//force string-type
-	string = string.replace(/WyJd/g, "\"");
-	string = string.replace(/WyZd/g, "&");
-	string = string.replace(/Wytd/g, "+");
-	string = string.replace(/WyNd/g, "#");
-	return string;
-}
 
 /* ----- Templates -------------------------------------------------------------------- */
 
@@ -882,10 +834,10 @@ function me_hide(){
 function menu_main_repaint(menu_items){
 	if (document.getElementById("mm")) {
 		var html = "";
-		html += "					<table class=\"mm_table\" id=\"mm_table\"><tr>";
-		html += "						</tr>";
+		html += "<table class=\"mm_table\" id=\"mm_table\">";
+		
 		var col_width = 300 / (menu_items.length - 1);
-		html += "							<td class=\"mm_arrow\" id=\"mm_arrow\" onclick=\"mm_show_hide()\">&#10094;</td>";
+		html += "<td class=\"mm_arrow\" id=\"mm_arrow\" onclick=\"mm_show_hide()\">&#10094;</td>";
 		for (var i = 1; i < menu_items.length; ++i) {
 			html += "							<td width=" + col_width + "px bgcolor=" + menu_items[i][2] + " onclick=\"" + menu_items[i][1] + "\">" + menu_items[i][0] + "</td>";
 		}
@@ -905,12 +857,10 @@ function menu_main_repaint(menu_items){
 }
 
 function mm_show_hide(){
-	if (mm_is_open){
+	if (mm_is_open)
 		mm_hide();
-	}
-	else{
+	else
 		mm_show();
-	}
 }
 
 function mm_show(){
@@ -1131,35 +1081,20 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 	xhttp.send();
 }
 
-function dlg_bakingplan_select_recipe_close(id){
-//INSERT INTO `bakingplans_recipes` (`id`, `recipes_id`, `bakingplans_id`, `order_no`) VALUES (NULL, '40', '1', '1000'), (NULL, '1', '1', '1000')
-	var sql = "INSERT INTO `bakingplans_recipes` (`id`, `recipes_id`, `bakingplans_id`, `order_no`) VALUES ";	
+function dlg_bakingplan_select_recipe_close(id){//TODO
+	var recipe_data = [];
 	var allItems = document.getElementsByClassName("item");
-	var j = 0;
 	var item_is_selected = false;
 	for(var i = 0; i < allItems.length; i++) {
 		if (allItems[i].title == "selected"){
-			if (j == 0){
-				sql += " (NULL, '" + allItems[i].id.replace("item_", "") + "', '" + gv_active_bakingplan_id + "', '1000')";
-			}
-			else{
-				sql += ", (NULL, '" + allItems[i].id.replace("item_", "") + "', '" + gv_active_bakingplan_id + "', '1000')";
-			}
-			j++;
+			recipe_data.push( {"rec_id": allItems[i].id.replace("item_", ""), "bp_id": ""+gv_active_bakingplan_id, "order_no":"1000"} );
 			item_is_selected = true;
 		}
 	}
-	//alert(sql);
 	dlg_full_hide();
 	if (item_is_selected){
 		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200){
-				var res = this.responseText;
-				//alert(res);
-			}
-		}
-		xhttp.open("GET", db_url+"?json={\"request_name\":\"sql_execute\",\"sql\":\"" + sql + "\"}", false);  
+		xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);  
 		xhttp.send();
 	}
 	dlg_full_hide();
@@ -1184,17 +1119,14 @@ function popup_max_hide() {
 	}, 300);
 }
 
-
 /* ----- alter Code ------------------------------------------------------------------- */
 
 function showcheck(message){			
 	var check = confirm(message);
-	if (check == true) {
+	if (check == true)
 		return true;
-	}
-	else{
+	else
 		return false;
-	}
 }
 
 function showalert(msg){
