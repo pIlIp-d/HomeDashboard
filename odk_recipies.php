@@ -13,6 +13,8 @@
 ----------------------------------------- Header -----------------------------------------
 -->
 	<script src="javascript/odk.js"></script>
+	<script src="javascript/base64.js"></script>
+
 	<script src="libs/jquery-3.6.0.min.js"></script>
 	<script src="libs/ckeditor_classic_25_0_0/ckeditor.js"></script>
 

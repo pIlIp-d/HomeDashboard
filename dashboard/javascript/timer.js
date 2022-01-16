@@ -258,3 +258,26 @@ var INTERVALL_MAIN;
 		}
 		return(res);
 	}
+//TODO recieve next timer values and if stop is presed or timer is ready then nextRecipe
+	window.addEventListener('message', e => {
+	  	if (e.origin == "http://"+location.host){
+			let data_str = e.data.split(" ");
+			switch (data_str[1]){
+				//move with arrows
+				case "timer_set":
+						btn_stop();
+						let time = data_str[0].split(":");
+						TIMER_HOUR.options = time[0];
+						TIMER_MINUTE.options = time[1];
+						TIMER_SECOND.options = time[2];
+						btn_start();
+					break;
+				case "timer_reset":
+						btn_stop();
+						TIMER_HOUR.options = 0;
+						TIMER_MINUTE.options = 0;
+						TIMER_SECOND.options = 0;
+					break;
+			}	  	
+		}
+	}, false);

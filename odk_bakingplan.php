@@ -42,14 +42,15 @@
 		}
 		
 	</style>
+	<script src="libs/jquery-3.6.0.min.js"></script>
+
   <body>
 
 <!--
 ----------------------------------------- Header -----------------------------------------
 -->
 	<script src="javascript/odk.js"></script>
-		<script src="javascript/odk.js"></script>
-
+	<script src="javascript/base64.js"></script>
  		<header class="unselectable">
 			<!-- 
 			einlesen der übergebenen Rezept-ID per PHP in unsichtbares DIV-Element
@@ -91,7 +92,6 @@
 	<script>
 /* ----------------------------------- Drag'n Drop ------------------------------------ */
 
-
 		function menu_elem_init(){
 			var menu_items = [
 				// [mm_name, mm_function, mm_color]
@@ -104,19 +104,16 @@
 			me_init(menu_items)
 			me_is_open = false;
 		}
-
 		function me_clicked_copy(){
 			me_hide();
 			bakingplan_copy(gv_bpr_id);
 			gv_bpr_id = "";
 		}
-
 		function me_clicked_cut(){
 			me_hide();
 			bakingplan_cut(gv_bpr_id);
 			gv_bpr_id = "";
 		}
-
 		function me_clicked_delete(){
 			me_hide();
 			if (confirm("Rezept #" + gv_rec_id + " wirklich aus Backplan entfernen?") == true) {

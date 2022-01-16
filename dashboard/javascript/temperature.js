@@ -5,6 +5,8 @@ const HOMESERVER_URL= "/HomeDashboard/";
 const INTERVALL_MAIN_TICKER = 1000;
 const TIMEOUT = 30;
 
+
+
 const TACT = document.getElementById("tact_value");
 const TMIN = document.getElementById("tmin_select");
 const TMAX = document.getElementById("tmax_select");
@@ -27,6 +29,7 @@ function init(){
 	TMAX.value = 250;
 	// Haupt-Intervall einschalten
 	INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
+	get_Active_Bakingplan();
 }
 
 function interval_main_tick(){
@@ -213,5 +216,34 @@ function temperature_refresh(json_obj){
 			break;
 	}
 
+}
+function get_Active_Bakingplan(){
+	xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			json_response = this.responseText;
+				
+			set_Active_Recipe(json_response);
+		}
+		else {
+			if (this.status > 399)	// TODO: Fehlerfall
+				console.log("error or wrong response code");
+		}
+	}
+	xhttp.open("GET", bakingplanRequest(), false);  
+	xhttp.send();
+}
+function bakingplanRequest(){
+	request =  "http://localhost/HomeDashboard/odk_db.php?json={"
+	request += "\"request_name\":\"get_active_recipe\"}";
+	return request;
+}
+function set_Active_Recipe(json_response){
+	let response = JSON.parse(json_response)[0];
+	console.log(response);
+	let recipe_temp = response["bakingtemperature"];
+	console.log(recipe_temp);
+	TMIN.value = recipe_temp-20;
+	TMAX.value = recipe_temp-0+20;
 
 }

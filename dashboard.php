@@ -2,13 +2,9 @@
 <head>
 <!-- nice cc0 image site www.svgrepo.com-->
 
-	<!-- jquery in odk_recipies.php ,  odk_temp_widget odk_timer_wfo , test.php , tester.php -->
-
-
-<!-- todo aufräumen in odk.js-->
 	<meta charset="utf-8">
 
-	<!--LICENS in LICENCE.md of CKEditor-editor-inline-->
+	<!--LICENSE in LICENCE.md of CKEditor-editor-inline-->
 	<script src="libs/ckeditor5-editor-inline/inline-editor.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">	
@@ -18,20 +14,34 @@
 	<link rel="stylesheet" type="text/css" href="style/dashboard.css">
 
 </head>
+
 <body class="unselectable" id="body" onscroll="body_onscroll()">
+	<?php
+		$preset = 2;
+		if (isset($_GET["preset"])) {
+			$preset = $_GET["preset"];
+		}
+	?>
+	<div id="preset" hidden><?php echo $preset; ?></div>
+
+<!--------------------------------------
+iframe content
+----------------------------------------->
+	<div class="container unselectable" id="container"></div>
 
 <!-----------------------------------
 Slide-over / Settings
 --------------------------------------->
-	<div class="settings-menu unselectable" id="settings-menu">
+
+	<div class="settings-menu unselectable" id="settings-menu" >
 		<span class="settings-menu-content" id="head-container">
 			
 			<input type="button" class="button" id="button_back" onclick="click_sidebar('button');" value=" Back ">
 			<input type="button" class="button" id="add_button" onclick="grid.add_element()" value=" Add ">
-			<input type="button" class="button" id="move_button" onclick="mode='move';grid.update();click_sidebar('button');" value=" Move ">
+			<input type="button" class="button" id="move_button" onclick="mode='move';grid.update();click_sidebar('move');" value=" Move ">
 			<br>
 			<div class="settings-menu-select">
-				<select class="select settings-menu-content" id="select_type">
+				<select class="select settings-menu-content" id="select_type" onchange="change_html_sizes();">
 					<option value='null'>- choose type -</option>
 				</select>
 				<select class="select settings-menu-content" id="select_size">
@@ -52,17 +62,14 @@ Slide-over / Settings
 			</div>	
 		</span>
 	</div>
-<!--------------------------------------
-iframe content
------------------------------------------>
-	<div class="container unselectable" id="container"></div>
+
 </body>
 <noscript>Please activate JavaScript!</noscript>
-
 <script src="javascript/dashboard_move.js"></script>
+
 <script src="javascript/dashboard.js"></script>
+
 </html>
 
 <!-- TODO only full http requests when server says something has changed -->
 
-<!--TODO config datei-->

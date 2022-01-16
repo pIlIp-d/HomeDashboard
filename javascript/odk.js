@@ -19,6 +19,9 @@ var gv_res = null;
 var gv_bpr_id;
 var gv_order_no;
 
+var btn_unselected_svg = "/HomeDashboard/images/btn_unselected.svg";
+var btn_selected_svg = "/HomeDashboard/images/btn_selected.svg";
+
 function sql_get_count(from, where){
 	var xhttp = new XMLHttpRequest();
 	var response;
@@ -185,9 +188,9 @@ class filter_dialog extends full_dialog{
 					alert("DB-Fehler bei Request: " + url);
 				}
 				const json_object = JSON.parse(res);
-				for (i = 0; i < json_object.length; ++i) {						
+				for (i = 0; i < json_object.length; ++i) {				
 					html += "<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dialog_filter.toggle_item(" + json_object[i].id + ")\">";
-					html += "	<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\"></span>";
+					html += "	<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>";
 					html += "	<span class=\"flexitem item\" align=\"left\">" + base64_2_specialchars(json_object[i].name) + "</span>";
 					html += "</div>";
 				}
@@ -209,17 +212,16 @@ class filter_dialog extends full_dialog{
 		if (item.title == "unselected"){
 			item.style.backgroundColor = "#B0B0B0";
 			item.title = "selected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_selected.svg";				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;				
 		}
 		else{
 			item.style.backgroundColor = "#F0F0F0";
 			item.title = "unselected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_unselected.svg";				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 		}
 	}
 
 } // class filter_dialog
-
 
 	function checkinput(value){
 		//alert(value);
@@ -229,7 +231,7 @@ class filter_dialog extends full_dialog{
 			for(var i = 0; i < allItems.length; i++) {
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = "images/btn_unselected.svg";				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
 			}
 		return;
 		}
@@ -237,12 +239,12 @@ class filter_dialog extends full_dialog{
 			if (regex.test(allItems[i].innerText)){
 				document.getElementById(allItems[i].id).style.backgroundColor = "#B0B0B0";
 				document.getElementById(allItems[i].id).title = "selected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = "images/btn_selected.svg";				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_selected_svg;				
 			}
 			else{
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = "images/btn_unselected.svg";				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
 			}
 		}
 	}
@@ -277,7 +279,7 @@ class ingredients_dialog extends full_dialog {
 					// Sonderzeichen im Zutaten-Name dekodieren
 					json_object[i].name = base64_2_specialchars(json_object[i].name);
 					html += "<div class=\"ingredient\" id=\"" + json_object[i].id + "\" title=\"unselected\" style=\"background-color: #F0F0F0;\">"
-					html += "	<span class=\"flexitem ingredient\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\" onclick=\"dialog_ingredients.toggle_ingredient(" + json_object[i].id + ")\"></span>"
+					html += "	<span class=\"flexitem ingredient\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\" onclick=\"dialog_ingredients.toggle_ingredient(" + json_object[i].id + ")\"></span>"
 					html += "	<span class=\"flexitem ingredient\" id=\"ingr_name_" + json_object[i].id + "\" style=\"margin-top: 4px; width:100%; text-align: left;\" onclick=\"dialog_ingredients.toggle_ingredient(" + json_object[i].id + ")\">" + json_object[i].name + "</span>"
 					html += "	<span class=\"flexitem ingredient\"><img class=\"img_btn_medium\" id=\"btn_del_" + json_object[i].id + "\" src=\"images/btn_close.svg\" onclick=\"dialog_ingredients.delete_ingredient(" + json_object[i].id + ")\"></span>"
 					html += "</div>"
@@ -314,7 +316,7 @@ class ingredients_dialog extends full_dialog {
 			for (var i = 0; i < ACT_REZIPE.ingredients.length; ++i) {
 				document.getElementById(ACT_REZIPE.ingredients[i].i_id).style.backgroundColor = "#B0B0B0";
 				document.getElementById(ACT_REZIPE.ingredients[i].i_id).title = "selected";
-				document.getElementById("btn_sel_unsel_" + ACT_REZIPE.ingredients[i].i_id + "").src="images/btn_selected.svg";
+				document.getElementById("btn_sel_unsel_" + ACT_REZIPE.ingredients[i].i_id + "").src=btn_selected_svg;
 			}
 		}
 	}
@@ -325,14 +327,14 @@ class ingredients_dialog extends full_dialog {
 			// Darstellung anpassen
 			ingredient.style.backgroundColor = "#B0B0B0";
 			ingredient.title = "selected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_selected.svg";	
+			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;	
 			// Zutat zum Rezept-Objekt hinzufügen	
 			ingredients_dialog.add_ingredient_to_recipe(id);
 		}
 		else{
 			ingredient.style.backgroundColor = "#F0F0F0";
 			ingredient.title = "unselected";
-			document.getElementById("btn_sel_unsel_" + id).src = "images/btn_unselected.svg";				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 			// Zutat aus Rezept-Objekt entfernen	
 			ingredients_dialog.remove_ingredient_from_recipe(id);
 		}
@@ -750,54 +752,6 @@ function validate_number(evt) {
 	}
 }
 
-/* ----- Kodierung / Dekodierung ------------------------------------------------------ */
-
-function string_2_base64(string){
-// Dekodiert einen kompletten String aus Base64-Kodierung
-//			"&+#
-//	result = "[ENCODEDstring]" + btoa(string);
-	result = btoa(string);
-	return result;
-}
-
-function base64_2_string(string){
-// Kodiert einen kompletten String mit Base64-Kodierung
-//			"&+'#
-/*
-	if (string.substr(0,15) == "[ENCODEDstring]"){
-		var result = string.replace("[ENCODEDstring]", "");
-		result = atob(result);
-		return result;
-	}
-	else{
-		return string;
-	}
-*/
-	result = atob(string);
-	return result;
-}
-
-function specialchars_2_base64(string){
-// ersetzt die folgenden Sonderzeichen durch eine Base64-Kodierung in eckige Klammen gehüllt
-// " , & , + , #
-	string = string + "";//force string-type
-	string = string.replace(/\"/g, btoa("[\"]"));
-	string = string.replace(/&/g, btoa("[&]"));
-	string = string.replace(/\+/g, btoa("[+]"));
-	string = string.replace(/#/g, btoa("[#]"));
-	return string;
-}
-
-function base64_2_specialchars(string){
-// ersetzt die folgenden in eckige Klammen gehüllten kodierten Sonderzeichen durch den eigentlichen Wert
-// "(WyJd) , &(WyZd) , +(Wytd) , #(WyNd)
-	string = string + "";//force string-type
-	string = string.replace(/WyJd/g, "\"");
-	string = string.replace(/WyZd/g, "&");
-	string = string.replace(/Wytd/g, "+");
-	string = string.replace(/WyNd/g, "#");
-	return string;
-}
 
 /* ----- Templates -------------------------------------------------------------------- */
 
@@ -880,10 +834,10 @@ function me_hide(){
 function menu_main_repaint(menu_items){
 	if (document.getElementById("mm")) {
 		var html = "";
-		html += "					<table class=\"mm_table\" id=\"mm_table\"><tr>";
-		html += "						</tr>";
+		html += "<table class=\"mm_table\" id=\"mm_table\">";
+		
 		var col_width = 300 / (menu_items.length - 1);
-		html += "							<td class=\"mm_arrow\" id=\"mm_arrow\" onclick=\"mm_show_hide()\">&#10094;</td>";
+		html += "<td class=\"mm_arrow\" id=\"mm_arrow\" onclick=\"mm_show_hide()\">&#10094;</td>";
 		for (var i = 1; i < menu_items.length; ++i) {
 			html += "							<td width=" + col_width + "px bgcolor=" + menu_items[i][2] + " onclick=\"" + menu_items[i][1] + "\">" + menu_items[i][0] + "</td>";
 		}
@@ -903,12 +857,10 @@ function menu_main_repaint(menu_items){
 }
 
 function mm_show_hide(){
-	if (mm_is_open){
+	if (mm_is_open)
 		mm_hide();
-	}
-	else{
+	else
 		mm_show();
-	}
 }
 
 function mm_show(){
@@ -993,12 +945,12 @@ function dlg_full_toggle_item(id){
 	if (item.title == "unselected"){
 		item.style.backgroundColor = "#B0B0B0";
 		item.title = "selected";
-		document.getElementById("btn_sel_unsel_" + id).src = "images/btn_selected.svg";				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 	}
 	else{
 		item.style.backgroundColor = "#F0F0F0";
 		item.title = "unselected";
-		document.getElementById("btn_sel_unsel_" + id).src = "images/btn_unselected.svg";				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
 	}
 }
 
@@ -1021,11 +973,11 @@ function dlg_select_bakingplan_create_HTML(headername){
 			for (i = 0; i < json_object.length; ++i) {						
 				if (json_object[i].type != "active"){
 					html += "					<div class=\"item\" id=\"item_" + json_object[i].id + "\" style=\"background-color: lightgray;\" onclick=\"dlg_select_bakingplan_close([" + json_object[i].id + ", '" + json_object[i].name + "'])\">\n";
-					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\"></span>\n";
+					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>\n";
 				}
 				else{
 					html += "					<div class=\"item\" id=\"item_" + json_object[i].id + "\" style=\"background-color: gray;\" onclick=\"dlg_select_bakingplan_close([" + json_object[i].id + ", '[active bakingplan]'])\">\n";
-					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_selected.svg\"></span>\n";
+					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_selected_svg+"\"></span>\n";
 				}
 				html += "						<span class=\"flexitem item\" align=\"left\">" + base64_2_specialchars(json_object[i].name) + "</span>\n";
 				html += "					</div>\n";
@@ -1051,8 +1003,8 @@ function dlg_select_bakingplan_close(id){
 				}
 				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);  
 				xhttp.send();	
-				//dlg_full_hide();
-				//bakingplan_get_all_recipes();
+				//send to dashboard
+				window.parent.postMessage('null reload', 'http://'+location.host+'/HomeDashboard/dashboard.php');
 				break;			
 			case "Backplan löschen":
 				if (id[1] == "[active bakingplan]"){
@@ -1118,7 +1070,7 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 				// Sonderzeichen im Rezept-Name dekodieren
 				json_object[i].name = base64_2_specialchars(json_object[i].name);
 				html += "					<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dlg_full_toggle_item(" + json_object[i].id + ")\">\n";
-				html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\"images/btn_unselected.svg\"></span>\n";
+				html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>\n";
 				html += "						<span class=\"flexitem item\" align=\"left\">" + json_object[i].name + "</span>\n";
 				html += "					</div>\n";
 			}
@@ -1129,35 +1081,20 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 	xhttp.send();
 }
 
-function dlg_bakingplan_select_recipe_close(id){
-//INSERT INTO `bakingplans_recipes` (`id`, `recipes_id`, `bakingplans_id`, `order_no`) VALUES (NULL, '40', '1', '1000'), (NULL, '1', '1', '1000')
-	var sql = "INSERT INTO `bakingplans_recipes` (`id`, `recipes_id`, `bakingplans_id`, `order_no`) VALUES ";	
+function dlg_bakingplan_select_recipe_close(id){//TODO
+	var recipe_data = [];
 	var allItems = document.getElementsByClassName("item");
-	var j = 0;
 	var item_is_selected = false;
 	for(var i = 0; i < allItems.length; i++) {
 		if (allItems[i].title == "selected"){
-			if (j == 0){
-				sql += " (NULL, '" + allItems[i].id.replace("item_", "") + "', '" + gv_active_bakingplan_id + "', '1000')";
-			}
-			else{
-				sql += ", (NULL, '" + allItems[i].id.replace("item_", "") + "', '" + gv_active_bakingplan_id + "', '1000')";
-			}
-			j++;
+			recipe_data.push( {"rec_id": allItems[i].id.replace("item_", ""), "bp_id": ""+gv_active_bakingplan_id, "order_no":"1000"} );
 			item_is_selected = true;
 		}
 	}
-	//alert(sql);
 	dlg_full_hide();
 	if (item_is_selected){
 		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200){
-				var res = this.responseText;
-				//alert(res);
-			}
-		}
-		xhttp.open("GET", db_url+"?json={\"request_name\":\"sql_execute\",\"sql\":\"" + sql + "\"}", false);  
+		xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);  
 		xhttp.send();
 	}
 	dlg_full_hide();
@@ -1182,17 +1119,14 @@ function popup_max_hide() {
 	}, 300);
 }
 
-
 /* ----- alter Code ------------------------------------------------------------------- */
 
 function showcheck(message){			
 	var check = confirm(message);
-	if (check == true) {
+	if (check == true)
 		return true;
-	}
-	else{
+	else
 		return false;
-	}
 }
 
 function showalert(msg){

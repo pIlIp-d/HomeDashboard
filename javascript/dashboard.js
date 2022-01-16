@@ -1,4 +1,6 @@
 //TODO load button in recipies for min/max temp
+	
+//TODO Preset deletes randomly
 
 const server = location.host;
 const home_dir = "/HomeDashboard";
@@ -9,7 +11,7 @@ var REFRESHED = false;
 var view = "vertical";//orientation of phone / width: <600 or >600
 set_Orientation();
 var mode = "show";//or move
-
+  
 class Grid extends Array{
 	constructor(){
 		super();
@@ -111,13 +113,13 @@ class Grid extends Array{
 }
 
 class GridObject { //single widget with properties
-	constructor(type,size,pos=grid.length,display=0){
+	constructor(type,size,pos=grid.length,display=0,parent=grid){
 		this.type = type;
 		this.size = size;
 		this.pos = pos;
 		this.start = 0;
 		this.stop = 0;
-		this.display=display;
+		this.display = display;
 	}
 	remove(){
 		grid.splice(this.pos,1);
@@ -133,16 +135,18 @@ class GridObject { //single widget with properties
 		html += "<div id=\"" + this.pos + "\" ";
 		if (type === "settings"){
 			html += "class=\"tile tile_" + this.size + " grid_object menu-toggle\"";
-			html += "onclick=\"click_sidebar();\"><img src=\"images/btn_edit.svg\" style=\"width: 4rem;height:4rem;\">";
+			html += "onclick=\"click_sidebar('settings');\"><img src=\"images/btn_edit.svg\" style=\"width: 4rem;height:4rem;\">";
 		}
 		else {
 			for (let g = 0; g < widgets.widgets.length; g++){
 				const widget = widgets.widgets[g];
 				if (type === widget.name){
-					if (!("sizes" in widget.default) || widget.default.sizes.includes(this.size))
+					if (!("sizes" in widget.default) || widget.default.sizes.includes(this.size)){
 						source += widget.default.filename;//size equals spec for default widget
-					else if ("special" in widget && widget.special.sizes.includes(this.size))
+					}
+					else if ("special" in widget && widget.special.sizes.includes(this.size)){
 						source += widget.special.filename;//size equals spec for special widget		
+					}
 					else if ("sizes" in widget.default && !(widget.default.sizes.includes(this.size))){
 						source += widget.default.filename;//no fitting this.size
 						for (d in this.sizes){//sets size to first allowed size
@@ -161,11 +165,34 @@ class GridObject { //single widget with properties
 								source += "&display_name="+widget.display_name;
 								source += "&show="+this.display;
 								source += "&id="+this.pos;
-
+								source += "&unit="+widget.unit;
 								break;
 							case "move":
-								console.log(this.pos);
-								source +="?id="+ this.pos +"&name="+grid[this.pos].type;
+								//check for gray Arrows
+								var left = 0;
+								var right = 0;
+								var top = 0;
+								var bottom = 0;
+								var mod;
+								if (view === "vertical")
+									mod = 4;
+								else if (view === "horizontal")
+									mod = 8;
+								if (this.start % mod === 1)
+									left = 1;
+								if (this.stop % mod === 0 || this.pos === grid.length-1)
+									right = 1;
+								if (this.stop <= mod)
+									top = 1;
+								for (let len = grid.length-1; len >= 0; len--){
+									if (grid[len].start % mod === 1){
+										if (this.pos >= len)
+											bottom = 1; //if in last row
+										break;
+									}
+								}
+								var arrow_string = ""+top+right+bottom+left;
+								source += "?id="+ this.pos + "&name=" + grid[this.pos].type+"&arrows="+arrow_string;
 								break;
 							case "url":
 								source = widget.default.filename;
@@ -201,105 +228,115 @@ class Widgets{ //all possible properties of widgets
 	}
 	request(){
 		var xhttp = new XMLHttpRequest();
-		var widgets;
-		var sensors;
+		var obj;
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200)
-   	 			widgets = JSON.parse(this.responseText);
+   	 			obj = JSON.parse(this.responseText);
 		};
 		xhttp.open("GET", "config.json", false);
 		xhttp.send();
-		var xhttp2 = new XMLHttpRequest();
-		xhttp2.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200)
-   	 			sensors = JSON.parse(this.responseText);
-		};
-		xhttp2.open("GET", "devices.json", false);
-		xhttp2.send();
-		this.handle_response(widgets, sensors);
+		this.handle_response(obj);
 	}
-	handle_response(widgets, sensors){
+	handle_response(obj){
 		//---sensors--- 
-		for (let i = 0; i < Object.keys(sensors.devices).length; i++){
+		for (let i = 0; i < Object.keys(obj.devices).length; i++){
 			console.log(i);
-			for (let j = 0; j < sensors.devices[i].sensors.length; j++){
-				let s = sensors.devices[i].sensors[j];
+			for (let j = 0; j < obj.devices[i].sensors.length; j++){
+				let s = obj.devices[i].sensors[j];
 				this.sensors.push(new Sensor(
 					s.sensor_name,
 					s.display_name,
 					s.sensor_id,
 					s.type,
 					s.min_value,
-					s.max_value));
+					s.max_value,
+					s.unit));
 			}
 		}
 		//---widgets---
-		this.sizes = widgets.sizes;
+		this.sizes = obj.sizes;
 		let html = "";
-		for (let w=0;w<Object.keys(widgets.widget).length;w++){
+		for (let w=0;w<Object.keys(obj.widget).length;w++){
 			let special = null;
-			let default_ = widgets.widget[w].default;
-			if (widgets.widget[w].display_name === "temp_sensor"){
+			let default_ = obj.widget[w].default;
+			if (obj.widget[w].display_name === "sensor"){
 				for (let s=0;s<this.sensors.length-1;s++){
-					if (widgets.widget[w].display_name != "")
+					var widget_sizes = [];
+					if ("sizes" in obj.widget[w].default)
+						widget_sizes = add_string_to_array(widget_sizes,obj.widget[w].default.sizes);
+					else 
+						widget_sizes = this.sizes;
+					if (obj.widget[w].display_name != "")
 						html+="<option value='"+ this.sensors[s].name +"'>"+ this.sensors[s].display_name +"</option>";
-					if ("special" in widgets.widget[w])
-						special = widgets.widget[w].special;
+					if ("special" in obj.widget[w]){
+						special = obj.widget[w].special;
+						if ("sizes" in obj.widget[w].special)
+							widget_sizes = add_string_to_array(widget_sizes,special.sizes);
+					}					
+					console.log(widget_sizes);
 					this.widgets.push(new Widget(this.sensors[s].name,
 											this.sensors[s].display_name,
-											default_,special
+											default_,special,widget_sizes,this.sensors[s].unit
 											));
 				}
 			}
 			else {
-				if (widgets.widget[w].display_name != "")
-					html+="<option value='"+ widgets.widget[w].name +"'>"+ widgets.widget[w].display_name +"</option>\n";
-				if ("special" in widgets.widget[w])
-					special = widgets.widget[w].special;
-				this.widgets.push(new Widget(widgets.widget[w].name,
-											 widgets.widget[w].display_name,
-											 default_,special
+				var widget_sizes = [];
+				if ("sizes" in obj.widget[w].default)
+						widget_sizes = add_string_to_array(widget_sizes,obj.widget[w].default.sizes);
+					else 
+						widget_sizes = this.sizes;
+				if (obj.widget[w].display_name != "")
+					html+="<option value='"+ obj.widget[w].name +"'>"+ obj.widget[w].display_name +"</option>\n";
+				if ("special" in obj.widget[w]){
+					special = obj.widget[w].special;
+					if ("sizes" in obj.widget[w].special)
+						widget_sizes = add_string_to_array(widget_sizes,special.sizes);
+				}
+				console.log(widget_sizes);
+
+				this.widgets.push(new Widget(obj.widget[w].name,
+											 obj.widget[w].display_name,
+											 default_,special,widget_sizes
 											));
 			}
 		}
 		console.log(this.widgets);
-		document.getElementById("select_type").innerHTML += html; 
-		html ="";
-		for (var i=0;i<widgets.sizes.length;i++)
-			html += "<option value='"+widgets.sizes[i]+"'>"+Math.round(widgets.sizes[i]/10)+"x"+widgets.sizes[i]%10+"</option>";
-		document.getElementById("select_size").innerHTML += html; 
+		document.getElementById("select_type").innerHTML += html;
+
+		change_html_sizes();
 	}
 }
 
-class Widget{ //Object
-	constructor(name,display_name,default_,special=null){
+class Widget{//struct
+	constructor(name,display_name,default_,special=null,sizes,unit){
 		this.name = name;
 		this.display_name = display_name;
 		this.default = default_;
-		this.sizes = [];
+		this.sizes = sizes.sort();
+		this.unit = unit;
 		if (special != null)
 			this.special = special;
 	}
 }
 
-class Sensor{ //Object
-	constructor(name,display_name,id,type,min,max){
+class Sensor{ //struct
+	constructor(name,display_name,id,type,min,max,unit){
 		this.name = name;
 		this.display_name = display_name;
 		this.id = id;
 		this.type = type;
 		this.min_value = min;
 		this.max_value = max;
+		this.unit = unit;
 	}
 }
 
-
 class Presets extends Array{
-	constructor(standard_value = 2){
+	constructor(){
 		super();
 		this.last_preset = null;
-		this.profile_name = [];
-		this.standard_value = standard_value;
+		this.profile_name = [];//change to names
 	}
 	init(){
 		this.get_all_presets();
@@ -307,6 +344,7 @@ class Presets extends Array{
 	}
 	get_all_presets(){
 		this.request("get_all_presets","")
+		this.standard_value = document.getElementById("preset").innerHTML;
 	}
 	get_preset(id){
 		this.request("get_preset",id)
@@ -355,7 +393,7 @@ class Presets extends Array{
 	createHTML(json_response){
 		var response = JSON.parse(json_response);
 		var html = "<option value='null' id='null'>- select preset -</option>";
-		for (var i=1;i<10;i++){
+		for (var i=1; i<10; i++){
 			if (response[i] != "" && response[i] != null){
 				this.profile_name[i] = response[i];
 				html += "<option value='"+i+"' id='element' >"+ response[i] +"</option>";
@@ -401,6 +439,7 @@ class Presets extends Array{
 		}
 		else if (request == "get_all_presets")
 			this.createHTML(json_response);
+
 		else
 			this.request("get_all_presets","");
 	}
@@ -416,14 +455,14 @@ class Presets extends Array{
 					delete this.profile_name[value];
 				break;
 			case "delete":
-				if (this.last_preset != 0){
+				if (this.last_preset != 0 && confirm("Möchtest du wirklich das Preset '"+this.profile_name[this.last_preset]+"' löschen?")){
 					this.request("delete_preset",this.last_preset);
 					this.last_preset=0;
 					document.getElementById("select_preset").value = "null";
 				}
 				break;
 			case "save":
-				if (this.last_preset != 0)
+				if (this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.profile_name[this.last_preset]+"' speichern?"))
 					this.request("set_new_preset",this.last_preset);
 				break;
 			case "load":
@@ -433,7 +472,7 @@ class Presets extends Array{
 		}
 	}
 }
-	
+
 //------------------------------
 //----- init and Window --------
 //------------------------------
@@ -443,7 +482,9 @@ class Presets extends Array{
 	grid_vertical = new Grid();//store grids for orientation change
 	grid_horizontal = new Grid();
 	
-	presets = new Presets(2);
+	const SELECT = document.getElementById("select_type");
+
+	presets = new Presets();
 	presets.init();
 
 	//executes function(with value as para) when select_preset changes state
@@ -461,6 +502,22 @@ class Presets extends Array{
 	});
 
 	window.addEventListener('DOMContentLoaded', init());
+	
+	function change_html_sizes(){
+		console.log("changed");
+		let name = document.getElementById("select_type").value;
+		for (var w in widgets.widgets){
+			console.log(w+"  "+widgets.widgets[w]);
+			if (widgets.widgets[w].name === name){
+				let html ="<option value='null'>- choose size -</option>";
+				console.log(name+"  "+widgets.widgets[w].sizes);
+				for (var i=0;i<widgets.widgets[w].sizes.length;i++)
+					html += "<option value='"+widgets.widgets[w].sizes[i]+"'>"+Math.round(widgets.widgets[w].sizes[i]/10)+"x"+widgets.widgets[w].sizes[i]%10+"</option>";
+				document.getElementById("select_size").innerHTML = html;
+				document.getElementById("select_size").value = widgets.widgets[w].sizes[0];
+			}
+		}		
+	}
 
 	var window_width = window.innerWidth;
 	function interval_main_tick(){
@@ -480,7 +537,6 @@ class Presets extends Array{
 		}
 	}
 	function init(){
-
 	}	
 	
 	function body_onscroll(){
@@ -509,37 +565,51 @@ class Presets extends Array{
 			body.removeChild(msg);
 		}
 	}
+	document.getElementById('container').addEventListener("click",function() {
+		if (document.getElementById('settings-menu').className.includes('open')){
+			click_sidebar();
+		}
+	});
 
+	var toggle_time = new Date().valueOf();
 	function click_sidebar(sender){
-		document.getElementById('settings-menu').classList.toggle("open");		
+		if (new Date().valueOf() > toggle_time){
+			document.getElementById('settings-menu').classList.toggle("open");
+			toggle_time = new Date().valueOf();
+		}	
 	}
-
 	function set_Orientation(){
 		if (window.innerWidth > 600)	
 			view = "horizontal";
 		else if (window.innerWidth <= 600)
 			view = "vertical";
 	}
+	function add_string_to_array(arr, str){
+		strarr = str.split(",");
+		for (s in strarr)
+			arr.push(strarr[s]);
+		return arr;
+	}
 
 //-----------------------------------------
 //-------- Message Handling ---------------
 //-----------------------------------------
 
-	window.addEventListener('message', e => {
+	window.addEventListener('message', e => {//TODO session id for moving
 	  	if (e.origin == "http://"+location.host){
 			let data_str = e.data.split(" ");
 			switch (data_str[1]){
 				//move with arrows
-				case "click_up":
+				case "button_up":
 					click_up(data_str[0]);
 					break;
-				case "click_left":
+				case "button_left":
 					click_left(data_str[0]);
 					break;
-				case "click_right":
+				case "button_right":
 					click_right(data_str[0]);
 					break;
-				case "click_down":
+				case "button_down":
 					click_down(data_str[0]);
 					break;  		
 				case "click_ok":
@@ -555,6 +625,9 @@ class Presets extends Array{
 					break;
 				case "set_show"://for temp widget view
 					grid[data_str[0]].display = grid[data_str[0]].display ^ 1;
+					break;
+				case "reload":
+					grid.update();
 					break;
 			}	  	
 		}
