@@ -264,7 +264,7 @@ class Widgets{ //all possible properties of widgets
 					var widget_sizes = [];
 					if ("sizes" in obj.widget[w].default)
 						widget_sizes = add_string_to_array(widget_sizes,obj.widget[w].default.sizes);
-					else 
+					else
 						widget_sizes = this.sizes;
 					if (obj.widget[w].display_name != "")
 						html+="<option value='"+ this.sensors[s].name +"'>"+ this.sensors[s].display_name +"</option>";
@@ -335,21 +335,22 @@ class Sensor{ //struct
 class Presets extends Array{
 	constructor(){
 		super();
-		this.last_preset = null;
-		this.profile_name = [];//change to names
+		this.last_preset = null;//last selected preset id null,1,2...
+		this.profile_names = [];
 	}
 	init(){
+		this.standard_value = document.getElementById("preset").innerHTML;
+		this.last_preset = this.standard_value;
 		this.get_all_presets();
 		this.get_preset(this.standard_value);
 	}
 	get_all_presets(){
 		this.request("get_all_presets","")
-		this.standard_value = document.getElementById("preset").innerHTML;
 	}
 	get_preset(id){
 		this.request("get_preset",id)
 	}
-	request(request, profile_num){
+	request(request, value){
 		var xhttp = new XMLHttpRequest();
 		var json_response = "";
 		xhttp.onreadystatechange = function(me = this) {
@@ -361,7 +362,7 @@ class Presets extends Array{
 			}
 		}
 		try{
-			xhttp.open("GET", "http://"+server+home_dir+"/json_handler_user_agent.php?json=" + this.create_request(request,profile_num), false);
+			xhttp.open("GET", "http://"+server+home_dir+"/json_handler_user_agent.php?json=" + this.create_request(request,value), false);
 			xhttp.send();
 			this.response_handler(json_response, request);
 		}
@@ -369,22 +370,34 @@ class Presets extends Array{
 			console.log("Request Error: "+err);
 		}
 	}
-	create_request(request,profile_num){
-		var json_string = "{\"event\":\""+request+"\""; 
+	create_request(request,value){
+		console.log(JSON.stringify(this.profile_names)+" "+request + " "+this.last_preset);
+		console.log(this.profile_names);
+		var json_string = "{\"event\":\""+request+"\"";
 		switch (request){
 			case "set_new_preset": //set new and save
-				json_string += ",\"profile_id\":\""+ profile_num +"\"";//range 1 to 9
-				json_string += ",\"profile_name\":\"" + this.profile_name[profile_num] +"\"";
+				var id, name;
+				if (!Object.values(this.profile_names).includes(value)){
+					id = "new";
+					name = value;
+				}
+				else {
+					name = this.profile_names[this.last_preset];
+					id = this.last_preset; 
+				}
+				json_string += ",\"profile_id\":\""+id+"\"";
+				json_string += ",\"profile_name\":\"" + name +"\"";
 				json_string += ",\"grid_object_v\":"+ JSON.stringify(grid_vertical) +"";
 				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal) +"";
 				break;
 			case "delete_preset": //deletes selected preset
-				json_string += ",\"profile_id\":\""+ profile_num +"\"";
+			console.log("delete: "+value);
+				json_string += ",\"profile_id\":\""+ value +"\"";
 				break;
 			case "get_all_presets": //returns all preset names
 				break;
 			case "get_preset": //returns all preset values of preset
-				json_string += ",\"profile_id\":\""+ profile_num +"\"";
+				json_string += ",\"profile_id\":\""+ this.last_preset +"\"";
 				break;
 		}
 		json_string += "}";
@@ -392,17 +405,15 @@ class Presets extends Array{
 	}
 	createHTML(json_response){
 		var response = JSON.parse(json_response);
+		//TODO if length == 0 -> init empty
 		var html = "<option value='null' id='null'>- select preset -</option>";
-		for (var i=1; i<10; i++){
+		for (var i = 0; i < response.length; i++){
 			if (response[i] != "" && response[i] != null){
-				this.profile_name[i] = response[i];
-				html += "<option value='"+i+"' id='element' >"+ response[i] +"</option>";
-			}
-			else {
-				html += "<option value='"+i+"' id='new'>save as new preset</option>";
-				break;
+				this.profile_names[i] = response[i].profile_name;
+				html += "<option value='"+i+"' id='element' >"+ response[i].profile_name +"</option>";
 			}
 		}
+		html += "<option value='"+i+"' id='new'>save as new preset</option>";
 		document.getElementById("select_preset").innerHTML = html;
 	}
 	response_handler(json_response, request){
@@ -439,36 +450,40 @@ class Presets extends Array{
 		}
 		else if (request == "get_all_presets")
 			this.createHTML(json_response);
-
 		else
 			this.request("get_all_presets","");
 	}
-	action(value,name){
+	action(value,name){//parameter value currently unused
+		console.log(this.last_preset);
+		console.log();
+
 		switch(name){
 			case "null":
 				break;
 			case "new":
-				this.profile_name[value] = prompt("Bitte einen Namen für das Preset eingeben!"); 
-				if (this.profile_name[value] != null && this.profile_name != "")
+				let value = prompt("Bitte einen Namen für das Preset eingeben!");
+				if (value != null && value != "" && !Object.values(this.profile_names).includes(value))
 					this.request("set_new_preset",value);
-				else 
-					delete this.profile_name[value];
+				else {
+					delete this.profile_names[value];
+					alert("Das hat nicht funktioniert!")
+				}
 				break;
 			case "delete":
-				if (this.last_preset != 0 && confirm("Möchtest du wirklich das Preset '"+this.profile_name[this.last_preset]+"' löschen?")){
+				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du wirklich das Preset '"+this.profile_names[this.last_preset]+"' löschen?")){
 					this.request("delete_preset",this.last_preset);
-					this.last_preset=0;
+					this.last_preset = 0;
 					document.getElementById("select_preset").value = "null";
 				}
 				break;
 			case "save":
-				if (this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.profile_name[this.last_preset]+"' speichern?"))
+				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.profile_names[this.last_preset]+"' speichern?"))
 					this.request("set_new_preset",this.last_preset);
 				break;
 			case "load":
-				if (this.last_preset != 0)
+				if (this.last_preset != null)
 					this.request("get_preset",this.last_preset);
-				break;	
+				break;
 		}
 	}
 }
@@ -492,7 +507,7 @@ class Presets extends Array{
   		if (document.getElementById("new").value == this.value){
   			presets.action(this.value,"new");
   			document.getElementById("select_preset").value = "null";
-  		}	
+  		}
   		else if (document.getElementById("null").value == this.value)
   			return;
   		else {
@@ -537,6 +552,7 @@ class Presets extends Array{
 		}
 	}
 	function init(){
+		//DOMCONTENTLOADED
 	}	
 	
 	function body_onscroll(){

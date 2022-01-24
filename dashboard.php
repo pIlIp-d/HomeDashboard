@@ -17,7 +17,7 @@
 
 <body class="unselectable" id="body" onscroll="body_onscroll()">
 	<?php
-		$preset = 2;
+		$preset = 1;
 		if (isset($_GET["preset"])) {
 			$preset = $_GET["preset"];
 		}
