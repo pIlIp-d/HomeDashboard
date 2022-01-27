@@ -87,7 +87,7 @@
 	// Event-Handler
 	switch ($json_decoded->event){
 		// -----------------------------------------------------------------------------------
-    case "set_act_temp":  
+    case "set_act_temp":
 		// -----------------------------------------------------------------------------------
 			$content_decoded->timestamp = $timestamp;
 			$content_decoded->timecode = $timecode;
