@@ -26,6 +26,7 @@ if (!file_exists($filename))
 $content_decoded = json_decode(file_get_contents($filename));
 
 switch($json_decoded->event){
+	case "save_preset":
 	case "set_new_preset":
 		if ($json_decoded->profile_id == "new"){
 			$profile_id = len($content_decoded);
@@ -34,10 +35,9 @@ switch($json_decoded->event){
 		else {
 			$profile_id = $json_decoded->profile_id;
 		}
-		$content_decoded[$profile_id]["profile_name"] = $json_decoded->profile_name;
-		$content_decoded[$profile_id]["grid_object_v"] = $json_decoded->grid_object_v;
-		$content_decoded[$profile_id]["grid_object_h"] = $json_decoded->grid_object_h;
-
+		$content_decoded[$profile_id]->profile_name = $json_decoded->profile_name;
+		$content_decoded[$profile_id]->grid_object_v = $json_decoded->grid_object_v;
+		$content_decoded[$profile_id]->grid_object_h = $json_decoded->grid_object_h;
 		break;
 	case "get_preset":
 		$profile_id = $json_decoded->profile_id;

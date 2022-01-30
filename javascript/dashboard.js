@@ -1,6 +1,4 @@
 //TODO load button in recipies for min/max temp
-	
-//TODO Preset deletes randomly
 
 const server = location.host;
 const home_dir = "/HomeDashboard";
@@ -373,6 +371,7 @@ class Presets extends Array{
 			console.log("Request Error: "+err);
 		}
 	}
+
 	create_request(request,value){
 		console.log(JSON.stringify(this.profile_names)+" "+request + " "+this.last_preset);
 		console.log(this.profile_names);
@@ -386,6 +385,7 @@ class Presets extends Array{
 					name = value;
 				}
 				else {
+					
 					name = this.profile_names[this.last_preset];
 					id = this.last_preset; 
 				}
@@ -395,7 +395,6 @@ class Presets extends Array{
 				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal) +"";
 				break;
 			case "delete_preset": //deletes selected preset
-			console.log("delete: "+value);
 				json_string += ",\"profile_id\":\""+ value +"\"";
 				break;
 			case "get_all_presets": //returns all preset names
@@ -483,6 +482,7 @@ class Presets extends Array{
 			case "save":
 				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.profile_names[this.last_preset]+"' speichern?"))
 					this.request("save_preset",this.last_preset);
+
 				break;
 			case "load":
 				if (this.last_preset != null)
