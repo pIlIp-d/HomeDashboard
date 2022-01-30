@@ -378,9 +378,10 @@ class Presets extends Array{
 		console.log(this.profile_names);
 		var json_string = "{\"event\":\""+request+"\"";
 		switch (request){
+			case "save_preset":
 			case "set_new_preset": //set new and save
 				var id, name;
-				if (!Object.values(this.profile_names).includes(value)){
+				if (value === "set_new_preset"){
 					id = "new";
 					name = value;
 				}
@@ -399,7 +400,7 @@ class Presets extends Array{
 				break;
 			case "get_all_presets": //returns all preset names
 				break;
-			case "get_preset": //returns all preset values of preset
+			case "get_preset": //returns all preset values of specific preset
 				json_string += ",\"profile_id\":\""+ this.last_preset +"\"";
 				break;
 		}
@@ -481,7 +482,7 @@ class Presets extends Array{
 				break;
 			case "save":
 				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.profile_names[this.last_preset]+"' speichern?"))
-					this.request("set_new_preset",this.last_preset);
+					this.request("save_preset",this.last_preset);
 				break;
 			case "load":
 				if (this.last_preset != null)
