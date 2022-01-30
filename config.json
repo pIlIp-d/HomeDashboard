@@ -71,13 +71,29 @@
         "filename": "move_with_arrows.php"
       }
     },
-     {
+    {
       "name": "bakingplan",
       "display_name": "Backplan",
       "default": {
         "filename": "bakingplan.php",
         "scrolling": "yes",
         "bp_affected":"true"
+      }
+    },
+    {
+      "name": "toggle_button",
+      "display_name": "Toggle",
+      "default": {
+        "type": "button",
+        "filename": "toggle_button.php"
+      }
+    },
+    {
+      "name": "click_button",
+      "display_name": "Button",
+      "default": {
+        "type": "button",
+        "filename": "click_button.php"
       }
     }
   ],

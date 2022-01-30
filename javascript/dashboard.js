@@ -197,6 +197,9 @@ class GridObject { //single widget with properties
 							case "url":
 								source = widget.default.filename;
 								break;
+							case "button":
+								source += "?name="+ widget.name;
+								break;
 						} 
 					}
 					switch (type){
