@@ -1,37 +1,35 @@
 <?php
 
-	//aktivate php debuging output 
+	//aktivate php debuging output
 	ini_set('display_errors', 1);
 
 	// GET-Variable einlesen
 	$json_string = $_GET["json"];
 	// JSON dekodieren
 	$json_decoded = json_decode($json_string);
-	
+
 //--------------------------------------------------------------------------
-// JSON decryption if "data" exists -> only ESP requests 
+// JSON decryption if "data" exists -> only ESP requests
 //--------------------------------------------------------------------------
 	if (isset($json_decoded->data)) {
-		echo "entschlüsseln";
 		//get ecrypted and b64encoded data
 		$b64str = $json_decoded->data;
 		//convert base64 to string
 		$enc_data = base64_decode($b64str, TRUE);
 		//XOR string for decryption
 		$dec_data = xor_string($enc_data);
-		//JSON decode
-		$json_decoded = json_decode($dec_data);	
+		$json_decoded = json_decode($dec_data);
 	}
 	function xor_string($string) {
 		$key = "";//long alphabetic pw string
-		for($i = 0; $i < strlen($string); $i++) 
+		for($i = 0; $i < strlen($string); $i++)
 			$string[$i] = ($string[$i] ^ $key[$i % strlen($key)]);
 		return $string;
 	}
 //-------------------------------------------------------------------------
 //important values
 //-------------------------------------------------------------------------
-		
+
 	$timestamp = time();
 	$timecode = date("d.m.Y-H:i:s", $timestamp);
 	$device_id = $json_decoded->device_id;
@@ -39,7 +37,7 @@
 
 //-----------------------------------------------------------------------
 //	Init JSON if no jsonfile exists
-//-----------------------------------------------------------------------	
+//-----------------------------------------------------------------------
 	if (file_exists($filename) != true){
 		$content_string = "{";
 		// allgemeine Werte
@@ -74,8 +72,8 @@
 		$content_string .= "\"temp_min_meat\":\"50\",";
 		$content_string .= "\"temp_max_meat\":\"50\"";
 		$content_string .= "}";
-		file_put_contents($filename, $content_string); 
-	}	
+		file_put_contents($filename, $content_string);
+	}
 //-----------------------------------------------------------------------
 // handle JSON from File and send Response
 //-----------------------------------------------------------------------
@@ -112,12 +110,19 @@
 		// -----------------------------------------------------------------------------------
     case "set_minmaxvalues":
 		// -----------------------------------------------------------------------------------
-			$content_decoded->temp_min_top = $json_decoded->temp_min_top;
-			$content_decoded->temp_max_top = $json_decoded->temp_max_top;
-		    $content_decoded->temp_min_bottom = $json_decoded->temp_min_bottom;
-			$content_decoded->temp_max_bottom = $json_decoded->temp_max_bottom;
-			$content_decoded->temp_min_meat = $json_decoded->temp_min_meat;
-			$content_decoded->temp_max_meat = $json_decoded->temp_max_meat;
+    //TODO complete dynamic overdo
+			if (isset($json_decoded->temp_min_top)) {
+				$content_decoded->temp_min_top = $json_decoded->temp_min_top;
+				$content_decoded->temp_max_top = $json_decoded->temp_max_top;
+			}
+			else if (isset($json_decoded->temp_min_bottom)) {
+				   $content_decoded->temp_min_bottom = $json_decoded->temp_min_bottom;
+				$content_decoded->temp_max_bottom = $json_decoded->temp_max_bottom;
+			}
+			else if (isset($json_decoded->temp_min_meat)) {
+				$content_decoded->temp_min_meat = $json_decoded->temp_min_meat;
+				$content_decoded->temp_max_meat = $json_decoded->temp_max_meat;
+			}
       break;
 		// -----------------------------------------------------------------------------------
     case "set_timer_wfo":

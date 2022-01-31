@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head> 
+<head>
 	<meta charset="utf-8">
 	<script src="javascript/timer.js"></script>
 	<link rel="stylesheet" type="text/css" href="style/odk_timer_wfo.css">
 </head>
 <body>
-<!------------------------------------------------------------------------------
-		Container Timer
-------------------------------------------------------------------------------->
-	<br>
-	<div class="container unselectable"> 
+	<?php
+	$preset_id = 0;
+	$timer_id = 0;
+	if (isset($_GET["preset_id"]))
+		$preset_id = $_GET["preset_id"];
+	if (isset($_GET["timer_id"]))
+		$timer_id = $_GET["timer_id"];
+	?>
+	<div id="preset_id" hidden><?php echo $preset_id ?></div>
+	<div id="timer_id" hidden><?php echo $timer_id ?></div>
+	<div class="container unselectable">
 		<area_header id="header_text">
 			<span>Timer</span>
 		</area_header>
@@ -28,43 +34,36 @@
 	</div>
 </body>
 <script>
-	var GUI_MODE = "[Viewer]";
-	const BELL_CLOCK = document.getElementById("bell_clock");
 	var TIMER_HOUR = document.getElementById("timer_hour");
 	var TIMER_MINUTE = document.getElementById("timer_minute");
 	var  TIMER_SECOND = document.getElementById("timer_second");
-	const TIMER_CLOCK = document.getElementById("clock_1");
 	const TIMER_START = document.getElementById("start");
 	const TIMER_STOP = document.getElementById("stop");
 
 	var ACT_HOUR;
 	var ACT_MINUTE;
 	var ACT_SECOND;
-	var START_HOUR;
-	var START_MINUTE;
-	var START_SECOND;
-	var stopped = false;
-//-------------------------------
-//----- INIT --------------------
-//-------------------------------
+	var START_HOUR = "00";
+	var START_MINUTE = "00";
+	var START_SECOND = "00";
+	var timer_exists = false;
 
-document.addEventListener("DOMContentLoaded", init());
+	const INTERVALL_MAIN_TICKER = 1000;
+	var INTERVALL_MAIN;
 
-	function init(){
-		set_options();
-		INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
-	}
-	var count= 0;
-	function interval_main_tick(){
+document.addEventListener("DOMContentLoaded", function(){
+	PRESET_ID = document.getElementById("preset_id").innerHTML;
+	TIMER_ID = document.getElementById("timer_id").innerHTML;
+
+	set_options();
+	check_clock();
+	INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
+});
+
+function interval_main_tick(){
+	if (timer_exists)
 		check_clock();
-		if (stopped){
-			count++;
-			if (count>60)
-				stopped=false;
-		}
-		else
-			count = 0;
-	}
-
+}
+//more js in javascript/timer.js
 </script>
 </html>

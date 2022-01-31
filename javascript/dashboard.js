@@ -9,7 +9,7 @@ var REFRESHED = false;
 var view = "vertical";//orientation of phone / width: <600 or >600
 set_Orientation();
 var mode = "show";//or move
-  
+
 class Grid extends Array{
 	constructor(){
 		super();
@@ -86,22 +86,23 @@ class Grid extends Array{
 			this.render();
 		else {
 			alert("To big for current config!\nDelete existing elements to get enough space.");
-			this[this.length-1].remove();	
+			this[this.length-1].remove();
 		}
 		console.log(JSON.stringify(this));
-		console.log(this);	
+		console.log(this);
 	}
 	render(){
+		GridObject.timer_count = 0;//reset
 		document.getElementById("container").innerHTML = "";
 		let html = "", note = false;
 		for (var g = 0; g < this.length; g++){
 			html += this[g].createHTML();
 			if (this[g].type === "notes")
-				note = true;	
+				note = true;
 		}
 		document.getElementById("container").innerHTML = html;
 		if (note && mode != "move"){
-			InlineEditor							//TODO Notes as working grid element, currently are not interacting with grid 
+			InlineEditor							//TODO Notes as working grid element, currently are not interacting with grid
 				.create( document.querySelector('#editor')) //TODO notizen in cookie oder ähnliches
 				.catch( error => {
 				console.error( 'There was a problem initializing the editor.', error );
@@ -111,6 +112,7 @@ class Grid extends Array{
 }
 
 class GridObject { //single widget with properties
+	static timer_count = 0;
 	constructor(type,size,pos=grid.length,display=0,parent=grid){
 		this.type = type;
 		this.size = size;
@@ -143,7 +145,7 @@ class GridObject { //single widget with properties
 						source += widget.default.filename;//size equals spec for default widget
 					}
 					else if ("special" in widget && widget.special.sizes.includes(this.size)){
-						source += widget.special.filename;//size equals spec for special widget		
+						source += widget.special.filename;//size equals spec for special widget
 					}
 					else if ("sizes" in widget.default && !(widget.default.sizes.includes(this.size))){
 						source += widget.default.filename;//no fitting this.size
@@ -198,26 +200,30 @@ class GridObject { //single widget with properties
 							case "button":
 								source += "?name="+ widget.name;
 								break;
-						} 
+                            case "timer":
+                                source += "?preset_id="+ presets.last_preset+"&timer_id="+GridObject.timer_count;
+								GridObject.timer_count++;
+								break;
+						}
 					}
 					switch (type){
 							//Custom Widget HTML
 						case "notes":
-							html += "class=\"tile tile_" + this.size + " grid_item\"><div class='editor' id='editor'><p>Notes</p></div";	
+							html += "class=\"tile tile_" + this.size + " grid_item\"><div class='editor' id='editor'><p>Notes</p></div";
 							break;
 						case "dummy":
 							html += "class=\"tile tile_11 dummy\">"
 							break;
 						default:
 							//Standart Widget HTML
-							html += "class=\"tile tile_" + this.size + " grid_item\"";	
+							html += "class=\"tile tile_" + this.size + " grid_item\"";
 							html += "><iframe scrolling='"+ scrolling+"' class=\"iframe\" id=\"iframe\" src=\"" + source + "\"></iframe>";
 					}
 					break;
-				}	
+				}
 			}
 		}
-		html += "</div>";	
+		html += "</div>";
 		return html;
 	}
 }
@@ -239,7 +245,7 @@ class Widgets{ //all possible properties of widgets
 		this.handle_response(obj);
 	}
 	handle_response(obj){
-		//---sensors--- 
+		//---sensors---
 		for (let i = 0; i < Object.keys(obj.devices).length; i++){
 			console.log(i);
 			for (let j = 0; j < obj.devices[i].sensors.length; j++){
@@ -273,7 +279,7 @@ class Widgets{ //all possible properties of widgets
 						special = obj.widget[w].special;
 						if ("sizes" in obj.widget[w].special)
 							widget_sizes = add_string_to_array(widget_sizes,special.sizes);
-					}					
+					}
 					console.log(widget_sizes);
 					this.widgets.push(new Widget(this.sensors[s].name,
 											this.sensors[s].display_name,
@@ -285,7 +291,7 @@ class Widgets{ //all possible properties of widgets
 				var widget_sizes = [];
 				if ("sizes" in obj.widget[w].default)
 						widget_sizes = add_string_to_array(widget_sizes,obj.widget[w].default.sizes);
-					else 
+					else
 						widget_sizes = this.sizes;
 				if (obj.widget[w].display_name != "")
 					html+="<option value='"+ obj.widget[w].name +"'>"+ obj.widget[w].display_name +"</option>\n";
@@ -385,9 +391,9 @@ class Presets extends Array{
 					name = value;
 				}
 				else {
-					
+
 					name = this.profile_names[this.last_preset];
-					id = this.last_preset; 
+					id = this.last_preset;
 				}
 				json_string += ",\"profile_id\":\""+id+"\"";
 				json_string += ",\"profile_name\":\"" + name +"\"";
@@ -423,7 +429,7 @@ class Presets extends Array{
 		if (request == "get_preset"){
 			//set the response values in active dashboard
 			var response = JSON.parse(json_response);
-			if (response["grid_object_v"] != "" && response["grid_object_v"] != null && 
+			if (response["grid_object_v"] != "" && response["grid_object_v"] != null &&
 				response["grid_object_h"] != "" && response["grid_object_h"] != null){
 				grid_vertical.reset();
 				grid_horizontal.reset();
@@ -500,7 +506,7 @@ class Presets extends Array{
 	grid = new Grid();
 	grid_vertical = new Grid();//store grids for orientation change
 	grid_horizontal = new Grid();
-	
+
 	const SELECT = document.getElementById("select_type");
 
 	presets = new Presets();
@@ -521,7 +527,7 @@ class Presets extends Array{
 	});
 
 	window.addEventListener('DOMContentLoaded', init());
-	
+
 	function change_html_sizes(){
 		console.log("changed");
 		let name = document.getElementById("select_type").value;
@@ -535,7 +541,7 @@ class Presets extends Array{
 				document.getElementById("select_size").innerHTML = html;
 				document.getElementById("select_size").value = widgets.widgets[w].sizes[0];
 			}
-		}		
+		}
 	}
 
 	var window_width = window.innerWidth;
@@ -557,8 +563,8 @@ class Presets extends Array{
 	}
 	function init(){
 		//DOMCONTENTLOADED
-	}	
-	
+	}
+
 	function body_onscroll(){
 	  	let box = document.getElementById('body').getBoundingClientRect();
 		// msg-Objekt erzeugen
@@ -571,7 +577,7 @@ class Presets extends Array{
 	  // Seite neu laden und msg für 1 Sekunde anzeigen
 		if ((box.top > 100) && (REFRESHED == false)){
 			REFRESHED = true;
-			setTimeout (function() { 
+			setTimeout (function() {
 	    	location.reload(true);
 				// msg-Objekt entfernen
 				body.removeChild(msg);
@@ -596,10 +602,10 @@ class Presets extends Array{
 		if (new Date().valueOf() > toggle_time){
 			document.getElementById('settings-menu').classList.toggle("open");
 			toggle_time = new Date().valueOf();
-		}	
+		}
 	}
 	function set_Orientation(){
-		if (window.innerWidth > 600)	
+		if (window.innerWidth > 600)
 			view = "horizontal";
 		else if (window.innerWidth <= 600)
 			view = "vertical";
@@ -631,7 +637,7 @@ class Presets extends Array{
 					break;
 				case "button_down":
 					click_down(data_str[0]);
-					break;  		
+					break;
 				case "click_ok":
 					click_ok(data_str[0]);
 					break;
@@ -641,7 +647,7 @@ class Presets extends Array{
 				//widget
 				case "set_widget": //ssxxxxx s:size x:data
 					let size = parseInt(String(data_str[0][0])+String(data_str[0][1]));
-					widget_size[size] = data_str[0];	
+					widget_size[size] = data_str[0];
 					break;
 				case "set_show"://for temp widget view
 					grid[data_str[0]].display = grid[data_str[0]].display ^ 1;
@@ -649,6 +655,6 @@ class Presets extends Array{
 				case "reload":
 					grid.update();
 					break;
-			}	  	
+			}
 		}
 	}, false);

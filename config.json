@@ -18,7 +18,8 @@
       "name": "odk_timer",
       "display_name": "Timer",
       "default": {
-        "filename": "odk_timer_wfo.html",
+        "filename": "odk_timer_wfo.php",
+        "type": "timer",
         "sizes": "12,13,14,24,34",
         "bp_affected":"true"
       },
