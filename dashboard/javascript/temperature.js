@@ -1,3 +1,5 @@
+//TODO - min max values only in specified range of values, curently doesnt work when changing bp mode
+
 const DEVICE_ID = "odk";
 var SENSOR_ID;
 
@@ -274,6 +276,9 @@ function set_Active_Recipe(json_response){
 		recipe_id = response.id;
 	}
 	let recipe_temp = response["bakingtemperature"];
-	TMIN.value = recipe_temp-20;
-	TMAX.value = recipe_temp-0+20;
+	let temp_min = recipe_temp-20;
+	let temp_max = recipe_temp-0+20;
+	tminmax_set_options(TMIN, 0, temp_max);
+	TMIN.value = temp_min;
+	TMAX.value = temp_max;
 }

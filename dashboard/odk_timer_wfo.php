@@ -9,13 +9,17 @@
 	<?php
 	$preset_id = 0;
 	$timer_id = 0;
+	$bakingplan_effected = 0;
 	if (isset($_GET["preset_id"]))
 		$preset_id = $_GET["preset_id"];
 	if (isset($_GET["timer_id"]))
 		$timer_id = $_GET["timer_id"];
+	if (isset($_GET["bakingplan_effected"]))
+		$bakingplan_effected = $_GET["bakingplan_effected"];
 	?>
 	<div id="preset_id" hidden><?php echo $preset_id ?></div>
 	<div id="timer_id" hidden><?php echo $timer_id ?></div>
+	<div id="bakingplan_effected" hidden><?php echo $bakingplan_effected ?></div>
 	<div class="container unselectable">
 		<area_header id="header_text">
 			<span>Timer</span>

@@ -15,18 +15,28 @@
       }
     },
     {
+        "name": "bakingplan_timer",
+        "display_name": "Bakingplan Timer",
+        "default": {
+          "filename": "odk_timer_wfo.php",
+          "type": "timer",
+          "sizes": "12,13,14,24,34",
+          "bp_affected":"true"
+        },
+        "special": {
+          "filename": "odk_timer_wfo_quadrat.html",
+          "sizes": "11,44",
+          "bp_affected":"true"
+        }
+    },
+    {
       "name": "odk_timer",
       "display_name": "Timer",
       "default": {
         "filename": "odk_timer_wfo.php",
         "type": "timer",
         "sizes": "12,13,14,24,34",
-        "bp_affected":"true"
-      },
-      "special": {
-        "filename": "odk_timer_wfo_quadrat.html",
-        "sizes": "11,44",
-        "bp_affected":"true"
+        "bp_affected":"false"
       }
     },
     {
@@ -73,11 +83,19 @@
       }
     },
     {
+      "name": "bakingplan_editor",
+      "display_name": "Backplan Bearbeiter",
+      "default": {
+        "filename": "bakingplan_editor.php",
+        "scrolling": "yes",
+        "bp_affected":"true"
+      }
+    },
+    {
       "name": "bakingplan",
       "display_name": "Backplan",
       "default": {
         "filename": "bakingplan.php",
-        "scrolling": "yes",
         "bp_affected":"true"
       }
     },

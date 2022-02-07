@@ -155,7 +155,7 @@
 						$sql = "DELETE FROM `recipes_ingredients` WHERE `recipes_ingredients`.`recipes_id` = '$rec_id'";
 						sql_request($dbcon, $sql);
 						echo "OK";
-      	  break;
+      	  		break;
 
 				case "delete_recipe":
 						$rec_id = mysqli_real_escape_string($dbcon, $json_decoded->rec_id);
@@ -188,7 +188,7 @@
 		    	break;
 
 		    case "bakingplan_get_order_no":
-			  		$bpr_id = mysqli_real_escape_string($dbcon, $json_decoded->bpr_id);
+			  			$bpr_id = mysqli_real_escape_string($dbcon, $json_decoded->bpr_id);
 						$sql = "SELECT `order_no` FROM `bakingplans_recipes` WHERE `bakingplans_recipes`.`id` = '$bpr_id'";
 						echo sql_request_encode_json($dbcon, $sql);
 			  	break;
@@ -233,16 +233,16 @@
 			case "set_active_recipe":
 						$recipe_id = mysqli_real_escape_string($dbcon, $json_decoded->recipe_id);
 						// alle Backpläne ausser dem aktiven Backplan zurücksetzen
-						$sql = "UPDATE `recipes` SET `active` = 0 WHERE NOT `recipe`.`id` = '$recipe_id'";
+						$sql = "UPDATE `recipes` SET `active` = 0";
 						sql_request($dbcon, $sql);
 						// aktiven Backplan setzen
-						$sql = "UPDATE `recipes` SET `type` = 1 WHERE `recipes`.`id` = '$recipe_id'";
+						$sql = "UPDATE `recipes` SET `active` = 1 WHERE `recipes`.`id` = '$recipe_id'";
 						sql_request($dbcon, $sql);
 						echo "OK";
 			  	break;
 
 		    case "get_active_recipe":
-						$sql = "SELECT `id`, `name`, `bakingtime`, `bakingtemperature`, `preparation` FROM `recipes` WHERE active = 'active'";
+						$sql = "SELECT `id`, `name`, `bakingtime`, `bakingtemperature`, `preparation` FROM `recipes` WHERE active = 1";
 						echo sql_request_encode_json($dbcon, $sql);
 			  	break;
 
@@ -308,4 +308,5 @@
 	function db_close($dbcon){
 		mysqli_close($dbcon);
 	}
+
 ?>

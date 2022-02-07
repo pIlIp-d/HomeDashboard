@@ -49,7 +49,7 @@ function handleHTTPresponse(request_name,json_response){
 
 		case "get_timer":
 				if (json_response == 204)
-					reset_timer();
+					btn_stop();
 				else {
 					//json_response = end time of timer
 					var timenow = new Date();
