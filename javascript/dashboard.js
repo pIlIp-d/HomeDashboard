@@ -11,9 +11,7 @@ set_Orientation();
 var mode = "show";//or move
 
 class Grid extends Array{
-	constructor(){
-		super();
-	}
+	constructor(){super();}
 	show(){
 		console.log(this);
 		console.log(JSON.stringify(this));
@@ -58,23 +56,23 @@ class Grid extends Array{
 			}
 		}
 	}
-	update(){
-		let grid_size = 1,grid_pos = 1, gaps = [], modulo = 4;
+	update(){//updates + reloads grid after every change that occurs
+		let grid_size = 1, grid_pos = 1, gaps = [], modulo = 4;
 		set_Orientation();
 		this.sort_asc();
 		console.log(grid);
 		if (view === "vertical")
-			modulo = 4;
+			modulo = 4;//width
 		else if (view === "horizontal")
-			modulo = 8;
+			modulo = 8;//width
 		for (var i=0;i<this.length;i++){
-			grid_size = Number(this[i].size[0])*Number(this[i].size[1]);
-			if (grid_pos % modulo === 0 && grid_size >= 2)
+			grid_size = Number(this[i].size[0])*Number(this[i].size[1]);//widget_size: width*height
+			if (grid_pos % modulo === 0 && grid_size >= 2)//right side overlap (f.e. 3width+2width > max4 width)->one dummie
 				gaps[i] = 1;
-			else if (grid_pos % modulo > 5 % modulo && grid_size > 3 || grid_size === 3 && grid_pos % modulo > 6 % modulo)
+			else if (grid_pos % modulo > 5 % modulo && grid_size > 3 || grid_size === 3 && grid_pos % modulo > 6 % modulo)//every other dummie amount and constellation
 				gaps[i] = 5 - (grid_pos % 4);
 			else
-				gaps[i] = 0;
+				gaps[i] = 0;//no dummies needed
 			grid_pos += grid_size;
 			grid_pos += gaps[i];
 			this[i].stop = grid_pos-1;
@@ -82,26 +80,24 @@ class Grid extends Array{
 		}
 		this.fill_gaps(gaps);
 		this.sort_asc();
-		if (this[this.length-1].stop <= 32)
+		if (this[this.length-1].stop <= 32)//check <=max amount of widgets
 			this.render();
 		else {
 			alert("To big for current config!\nDelete existing elements to get enough space.");
 			this[this.length-1].remove();
 		}
-		console.log(JSON.stringify(this));
-		console.log(this);
 	}
 	render(){
-		GridObject.timer_count = 0;//reset
+		GridObject.timer_count = 0;//reset timer_count
 		document.getElementById("container").innerHTML = "";
 		let html = "", note = false;
-		for (var g = 0; g < this.length; g++){
+		for (var g = 0; g < this.length; g++){//create html of widgets
 			html += this[g].createHTML();
 			if (this[g].type === "notes")
 				note = true;
 		}
 		document.getElementById("container").innerHTML = html;
-		if (note && mode != "move"){
+		if (note && mode != "move"){//Note widget activate
 			InlineEditor							//TODO Notes as working grid element, currently are not interacting with grid
 				.create( document.querySelector('#editor')) //TODO notizen in cookie oder ähnliches
 				.catch( error => {
@@ -228,7 +224,7 @@ class GridObject { //single widget with properties
 	}
 }
 
-class Widgets{ //all possible properties of widgets
+class Widgets{ //all possible properties of widget-types (~ Widget-"presets")
 	constructor(){
 		this.sensors = [];
 		this.widgets = [];
@@ -339,7 +335,7 @@ class Sensor{ //struct
 	}
 }
 
-class Presets extends Array{
+class Presets extends Array{ //grid configuration presets
 	constructor(){
 		super();
 		this.last_preset = null;//last selected preset id null,1,2...
@@ -462,7 +458,7 @@ class Presets extends Array{
 		else
 			this.request("get_all_presets","");
 	}
-	action(value,name){//parameter value currently unused
+	action(value,name){//@param value currently unused, @function button handling
 		console.log(this.last_preset);
 		console.log();
 

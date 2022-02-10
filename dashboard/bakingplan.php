@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
-
 </head>
 <style type="text/css">
+
 	.unselectable {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -21,9 +21,29 @@
 		display: flex;
 		justify-content: center;
 	}
-
+/*SELECT*/
+.settings-menu-select{
+	margin-top: 1rem;
+	margin-bottom:  1rem;
+	margin-left: 1rem;
+}
+.select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	border: none;
+	color: #000000;
+	cursor: pointer;
+	text-align: center;
+	font-family: Arial;
+	font-size: 1.0rem;
+	height: 1.5rem;
+	width: auto;
+	outline: none;
+	margin-top: 0.5rem;
+	margin-left: 0.25rem;
+}
 	#bp_name {
-
 		border-bottom: thin solid lightgray;
 		font-size: 1rem;
 		width: 100%;
@@ -127,7 +147,8 @@
 	<main id="main" class="unselectable">
 	<!--	<div class="btn" id="btn_prev">❮</div>-->
 
-		<div class="text_div" id="bp_name"></div>
+		<select class="text_div select" id="bp_name">
+		</select>
 		<div class="active_bakingplan_container">
 			<div class="text_div" id="recipe_name"></div>
 			<div class="rec_info">
@@ -153,19 +174,21 @@ const server = location.host;
 var server_root_url = "/HomeDashboard/";
 var db_url = server_root_url+"odk_db.php";
 
+var bakingplans = [];
+
 var active_bp;
 var active_recipe;
 var bakingplan_recipes;
-var active_recipe_list_id;
+var active_recipe_list_id = null;
+
+const BP_SELECT = document.getElementById("bp_name");
 
 document.addEventListener("DOMContentLoaded", init);
 function init(){
+	xhttp_send("get_all_bakingplans");
 	xhttp_send("get_active_bakingplan");
 	xhttp_send("get_active_recipe");
 	xhttp_send("bakingplan_get_all_recipes");
-	console.log(active_bp);
-	console.log(active_recipe);
-	console.log(bakingplan_recipes);
 
 	load_active_recipe_html();
 }
@@ -176,12 +199,17 @@ function next_recipe(){
 	xhttp_send("get_active_recipe");
 	load_active_recipe_html();
 }
-
 function load_active_recipe_html(){
-	document.getElementById("bp_name").innerHTML = "Backplan \""+active_bp.name+"\"";
+	//bakingplan html
+	BP_SELECT.options = 0;
+	for (let i = 0; i < bakingplans.length; i++)
+		BP_SELECT.options[i] = new Option(bakingplans[i].name, bakingplans[i].id);
+	BP_SELECT.value = active_bp.id;
+	//active recipe html
 	document.getElementById("recipe_name").innerHTML = active_recipe.name;
 	document.getElementById("bakingtime").innerHTML = active_recipe.bakingtime;
 	document.getElementById("bakingtemperature").innerHTML = active_recipe.bakingtemperature;
+	//next recipehtml
 	let next_recipe_id = (active_recipe_list_id + 1 ) % bakingplan_recipes.length;
 	document.getElementById("next_recipe").innerHTML = bakingplan_recipes[next_recipe_id].r_name;
 
@@ -205,12 +233,16 @@ function xhttp_send(request, value = null){
 function createRequest(request, value){
 	var json_string = "\"request_name\":\""+ request +"\"";
 	switch(request){
+		case "get_all_bakingplans":
 		case "get_active_bakinplan":
 			//do nothing else
 			break;
+		case "bakingplan_activate":
+			json_string += ",\"bp_id\":\"" + value + "\"";
+			break;
 		case "set_active_recipe":
 			json_string += ",\"recipe_id\":\""+ value + "\"";
-
+			break;
 	}
 	return json_string;
 }
@@ -237,7 +269,8 @@ function handle_response(request, response){
 			let contains = false;
 			for (let i = 0; i < bakingplan_recipes.length; i++){
 				if (bakingplan_recipes[i].r_id == active_recipe.id){
-					active_recipe_list_id = i;
+					if (null == active_recipe_list_id)
+						active_recipe_list_id = i;//first run time only
 					contains = true;
 					break;
 				}
@@ -247,9 +280,18 @@ function handle_response(request, response){
 			break;
 		case "set_active_recipe":
 			break;
+		case "get_all_bakingplans":
+			bakingplans = json_response;
+			break;
 	}
 }
 
+//listener for bp_select change
+document.querySelector('#bp_name').addEventListener("change", function() {
+	xhttp_send("bakingplan_activate",BP_SELECT.value);
+	active_recipe_list_id = null;
+	init();
+});
 
 
 </script>

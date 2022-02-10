@@ -1,8 +1,8 @@
-//-----------------------------------------
-//-------- MOVE ---------------------------
-//-----------------------------------------
 
-	function swap(pos){//swaps positions
+/**
+* swaps wigdet positions by id input
+* @param pos array of ids wich are swapped cyclic
+*/function swap(pos){//swaps positions
 		console.log(pos);
 		for (i=0;i<pos.length;i++)
 			pos[i] = Number(pos[i]);
@@ -11,18 +11,10 @@
 			grid[pos[i]].pos = grid[pos[i+1]].pos;
 		grid[pos[pos.length-1]].pos = swap_1;
 	}
-
-	function gridsize_at_id(size_,id_){
-		for (s in size_){//more than one returns disjunct
-			if (grid[id_].size === s)
-				return true;
-		}
-		return false;
-	}
 	function width_is_four(id){
 		return grid[id].size.substring(1) === "4";
 	}
-	function get_above(id){
+	function get_above(id){//@return widget id of widget above
 		for (ele=id;ele>=0;ele--){
 			if (grid[id].start-4 === grid[ele].start ||
 				(grid[id].start-8 === grid[ele].start && grid[ele].size === "24")||
@@ -32,7 +24,7 @@
 		}
 		return -1;
 	}
-	function get_below(id){
+	function get_below(id){//@return widget id of widget below
 		for (ele=id;ele<grid.length;ele++){
 			if (grid[id].start+4 === grid[ele].start ||
 				(grid[id].start+8 === grid[ele].start && grid[id].size === "24")||
@@ -44,7 +36,7 @@
 	}
 
 	//---- UP ----
-	function swap_two_with_one(id,ele){
+	function swap_two_with_one(id,ele){//special case of swap
 		let swap1 = grid[id].pos;//"12"over"11","11" or "13"over "11","12" or big over "11","13"/"12","12"
 		for (i=0;i<id-ele-1;i++)
 			grid[id-i].pos = grid[id-1-i].pos;
@@ -52,7 +44,7 @@
 		grid[id+1].pos = grid[ele].pos;
 		grid[ele].pos = swap1;
 	}
-	function click_up(id){
+	function click_up(id){//move widget at id upward
 		console.log("up");
 		id = Number(id);
 		var changed = false;
@@ -143,7 +135,7 @@
 	}
 
 	//---- Down ----
-	function click_down(id){
+	function click_down(id){//move widget at id downwards
 		console.log("down");
 		id = Number(id);
 		var changed = false;
@@ -475,7 +467,7 @@
 	}
 
 	//---- left ----
-	function click_left(id){
+	function click_left(id){//move widget at id left
 		id = Number(id);
 		if (id > 0){
 			var changed = false;
@@ -491,7 +483,7 @@
 	}
 
 	//---- right ----
-	function click_right(id){
+	function click_right(id){//move widget at id right
 		id = Number(id);
 		var changed = false;
 		if (view === "vertical"){
@@ -558,7 +550,7 @@
 	}
 
 	//---- ok ----
-	function click_ok(id){
+	function click_ok(id){//exit move mode
 		mode = "show";
 		for (i=grid.length-1;i>0;i--){//delete all dummies are at the end
 			//begins at the last element
@@ -574,8 +566,8 @@
 	function click_delete(id){
 		if (grid[id].type != "settings" && grid[id].type != "dummy"){
 			if (view === "vertical")
-				grid.splice(id,1);	//dummies are deleted automatically, when they are at the end
-			else if (view =="horizontal")
+				grid.splice(id,1);//dummies are deleted automatically, when they are at the end
+			else if (view === "horizontal")
 				grid.splice(id,1);//wird noch erweitert, für spezielle fälle
 			grid.update();
 		}

@@ -35,6 +35,7 @@
 			<span class="dots">:</span>
 			<select class="time_select" id="timer_second"><option>00</option></select>
 		</area_timer>
+		<img id="bp_mode" src="/HomeDashboard/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
 	</div>
 </body>
 <script>

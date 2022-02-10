@@ -11,8 +11,11 @@ var TACT = document.getElementById("tact_value");
 var TMIN = document.getElementById("tmin_select");
 var TMAX = document.getElementById("tmax_select");
 
+// @param recipe_id - recipe of active recipe for min/max temp in bp_mode
 var recipe_id;//for recipe temp
-var bp_mode = true; //min max from active recipe? or from user input
+//@param bp_mode - 	bp_mode true  -> min/max temp from active bakingplan recipe(recipe_id)
+//					bp_mode false -> min/max temp from device/ manual mode
+var bp_mode = true;
 
 document.addEventListener("DOMContentLoaded", init());
 
@@ -22,7 +25,6 @@ TMAX.addEventListener('change', function(){tminmax_changed("tmax_select")});
 function init(){
 	SENSOR_ID = document.getElementById("sensor_id").innerHTML;
 	change_view();
-	console.log("here"+SENSOR_ID);
 	// Headername anpassen
 	set_headername();
 	// Min-Max-Anzeige initialisieren
@@ -39,12 +41,31 @@ function set_headername(){
 	document.getElementById("header_text").innerHTML = document.getElementById("display_name").innerHTML;
 }
 
+/**
+* sets the select options for min and max temp selects in html
+* @param target - document.object (TMIN or TMAX)
+* @param target_min - lower end of range
+* @param target_max - upper end of range
+*/
+function tminmax_set_options(target, target_min, target_max){
+	const min = parseInt(target_min);
+	const max = parseInt(target_max);
+	var value = parseInt(target.value);
+	if (value < min)
+		value = min;
+	if (value > max)
+		value = max;
+	target.options.length = 0;
+	for (i = min; i < max + 1; i = i + 10) {
+		target.options[target.options.length] = new Option(i);
+		target.value = value;
+	}
+}
+
+
 function interval_main_tick(){
-	if (bp_mode) //change min/max
-		get_active_recipe();
-	else // alle Werte vom Server lesen
-		xhttp_get_all_values();
-	// Farbe der Temperaturanzeige steuern
+	if (bp_mode) get_active_recipe();
+	else xhttp_get_all_values();
 	temperature_set_color();
 }
 
@@ -99,26 +120,14 @@ function tminmax_changed(id){
 	}
 	tminmax_set_options(target, target_min, target_max);
 	// aktuelle Werte auf Server schreiben
-	xhttp_send("set_minmaxvalues", "", "");
+	xhttp_send("set_minmaxvalues");
 }
 
-function tminmax_set_options(target, target_min, target_max){
-	const min = parseInt(target_min);
-	const max = parseInt(target_max);
-	var value = parseInt(target.value);
-	if (value < min)
-		value = min;
-	if (value > max)
-		value = max;
-	target.options.length = 0;
-	for (i = min; i < max + 1; i = i + 10) {
-		target.options[target.options.length] = new Option(i);
-		target.value = value;
-	}
-}
-
-function xhttp_send(event, timeout, timer_stop){
-
+/**
+* http request sending and -> to response handling
+* @param request_name used on serverside to create response
+*/
+function xhttp_send(request_name){
 	var response = "";
 	// JSON-String erzeugen
 	var json_string = "{"
@@ -162,10 +171,10 @@ function xhttp_send(event, timeout, timer_stop){
 	// HTTP-Request an Server schicken
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200){
+		if (this.readyState == 4 && this.status == 200)
 			response = this.responseText;
-			return response;
-		}
+		else
+			console.log("error or wrong response code");
 	};
 	try
 	{
@@ -187,10 +196,9 @@ function xhttp_get_all_values(){
 			json_response = this.responseText;
 			temperature_refresh(json_response);
 		}
-		else {
-			if (this.status > 399)	// TODO: Fehlerfall
-				console.log("error or wrong response code");
-		}
+		else
+			console.log("error or wrong response code");
+
 	}
 	xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + create_get_allvalues("30"), false);
 	xhttp.send();
@@ -204,9 +212,8 @@ var json_string = "{"
 	json_string += "}";
 	return json_string;
 }
-
+// TODO improve request for device and not getting all values always \/
 function temperature_refresh(json_obj){
-	//response Handler
 	var json_obj = JSON.parse(json_obj);
 	// aktuelle Temperatur und Min-Max-Werte anzeigen
 	switch(SENSOR_ID){
@@ -247,18 +254,18 @@ function temperature_refresh(json_obj){
 			break;
 	}
 }
+//----------------------------
+//---- BP_MODE handling ------
+//----------------------------
 function get_active_recipe(){
 	xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			json_response = this.responseText;
-
 			set_Active_Recipe(json_response);
 		}
-		else {
-			if (this.status > 399)	// TODO: Fehlerfall
-				console.log("error or wrong response code");
-		}
+		else if (this.status != 0)
+			console.log("error or wrong response code: " + this.status);
 	}
 	xhttp.open("GET", recipeRequest(), false);
 	xhttp.send();
@@ -268,6 +275,12 @@ function recipeRequest(){
 	request += "\"request_name\":\"get_active_recipe\"}";
 	return request;
 }
+
+/**
+* response handler
+* changes minmax_values if active recipe has changed
+* @param json_response json recipe
+*/
 function set_Active_Recipe(json_response){
 	let response = JSON.parse(json_response)[0];
 	if (recipe_id != response.id){//recipe changed
