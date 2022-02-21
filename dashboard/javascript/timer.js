@@ -1,14 +1,17 @@
+//TODO bp timer button -> new normal timer at that position is created
+
 const HOMESERVER_URL= "/HomeDashboard/";
 const TIMER_HANDLER = HOMESERVER_URL+"dashboard/timer_handler.php";
 const DEVICE_ID = "001";
 const DEVICE_NAME = "Backofen";
 
-const BP_BTN = document.getElementById("bp_mode"); //toggle for bp_mode
+const BP_BTN = document.getElementById("bp_mode"); //toggle btn for bp_mode
 
 var PRESET_ID;
 var TIMER_ID;
 
-var bp_mode = true;
+var bp_mode = false;
+var bakingtime;
 
 /**
 * http request sending and -> to response handling
@@ -18,19 +21,33 @@ var bp_mode = true;
 function http_request(request_name, value = null){
 	console.log("request: "+request_name+" p_id"+PRESET_ID+" t_id: "+TIMER_ID);
 		var json_string = "{\"request_name\":\""+request_name+"\"";
-		//if (!bp_mode)
+		if (!bp_mode)
 			json_string += ",\"preset_id\":\""+PRESET_ID+"\"";
-		//TODO -- bp_switch
 		switch (request_name){
 			case "del_timer":
+				if (bp_mode){
+					;//TODO message -> next recipe
+					bp_mode = false;
+					return;//?? desnt work todo fix if ...
+				}
+				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
+				break;
+			case "set_timer":
+				json_string += ",\"time\":\""+value+"\"";
+				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
+				break;
 			case "get_timer":
-					json_string += ",\"timer_id\":\""+TIMER_ID+"\"}";
+				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
 				break;
-			case "new_timer":
-					json_string += ",\"time\":\""+value+"\"}";
+			case "get_bp_timer":
+				json_string += ",\"bp_time\":\""+value+"\"";
 				break;
+			case "get_active_bakinplan":
+				get_active_bakinplan();
+				return;//only redundancy -> request itself is called inside function
 		}
-		var json_response
+		json_string += "}";
+		var json_response;
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function(){
 			if (this.readyState == 4 && this.status == 200)
@@ -41,39 +58,65 @@ function http_request(request_name, value = null){
 		handleHTTPresponse(request_name,json_response);
 }
 
+function get_active_recipe(){
+	let json_response;
+	var request_name = "get_active_recipe";
+	var json_string = "{\"request_name\":\""+ request_name +"\"}";
+	let xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200)
+			json_response = this.responseText;
+	}
+	xhttp.open("GET", HOMESERVER_URL + "odk_db.php?json=" + json_string, false);
+	xhttp.send();
+	handleHTTPresponse(request_name,json_response);
+}
+
 /**
 * @param request_name for different response handling
 *			get timer -> parsing time the timer has left into hours, minutes, seconds
 * @param json_response response data or "OK" to reassure request worked
 */
 function handleHTTPresponse(request_name,json_response){
+
 	switch (request_name){
-		case "new_timer":
-				if (json_response != "OK")
-					alert("Fehler beim Timer speichern!");
+		case "set_timer":
+			if (json_response != "OK")
+				alert("Fehler beim Timer speichern!");
 			break;
 
 		case "del_timer":
-				if (json_response != "OK")
-					alert("Fehler beim Timer löschen!")
+			if (json_response != "OK")
+				alert("Fehler beim Timer löschen!")
 			break;
+
+		case "get_bp_timer"://do the same as below
 		case "get_timer":
-				if (json_response != 204){
-					var timenow = new Date();
-					timenow = parseInt(timenow.getTime());
-					var diff = Math.round((json_response - timenow) / 1000);
-					if (diff > 0){
-						//Timer-Uhr setzten
-						ACT_HOUR = parseInt((diff / 3600) % 24);
-						ACT_MINUTE = parseInt((diff / 60) % 60);
-						ACT_SECOND = parseInt(diff % 60);
-						set_timer_values();
-						btn_start(false);
-					}
-					else btn_stop();
+			if (json_response != 204){
+				var timenow = new Date();
+				timenow = parseInt(timenow.getTime());
+				var diff = Math.round((json_response - timenow) / 1000);
+				if (diff > 0){
+					//Timer-Uhr setzten
+					ACT_HOUR = parseInt((diff / 3600) % 24);
+					ACT_MINUTE = parseInt((diff / 60) % 60);
+					ACT_SECOND = parseInt(diff % 60);
+					set_timer_values();
+					btn_start(false);
 				}
-				else
-					btn_stop();
+				else {
+				console.log("here he comes");
+				btn_stop();
+				}
+			}
+			else
+				btn_stop();
+			break;
+
+		case "get_active_recipe":
+			console.log(json_response);
+			bakingtime = JSON.parse(json_response)[0].bakingtime;
+			console.log("b_time" + bakingtime);
 			break;
 	}
 }
@@ -85,7 +128,11 @@ function set_timer_values(){
 	TIMER_SECOND.value = ((ACT_SECOND < 10)?"0":"")+ ACT_SECOND.toString();
 }
 function check_clock(){
-	http_request("get_timer");
+	if (bp_mode){
+		get_active_recipe();
+		http_request("get_bp_timer",(new Date().getTime() + 1000*60*bakingtime));//currenttime + bakingtime (and convert from min to ms)
+	}
+	else http_request("get_timer");
 }
 function reset_timer(){
 	timer_exists = false;
@@ -130,7 +177,7 @@ function reset_timer(){
 														parseInt(TIMER_MINUTE.value) * 60 +//sec -> min
 														parseInt(TIMER_SECOND.value)) * 1000;//ms -> sec
 			// Timer-Ende per http-Request auf Server schreiben (neuen Timer anlegen)
-			http_request("new_timer", srv_timerstop);
+			http_request("set_timer", srv_timerstop);
 		}
 		TIMER_START.style.display = "none";
 		TIMER_STOP.style.display = "block";
@@ -149,12 +196,11 @@ function reset_timer(){
 	}
 
 function toggle_bp_mode(bool = null){
-	if (bool != null)//set
-		bp_mode = bool^1;//toogle twice -> set to actual bool value
-
-	if (bp_mode)//toggle
-		BP_BTN.src = HOMESERVER_URL+"images/btn_list_solid.svg";
+	if (bool != null)//set manually instead of toggle
+		bp_mode = bool;
+	if (!bp_mode)//toggle
+		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
 	else
-		BP_BTN.src = HOMESERVER_URL+"images/btn_list_regular.svg";
+		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_regular.svg";
 	bp_mode = 1^bp_mode;
 }

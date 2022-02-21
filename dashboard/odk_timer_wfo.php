@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 function interval_main_tick(){
-	if (timer_exists)
+	if (timer_exists || bp_mode)
 		check_clock();
 }
 //more js in javascript/timer.js
