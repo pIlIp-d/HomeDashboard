@@ -5,10 +5,11 @@
 	make_request($json_decoded->request_name);
 
 	function make_request($request_name){
-		$username = "sql";
-		$password = "your_password";
-		$dbname = "wfoven"; //TODO datenbank umbennenen
-
+		$credentials = json_decode(file_get_contents("cred.json"))->db_cred;
+		$username = $credentials->username;
+		$password =  $credentials->password;
+		$dbname =  $credentials->db_name;
+		//TODO db_initialisation
 		$dbcon = db_connect($username, $password, $dbname);
 		request_handling($request_name,$dbcon);
 		db_close($dbcon);
