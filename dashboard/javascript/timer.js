@@ -7,8 +7,6 @@ const DEVICE_NAME = "Backofen";
 
 const BP_BTN = document.getElementById("bp_mode"); //toggle btn for bp_mode
 
-var PRESET_ID;
-var TIMER_ID;
 
 var bp_mode = false;
 var bakingtime;
@@ -16,7 +14,7 @@ var bakingtime;
 /**
 * http request sending and -> to response handling
 * @param request_name used on serverside to create response
-* @value used for single values in some requests
+* @param value used for single values in some requests
 */
 function http_request(request_name, value = null){
 	console.log("request: "+request_name+" p_id"+PRESET_ID+" t_id: "+TIMER_ID);
