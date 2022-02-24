@@ -59,7 +59,7 @@ function create_table($table_name){
             )";
             break;
         case "presets":
-            $sql = "CREATE TABLE presets(
+            $sql = "CREATE TABLE presets (
                 id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(50) NOT NULL,
                 grid_object_v JSON NOT NULL,
@@ -73,16 +73,28 @@ function create_table($table_name){
                 temp_act INT NOT NULL,
                 temp_min INT NOT NULL,
                 temp_max INT NOT NULL,
-                timecode int NOT NULL,
+                timecode long NOT NULL,
                 timestring VARCHAR(20) NOT NULL
             )";
             break;
+        case "timers":
+            $sql = "CREATE TABLE timers(
+                id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                preset_id INT NOT NULL,
+                timer_id INT NOT NULL,
+                time LONG NOT NULL
+            )";
+            break;
+
     }
     if(mysqli_query($conn, $sql))
         echo "<br>Table '$table_name' created successfully.";
-    else
-        echo "<br>" . mysqli_error($conn);
-
+    else {
+        if (mysqli_error($conn) == "OK")
+            echo $table_name."was created successfully.";
+        else
+            echo mysqli_error($conn);
+    }
 }
 
 function safe_credentials(){
@@ -122,7 +134,13 @@ function create_examples(){
                             "{\"request_name\":\"set_new_preset\",\"preset_name\":\"empty\",
                                 \"grid_object_v\":[{\"type\":\"settings\",\"size\":\"11\",\"pos\":0,\"start\":0,\"stop\":0,\"display\":0}],
                                 \"grid_object_h\":[{\"type\":\"settings\",\"size\":\"11\",\"pos\":0,\"start\":0,\"stop\":0,\"display\":0}]
-                            }"
+                            }",
+                            "{\"request_name\":\"insert_device\",\"device_name\":\"wfo_top\"}",
+                            "{\"request_name\":\"insert_device\",\"device_name\":\"wfo_bottom\"}",
+                            "{\"request_name\":\"insert_device\",\"device_name\":\"grill_left\"}",
+                            "{\"request_name\":\"insert_device\",\"device_name\":\"grill_right\"}",
+                            "{\"request_name\":\"insert_device\",\"device_name\":\"meat\"}"
+
                         );
     foreach ($json_strings as $key => $json){
         if ($key == 0){
@@ -159,6 +177,8 @@ create_table("ingredients");
 create_table("recipes");
 create_table("recipes_ingredients");
 create_table("presets");
+create_table("devices");
+create_table("timers");
 safe_credentials();
 create_examples();
 

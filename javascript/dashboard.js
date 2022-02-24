@@ -340,12 +340,13 @@ class Presets extends Array{ //grid configuration presets
 		super();
 		this.last_preset = null;//last selected preset id null,1,2...
 		this.preset_names = [];
+		this.preset_ids = [];
 	}
 	init(){
 		this.standard_value = document.getElementById("preset").innerHTML;
 		this.get_all_presets();
-		this.last_preset = (this.preset_names.length >= this.standard_value)?this.standard_value:1;//checks if standart value is a possible preset id to start with else just use empty preset
-		this.get_preset(this.standard_value);
+		this.last_preset = (this.preset_names.length > this.standard_value)?this.standard_value:0;//checks if standart value is a possible preset id to start with else just use empty preset
+		this.get_preset(this.last_preset);
 	}
 	get_all_presets(){
 		this.request("get_all_presets","")
@@ -375,7 +376,7 @@ class Presets extends Array{ //grid configuration presets
 	}
 
 	create_request(request,value){
-		console.log(JSON.stringify(this.preset_names)+" "+request + " "+this.last_preset);
+		console.log(JSON.stringify(this.preset_names)+" "+request + " "+this.last_preset + " "+ value);
 		console.log(this.preset_names);
 		var json_string = "{\"request_name\":\""+request+"\"";
 		switch (request){
@@ -385,8 +386,8 @@ class Presets extends Array{ //grid configuration presets
 				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal);
 				break;
 			case "save_preset": //set new preset
-				json_string += ",\"preset_id\":\""+ this.last_preset +"\"";
-				json_string += ",\"preset_name\":\""+ this.preset_names[this.last_preset] +"\"";
+				json_string += ",\"preset_id\":\""+ this.preset_ids[value] +"\"";
+				json_string += ",\"preset_name\":\""+ this.preset_names[value] +"\"";
 				json_string += ",\"grid_object_v\":"+ JSON.stringify(grid_vertical);
 				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal);
 				break;
@@ -396,7 +397,10 @@ class Presets extends Array{ //grid configuration presets
 			case "get_all_presets": //returns all preset names
 				break;
 			case "get_preset": //returns all preset values of specific preset
-				json_string += ",\"preset_id\":\""+ this.last_preset +"\"";
+				this.request("get_preset_ids");
+				json_string += ",\"preset_id\":\""+ this.preset_ids[value]+"\"";
+				break;
+			case "get_preset_ids":
 				break;
 		}
 		json_string += "}";
@@ -416,47 +420,50 @@ class Presets extends Array{ //grid configuration presets
 		document.getElementById("select_preset").innerHTML = html;
 	}
 	response_handler(json_response, request){
-		if (request == "get_preset"){
-			//set the response values in active dashboard
-			var response = JSON.parse(json_response);
-			console.log(response);
-			if (response["grid_object_v"] != "" && response["grid_object_v"] != null &&
-				response["grid_object_h"] != "" && response["grid_object_h"] != null){
-				grid_vertical.reset();
-				grid_horizontal.reset();
-				for (var key in response["grid_object_v"]){
-					grid_vertical.push(new GridObject(response["grid_object_v"][key].type,
-													  response["grid_object_v"][key].size,
-													  response["grid_object_v"][key].pos,
-													  response["grid_object_v"][key].display));
-				}
-				for (key in response["grid_object_h"]){
-					grid_horizontal.push(new GridObject(response["grid_object_h"][key].type,
-														response["grid_object_h"][key].size,
-														response["grid_object_h"][key].pos,
-													    response["grid_object_h"][key].display));
-				}
-				grid_horizontal.sort();
-				grid_vertical.sort();
-			}
-			else
-				console.log("bad response: recieved empty 'grid_object'");
-			if (view === "vertical")
-				grid = grid_vertical;
-			if (view === "horizontal")
-				grid = grid_horizontal;
-			grid.update();
-			console.log(grid);
+		switch(request){
+			case "get_preset":
+					//set the response values in active dashboard
+					var response = JSON.parse(json_response);
+					console.log(response);
+					if (response["grid_object_v"] != "" && response["grid_object_v"] != null &&
+						response["grid_object_h"] != "" && response["grid_object_h"] != null){
+						grid_vertical.reset();
+						grid_horizontal.reset();
+						for (var key in response["grid_object_v"]){
+							grid_vertical.push(new GridObject(response["grid_object_v"][key].type,
+															  response["grid_object_v"][key].size,
+															  response["grid_object_v"][key].pos,
+															  response["grid_object_v"][key].display));
+						}
+						for (key in response["grid_object_h"]){
+							grid_horizontal.push(new GridObject(response["grid_object_h"][key].type,
+																response["grid_object_h"][key].size,
+																response["grid_object_h"][key].pos,
+															    response["grid_object_h"][key].display));
+						}
+						grid_horizontal.sort();
+						grid_vertical.sort();
+					}
+					else
+						console.log("bad response: recieved empty 'grid_object'");
+					if (view === "vertical")
+						grid = grid_vertical;
+					if (view === "horizontal")
+						grid = grid_horizontal;
+					grid.update();
+					console.log(grid);
+				break;
+			case "get_all_presets":
+					this.createHTML(json_response);
+				break;
+			case "get_preset_ids":
+					let resp = JSON.parse(json_response);
+					for (let i = 0; i < resp.length; i++)
+						this.preset_ids[i] = resp[i].id;
+				break;
+			default:
+				this.request("get_all_presets","");
 		}
-		else if (request == "get_all_presets"){
-			console.log(json_response);
-			console.log(JSON.parse(json_response));
-
-			this.createHTML(json_response);
-		}
-		else
-			this.request("get_all_presets","");
-
 	}
 	action(value,name){//@param value currently unused, @function button handling
 		console.log(this.last_preset);

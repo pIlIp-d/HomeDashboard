@@ -1,7 +1,7 @@
 //TODO - min max values only in specified range of values, curently doesnt work when changing bp mode
 
 const DEVICE_ID = "odk";
-var SENSOR_ID;
+var SENSOR_ID = "";
 
 const HOMESERVER_URL = "/HomeDashboard/";
 const INTERVALL_MAIN_TICKER = 1000;
@@ -33,7 +33,8 @@ function init(){
 	TMIN.value = 250;
 	TMAX.value = 250;
 
-	get_active_recipe();
+	xhttp_send("get_active_recipe");
+	toggle_bp_mode(false);
 	// Haupt-Intervall einschalten
 	INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
 }
@@ -62,24 +63,20 @@ function tminmax_set_options(target, target_min, target_max){
 	}
 }
 
-
 function interval_main_tick(){
-	if (bp_mode) get_active_recipe();
-	else xhttp_get_all_values();
+	if (bp_mode) xhttp_send("get_active_recipe");
+	xhttp_send("get_device_values");
 	temperature_set_color();
 }
 
 function toggle_bp_mode(bool = null){
-	if (bool != null){//set
+	if (bool != null)//set
 		bp_mode = bool^1;//toogle twice -> set to actual bool value
-	}
 	//toggle
-	if (bp_mode){
-		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
-	}
-	else {
+	if (bp_mode)
 		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_regular.svg";
-	}
+	else
+		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
 	bp_mode = 1^bp_mode;
 }
 
@@ -128,153 +125,62 @@ function tminmax_changed(id){
 * @param request_name used on serverside to create response
 */
 function xhttp_send(request_name){
-	var response = "";
-	// JSON-String erzeugen
 	var json_string = "{"
-	json_string += "\"event\":\"" + event + "\",";
-	json_string += "\"device_id\":\"" + DEVICE_ID + "\"";
-	switch(event){
-		case "reset_active_preset":
-			break;
-		case "get_allvalues":
+	json_string += "\"request_name\":\"" + request_name + "\",";
+	json_string += "\"device_name\":\"" + SENSOR_ID + "\"";
+	switch(request_name){
+		case "get_device_values":
 			json_string += ",\"timeout\":\"" + TIMEOUT + "\"";
 			break;
 
 		case "set_minmaxvalues":
-		// ---------------------------------------------------------------------------------
-		toggle_bp_mode(false);//-> manual mode
-			switch(SENSOR_ID){
-				case "wfo_top":
-					json_string += ",\"temp_min_top\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_top\":\"" + TMAX.value + "\"";
-					break;
-				case "wfo_bottom":
-					json_string += ",\"temp_min_bottom\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_bottom\":\"" + TMAX.value + "\"";
-					break;
-				case "bbq_left":
-					json_string += ",\"temp_min_left\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_left\":\"" + TMAX.value + "\"";
-					break;
-				case "bbq_right":
-					json_string += ",\"temp_min_right\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_right\":\"" + TMAX.value + "\"";
-					break;
-				case "meat":
-					json_string += ",\"temp_min_meat\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_meat\":\"" + TMAX.value + "\"";
-					break;
-			}
+			toggle_bp_mode(false);//-> manual mode because min/max were changed
+			json_string += ",\"temp_min\":\"" + TMIN.value + "\",";
+			json_string += "\"temp_max\":\"" + TMAX.value + "\"";
+			break;
+
+		case "get_active_recipe":
 			break;
 	}
 	json_string += "}";
 	// HTTP-Request an Server schicken
+	var response = "";
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200)
 			response = this.responseText;
-		else
+		else if (this.readyState != 1 || this.status != 0)//weird response exception, wich the browser can handle fine
 			console.log("error or wrong response code");
 	};
-	try
-	{
-		xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + json_string, false);
-		xhttp.send();
-	}
-	catch(err){
-		console.log("Error sending XLMHttpRequest: "+err);
-	}
-}
-
-function xhttp_get_all_values(){
-	// Lesen aller Werte vom Server per HTTP-Request
-	var xhttp = new XMLHttpRequest();
-	var json_response = "";
-	xhttp.onreadystatechange = function() {
-		//console.log("http status: "+ this.status);
-		if (this.readyState == 4 && this.status == 200) {
-			json_response = this.responseText;
-			temperature_refresh(json_response);
-		}
-		else
-			console.log("error or wrong response code");
-
-	}
-	xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + create_get_allvalues("30"), false);
+	xhttp.open("GET", HOMESERVER_URL + "odk_db.php?json=" + json_string, false);
 	xhttp.send();
+	response_handler(request_name, response);
 }
 
-function create_get_allvalues(timeout){
-var json_string = "{"
-	json_string += "\"device_id\":\"" + DEVICE_ID + "\",";
-	json_string += "\"event\":\"get_allvalues\",";
-	json_string += "\"timeout\":\"" + timeout + "\"";
-	json_string += "}";
-	return json_string;
+function response_handler(request_name, response){
+	switch (request_name){
+		case "get_device_values":
+			temperature_refresh(response);
+			break;
+		case "get_active_recipe":
+		set_Active_Recipe(response);
+			break;
+		}
 }
-// TODO improve request for device and not getting all values always \/
+
 function temperature_refresh(json_obj){
 	var json_obj = JSON.parse(json_obj);
 	// aktuelle Temperatur und Min-Max-Werte anzeigen
-	switch(SENSOR_ID){
-		case "wfo_top":
-			TACT.innerHTML = json_obj.temp_act_top;
-			if (!bp_mode){
-				TMIN.value = json_obj.temp_min_top;
-				TMAX.value = json_obj.temp_max_top;
-			}
-			break;
-		case "wfo_bottom":
-			TACT.innerHTML = json_obj.temp_act_bottom;
-			if (!bp_mode){
-				TMIN.value = json_obj.temp_min_bottom;
-				TMAX.value = json_obj.temp_max_bottom;
-			}
-			break;
-		case "bbq_left":
-			TACT.innerHTML = json_obj.temp_act_left;
-			if (!bp_mode){
-				TMIN.value = json_obj.temp_min_left;
-				TMAX.value = json_obj.temp_max_left;
-			}
-			break;
-		case "bbq_right":
-			TACT.innerHTML = json_obj.temp_act_right;
-			if (!bp_mode){
-				TMIN.value = json_obj.temp_min_right;
-				TMAX.value = json_obj.temp_max_right;
-			}
-			break;
-		case "meat":
-			TACT.innerHTML = json_obj.temp_act_meat;
-			if (!bp_mode){
-				TMIN.value = json_obj.temp_min_meat;
-				TMAX.value = json_obj.temp_max_meat;
-			}
-			break;
+
+	TACT.innerHTML = json_obj.temp_act;
+	if (!bp_mode){
+		TMIN.value = json_obj.temp_min;
+		TMAX.value = json_obj.temp_max;
 	}
 }
 //----------------------------
 //---- BP_MODE handling ------
 //----------------------------
-function get_active_recipe(){
-	xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			json_response = this.responseText;
-			set_Active_Recipe(json_response);
-		}
-		else if (this.status != 0)
-			console.log("error or wrong response code: " + this.status);
-	}
-	xhttp.open("GET", recipeRequest(), false);
-	xhttp.send();
-}
-function recipeRequest(){
-	request =  "http://localhost/HomeDashboard/odk_db.php?json={"
-	request += "\"request_name\":\"get_active_recipe\"}";
-	return request;
-}
 
 /**
 * response handler

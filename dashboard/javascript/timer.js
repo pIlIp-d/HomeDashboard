@@ -30,12 +30,8 @@ function http_request(request_name, value = null){
 			case "get_timer":
 				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
 				break;
-			case "get_bp_timer":
-				json_string += ",\"bp_time\":\""+value+"\"";
+			case "get_active_recipe":
 				break;
-			case "get_active_bakinplan":
-				get_active_bakinplan();
-				return;//only redundancy -> request itself is called inside function
 		}
 		json_string += "}";
 		var json_response;
@@ -44,23 +40,9 @@ function http_request(request_name, value = null){
 			if (this.readyState == 4 && this.status == 200)
 				json_response = this.responseText;
 		}
-		xhttp.open("GET", TIMER_HANDLER+ "?json="+json_string,false);
+		xhttp.open("GET", HOMESERVER_URL+ "odk_db.php?json="+json_string,false);
 		xhttp.send();
 		handleHTTPresponse(request_name,json_response);
-}
-
-function get_active_recipe(){
-	let json_response;
-	var request_name = "get_active_recipe";
-	var json_string = "{\"request_name\":\""+ request_name +"\"}";
-	let xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200)
-			json_response = this.responseText;
-	}
-	xhttp.open("GET", HOMESERVER_URL + "odk_db.php?json=" + json_string, false);
-	xhttp.send();
-	handleHTTPresponse(request_name,json_response);
 }
 
 /**
@@ -81,11 +63,8 @@ function handleHTTPresponse(request_name,json_response){
 				alert("Fehler beim Timer löschen!")
 			break;
 
-		case "get_bp_timer"://do the same as below
 		case "get_timer":
-			if (json_response != 204){
-				var timenow = new Date();
-				timenow = parseInt(timenow.getTime());
+				var timenow = new Date().getTime();
 				var diff = Math.round((json_response - timenow) / 1000);
 				if (diff > 0){
 					//Timer-Uhr setzten
@@ -95,13 +74,9 @@ function handleHTTPresponse(request_name,json_response){
 					set_timer_values();
 					btn_start(false);
 				}
-				else {
-				console.log("here he comes");
-				btn_stop();
+				else{
+					btn_stop();
 				}
-			}
-			else
-				btn_stop();
 			break;
 
 		case "get_active_recipe":
@@ -134,7 +109,7 @@ function reset_timer(){
 		TIMER_HOUR.options = 0;
 		TIMER_MINUTE.options = 0;
 		TIMER_SECOND.options = 0;
-		for (let i = 0; i < 60; ++i) {
+		for (let i = 1; i <= 60; ++i) {
 			i_string = ((i < 10)?"0":"")+ i.toString();//zahl zu 2 stelligen string (1->01)
 			if (i < 24)
 				TIMER_HOUR.options[TIMER_HOUR.options.length] = new Option(i_string);
@@ -165,6 +140,7 @@ function reset_timer(){
 														parseInt(TIMER_SECOND.value)) * 1000;//ms -> sec
 			// Timer-Ende per http-Request auf Server schreiben (neuen Timer anlegen)
 			http_request("set_timer", srv_timerstop);
+			console.log("time: "+srv_timerstop);
 		}
 		TIMER_START.style.display = "none";
 		TIMER_STOP.style.display = "block";
@@ -186,7 +162,7 @@ function toggle_bp_mode(bool = null){
 	if (bool != null)//set manually instead of toggle
 		bp_mode = bool;
 	if (!bp_mode){
-		get_active_recipe();
+		http_request("get_active_recipe");
 		http_request("set_timer",(new Date().getTime() + 1000*60*bakingtime));//currenttime + bakingtime (and convert from min to ms)
 		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
 	}

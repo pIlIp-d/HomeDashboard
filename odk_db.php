@@ -279,6 +279,11 @@
 						echo json_decode($result)[0]->id;
 		      break;
 
+			  case "get_preset_ids":
+			  		$sql = "SELECT id FROM `presets` order by `id`";
+			  		echo sql_request_encode_json($dbcon, $sql);
+			  	break;
+
 			  case "get_all_recipes":
 					$sql = "SELECT id, name FROM `recipes` order by `name`";
 					echo sql_request_encode_json($dbcon, $sql);
@@ -326,15 +331,15 @@
 					$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
 					$sql = "DELETE FROM presets WHERE presets.id = $preset_id";
 					sql_request($dbcon, $sql);
+					//delete the timers associated with the preset
+					$sql = "DELETE FROM timers WHERE timers.preset_id = $preset_id";
+					sql_request($dbcon, $sql);
 					echo "OK";
 				break;
 
 			case "insert_device":
-					$name = mysqli_real_escape_string($dbcon, $json_decoded->name);
-					$temp_act = mysqli_real_escape_string($dbcon, $json_decoded->temp_act);
-					$temp_min = mysqli_real_escape_string($dbcon, $json_decoded->temp_min);
-					$temp_max = mysqli_real_escape_string($dbcon, $json_decoded->temp_max);
-					$sql = "INSERT INTO devices (`id`, `name`, `temp_act`, `temp_min`, `temp_max`) VALUES (NULL, '$name', '$temp_act', '$temp_min', '$temp_max')";
+					$name = mysqli_real_escape_string($dbcon, $json_decoded->device_name);
+					$sql = "INSERT INTO devices (`id`, `name`) VALUES (NULL, '$name')";
 					sql_request($dbcon, $sql);
 					echo "OK";
 				break;
@@ -347,39 +352,100 @@
 				break;
 
 			case "set_act_temp":
-					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+			//@param (device_name OR device_id) + temp_act
 					$temp_act = mysqli_real_escape_string($dbcon, $json_decoded->temp_act);
-					$timecode = mysqli_real_escape_string($dbcon, $json_decoded->timecode);
-					$sql = "UPDATE devices SET devices.temp_act = $temp_act WHERE devices.id = $device_id";
+					$timecode = time();
+					$timestring = date("d.m.Y-H:i:s", $timecode);
+					$sql =  "UPDATE devices SET devices.temp_act = $temp_act, devices.timecode = $timecode, devices.timestring = '$timestring' ";
+					if (isset($json_decoded->device_id)){
+						$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+						$sql .= "WHERE devices.id = $device_id";
+					}
+					else {
+						$device_name = mysqli_real_escape_string($dbcon, $json_decoded->device_name);
+						$sql .= "WHERE devices.name = '$device_name'";
+					}
 					sql_request($dbcon, $sql);
 					echo "OK";
 				break;
 
 			case "get_device_values":
-					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
-					$sql = "SELECT id, name, temp_act, temp_min, temp_max FROM devices WHERE devices.id = $device_id";
-					$resp = sql_request_encode_json($dbcon, $sql);
-					if ($resp->)
-					echo $resp;
+			//@param (device_id OR device_name) AND timout(optional, default timeout = 50)
+					$sql = "SELECT id, name, temp_act, temp_min, temp_max, timecode FROM devices ";
+					if (isset($json_decoded->device_id)){
+						$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+						$sql .= "WHERE devices.id = $device_id";
+					}
+					else {
+						$device_name = mysqli_real_escape_string($dbcon, $json_decoded->device_name);
+						$sql .= "WHERE devices.name = '$device_name'";
+					}
+					$timeout = 50;
+					if (isset($json_decoded->$timeout))
+						$timeout = mysqli_real_escape_string($dbcon, $json_decoded->timeout);
+					$resp = json_decode(sql_request_encode_json($dbcon, $sql))["0"];
+					if ($resp->timecode + $timeout  < time())
+						$resp->temp_act = "--";
+					echo json_encode($resp);
 				break;
 
 			case "get_all_devices":
+				//not tested
 				$sql = "SELECT id, name FROM devices";
 				sql_request($dbcon, $sql);
 				echo "OK";
 				break;
 
 			case "set_minmaxvalues":
-					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+				//@param temp_min, temp_max AND (device_id OR device_name)
 					$temp_min = mysqli_real_escape_string($dbcon, $json_decoded->temp_min);
 					$temp_max = mysqli_real_escape_string($dbcon, $json_decoded->temp_max);
-					$sql = "UPDATE devices SET devices.temp_min = '$temp_min, devices.temp_max = $temp_max WHERE device.id = $device_id";
+					$sql = "UPDATE devices SET devices.temp_min = '$temp_min', devices.temp_max = '$temp_max' ";
+					if (isset($json_decoded->device_id)){
+						$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+						$sql .= "WHERE devices.id = $device_id";
+					}
+					else {
+						$device_name = mysqli_real_escape_string($dbcon, $json_decoded->device_name);
+						$sql .= "WHERE devices.name = '$device_name'";
+					}
 					sql_request($dbcon, $sql);
 					echo "OK";
 				break;
 
+			case "set_timer":
+				$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
+				$timer_id = mysqli_real_escape_string($dbcon, $json_decoded->timer_id);
+				$time = mysqli_real_escape_string($dbcon, $json_decoded->time);
+				$sql = "IF EXISTS(SELECT id FROM timers WHERE timers.preset_id = $preset_id AND timers.timer_id = $timer_id) THEN
+								UPDATE timers SET timers.time = $time WHERE timers.preset_id = $preset_id AND timers.timer_id = $timer_id;
+							ELSE
+								INSERT INTO timers (`id`, `preset_id`, `timer_id`, `time`) VALUES (NULL, $preset_id, $timer_id, $time);
+							END IF";
+				sql_request($dbcon, $sql);
+				echo "OK";
+				break;
+
+			case "del_timer":
+				$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
+				$timer_id = mysqli_real_escape_string($dbcon, $json_decoded->timer_id);
+				$timecode = time();
+				$sql = "UPDATE timers SET time = $timecode WHERE timers.preset_id = $preset_id AND timers.timer_id = $timer_id;";
+				sql_request($dbcon, $sql);
+				echo "OK";
+				break;
+
+			case "get_timer":
+				$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
+				$timer_id = mysqli_real_escape_string($dbcon, $json_decoded->timer_id);
+				$sql = "SELECT time FROM timers WHERE timers.preset_id = $preset_id AND timers.timer_id = $timer_id;";
+				$resp = sql_request_encode_json($dbcon, $sql);
+				echo json_decode($resp)[0]->time;
+				break;
+
 			case "send_message"://send mail message through python
-				$message = "python libs/mail.py \"";
+			//not tested
+				$message = "python libs/export_mail.py \"";
 				if ($json_decoded->message != "")
 					$message .= $json_decoded->message;
 				else
