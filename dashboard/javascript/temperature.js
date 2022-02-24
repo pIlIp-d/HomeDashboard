@@ -4,6 +4,7 @@ const DEVICE_ID = "odk";
 var SENSOR_ID = "";
 
 const HOMESERVER_URL = "/HomeDashboard/";
+const DB_URL = HOMESERVER_URL + "odk_db.php";
 const INTERVALL_MAIN_TICKER = 1000;
 const TIMEOUT = 30;
 
@@ -152,7 +153,7 @@ function xhttp_send(request_name){
 		else if (this.readyState != 1 || this.status != 0)//weird response exception, wich the browser can handle fine
 			console.log("error or wrong response code");
 	};
-	xhttp.open("GET", HOMESERVER_URL + "odk_db.php?json=" + json_string, false);
+	xhttp.open("GET", DB_URL + "?json=" + json_string, false);
 	xhttp.send();
 	response_handler(request_name, response);
 }

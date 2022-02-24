@@ -1,7 +1,7 @@
 //TODO bp timer button -> new normal timer at that position is created
 
 const HOMESERVER_URL= "/HomeDashboard/";
-const TIMER_HANDLER = HOMESERVER_URL+"dashboard/timer_handler.php";
+const DB_URL = HOMESERVER_URL + "odk_db.php";
 const DEVICE_ID = "001";
 const DEVICE_NAME = "Backofen";
 
@@ -16,7 +16,6 @@ var bakingtime;
 * @param value used for single values in some requests
 */
 function http_request(request_name, value = null){
-	console.log("request: "+request_name+" p_id"+PRESET_ID+" t_id: "+TIMER_ID);
 		var json_string = "{\"request_name\":\""+request_name+"\"";
 		json_string += ",\"preset_id\":\""+PRESET_ID+"\"";
 		switch (request_name){
@@ -40,7 +39,7 @@ function http_request(request_name, value = null){
 			if (this.readyState == 4 && this.status == 200)
 				json_response = this.responseText;
 		}
-		xhttp.open("GET", HOMESERVER_URL+ "odk_db.php?json="+json_string,false);
+		xhttp.open("GET", DB_URL + "?json="+json_string,false);
 		xhttp.send();
 		handleHTTPresponse(request_name,json_response);
 }
@@ -74,15 +73,12 @@ function handleHTTPresponse(request_name,json_response){
 					set_timer_values();
 					btn_start(false);
 				}
-				else{
+				else
 					btn_stop();
-				}
 			break;
 
 		case "get_active_recipe":
-			console.log(json_response);
 			bakingtime = JSON.parse(json_response)[0].bakingtime;
-			console.log("b_time" + bakingtime);
 			break;
 	}
 }
@@ -140,7 +136,6 @@ function reset_timer(){
 														parseInt(TIMER_SECOND.value)) * 1000;//ms -> sec
 			// Timer-Ende per http-Request auf Server schreiben (neuen Timer anlegen)
 			http_request("set_timer", srv_timerstop);
-			console.log("time: "+srv_timerstop);
 		}
 		TIMER_START.style.display = "none";
 		TIMER_STOP.style.display = "block";

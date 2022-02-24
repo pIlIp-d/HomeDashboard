@@ -466,9 +466,6 @@ class Presets extends Array{ //grid configuration presets
 		}
 	}
 	action(value,name){//@param value currently unused, @function button handling
-		console.log(this.last_preset);
-		console.log();
-
 		switch(name){
 			case "null":
 				break;
@@ -491,7 +488,8 @@ class Presets extends Array{ //grid configuration presets
 			case "save":
 				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.preset_names[this.last_preset]+"' speichern?"))
 					this.request("save_preset",this.last_preset);
-
+				else
+					alert("Das Preset 'Empty' kann nicht überschrieben werden.");
 				break;
 			case "load":
 				if (this.last_preset != null)
