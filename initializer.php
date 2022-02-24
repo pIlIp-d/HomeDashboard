@@ -1,5 +1,12 @@
 <?php
 
+//User for DB
+$username = "sql";
+$password = "your_password";
+
+$dbname =  "datenbankname";
+$servername = "localhost";
+
 function connect_database(){
     global $conn, $servername, $high_priviledge_user, $high_priviledge_user_password;
     $conn = new mysqli($servername, $high_priviledge_user, $high_priviledge_user_password);
@@ -91,9 +98,9 @@ function create_table($table_name){
         echo "<br>Table '$table_name' created successfully.";
     else {
         if (mysqli_error($conn) == "OK")
-            echo $table_name."was created successfully.";
+            echo "<br>".$table_name."was created successfully.";
         else
-            echo mysqli_error($conn);
+            echo "<br>".mysqli_error($conn);
     }
 }
 
@@ -142,6 +149,7 @@ function create_examples(){
                             "{\"request_name\":\"insert_device\",\"device_name\":\"meat\"}"
 
                         );
+    ob_start();
     foreach ($json_strings as $key => $json){
         if ($key == 0){
             $_GET["json"] = $json;
@@ -152,17 +160,11 @@ function create_examples(){
             make_request($json_decoded->request_name);
         }
     }
+    echo str_replace(ob_get_clean(),"OK","");
+    echo "<br>created example data";
 }
 
 //TODO UI
-
-//User for DB
-$credentials = json_decode(file_get_contents("cred.json"))->db_cred;//To be changed to html UI
-$username = $credentials->username;
-$password =  $credentials->password;
-
-$dbname =  "DatenbankTest";
-$servername = "localhost";
 
 //user for creating /initialising tables
 $high_priviledge_user = "root";
@@ -181,8 +183,6 @@ create_table("devices");
 create_table("timers");
 safe_credentials();
 create_examples();
-
-
 
 $conn->close();
 

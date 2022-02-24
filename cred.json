@@ -1,12 +1,14 @@
-{
-    "db_cred": {
+
+    {
+      "db_cred": {
         "username": "sql",
         "password": "your_password",
-        "db_name": "DatenbankTest"
-    },
-    "mail_cred": {
-        "username": "",
-        "password": "",
-        "server": ""
+        "db_name": "datenbankname"
+      },
+      "mail_cred": {
+          "username": "",
+          "password": "",
+          "server": ""
+      }
     }
-}
+    
