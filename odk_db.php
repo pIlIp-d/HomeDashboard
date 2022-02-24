@@ -1,6 +1,8 @@
 <?php
 	// GET-Variable einlesen
+
 	$json_string = $_GET["json"];
+	global $json_decoded;
 	$json_decoded = json_decode($json_string);
 	make_request($json_decoded->request_name);
 
@@ -22,12 +24,12 @@
 		GLOBAL $json_decoded;
 		switch ($request_name){
 			case "get_recipe_data":
-				$id = $json_decoded->id;
+				$id = mysqli_real_escape_string($dbcon, $json_decoded->id);
 				$sql = "SELECT `id`, `name`, `bakingtime`, `bakingtemperature`, `preparation` FROM `recipes` WHERE id = '$id'";
 				echo sql_request_encode_json($dbcon, $sql);
 		      break;
 		    case "get_recipe_ingredients":
-				$id = $json_decoded->id;
+				$id = mysqli_real_escape_string($dbcon, $json_decoded->id);
 				$sql = "SELECT ri.amount AS amount, i.name AS name, ri.id AS ri_id, i.id AS i_id FROM `recipes` AS `r` INNER JOIN `recipes_ingredients` AS `ri` ON ri.recipes_id = r.id INNER JOIN `ingredients` AS `i` ON i.id = ri.ingredients_id WHERE r.id = '$id'";
 				echo sql_request_encode_json($dbcon, $sql);
 		      break;
@@ -90,8 +92,7 @@
 				$i_id = mysqli_real_escape_string($dbcon, $json_decoded->i_id);
 				$sql = "INSERT INTO `recipes_ingredients` (`id`, `recipes_id`, `ingredients_id`, `amount`) VALUES (NULL, '$rec_id', '			$i_id', '')";
 				$result = sql_request($dbcon, $sql);
-				foreach($result as $row)
-					echo "OK";
+				echo "OK";
 		      break;
 
 			case "remove_ingredient_from_recipe":
@@ -118,7 +119,7 @@
 			  break;
 
 		    case "get_list_of_recipes":
-						$id_list = $json_decoded->id_list;
+						$id_list = mysqli_real_escape_string($dbcon, $json_decoded->id_list);
 						$count = mysqli_real_escape_string($dbcon, $json_decoded->count);
 						$filtermode = mysqli_real_escape_string($dbcon, $json_decoded->filtermode);
 
@@ -175,6 +176,7 @@
 					break;
 
 		   	case "insert_bakingplan":
+
 						$bp_name = mysqli_real_escape_string($dbcon, $json_decoded->bp_name);
 						$sql = "INSERT INTO `bakingplans` (`id`, `name`, `type`) VALUES (NULL, '$bp_name', '')";
 						mysqli_report(MYSQLI_REPORT_ALL);//übernahme ohne test ob notwendig
@@ -277,13 +279,120 @@
 						echo json_decode($result)[0]->id;
 		      break;
 
-		  case "get_all_recipes":
-						$sql = "SELECT id, name FROM `recipes` order by `name`";
-						echo sql_request_encode_json($dbcon, $sql);
-		      break;
+			  case "get_all_recipes":
+					$sql = "SELECT id, name FROM `recipes` order by `name`";
+					echo sql_request_encode_json($dbcon, $sql);
+			      break;
+
+			  case "get_all_presets":
+  					$sql = "SELECT id, name, grid_object_v, grid_object_h FROM `presets` order by `id`";
+  					$resp = json_decode(sql_request_encode_json($dbcon, $sql));
+					foreach ($resp as $key => $w){//return grid object v/h as object instead of string
+						$resp[$key]->grid_object_v = json_decode($resp[$key]->grid_object_v);
+						$resp[$key]->grid_object_h = json_decode($resp[$key]->grid_object_h);
+					}
+					echo json_encode($resp);
+				  break;
+
+			 	case "get_preset":
+			  		$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
+			  	  	$sql = "SELECT id, name, grid_object_v, grid_object_h FROM presets WHERE `presets`.`id` = $preset_id";
+					$resp = json_decode(sql_request_encode_json($dbcon, $sql))[0];
+					$resp->grid_object_v = json_decode($resp->grid_object_v);
+					$resp->grid_object_h = json_decode($resp->grid_object_h);
+					echo json_encode($resp);
+			  	break;
+
+			  case "set_new_preset":
+			  		$preset_name = mysqli_real_escape_string($dbcon, $json_decoded->preset_name);
+			  		$grid_object_v = mysqli_real_escape_string($dbcon, json_encode($json_decoded->grid_object_v));
+			  		$grid_object_h = mysqli_real_escape_string($dbcon, json_encode($json_decoded->grid_object_h));
+					$sql = "INSERT INTO presets (`id`, `name`, `grid_object_v`, `grid_object_h`) VALUES (NULL, '$preset_name', '$grid_object_v', '$grid_object_h')";
+					sql_request($dbcon, $sql);
+					echo "OK";
+			      break;
+
+			case "save_preset":
+					$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
+					$preset_name = mysqli_real_escape_string($dbcon, $json_decoded->preset_name);
+					$grid_object_v = mysqli_real_escape_string($dbcon, json_encode($json_decoded->grid_object_v));
+					$grid_object_h = mysqli_real_escape_string($dbcon, json_encode($json_decoded->grid_object_h));
+					$sql = "UPDATE presets SET name = '$preset_name', grid_object_v = '$grid_object_v',  grid_object_h = '$grid_object_h' WHERE presets.id = '$preset_id'";
+					sql_request($dbcon, $sql);
+					echo "OK";
+				break;
+
+			case "delete_preset":
+					$preset_id = mysqli_real_escape_string($dbcon, $json_decoded->preset_id);
+					$sql = "DELETE FROM presets WHERE presets.id = $preset_id";
+					sql_request($dbcon, $sql);
+					echo "OK";
+				break;
+
+			case "insert_device":
+					$name = mysqli_real_escape_string($dbcon, $json_decoded->name);
+					$temp_act = mysqli_real_escape_string($dbcon, $json_decoded->temp_act);
+					$temp_min = mysqli_real_escape_string($dbcon, $json_decoded->temp_min);
+					$temp_max = mysqli_real_escape_string($dbcon, $json_decoded->temp_max);
+					$sql = "INSERT INTO devices (`id`, `name`, `temp_act`, `temp_min`, `temp_max`) VALUES (NULL, '$name', '$temp_act', '$temp_min', '$temp_max')";
+					sql_request($dbcon, $sql);
+					echo "OK";
+				break;
+
+			case "delete_device":
+					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+					$sql = "DELETE FROM devices WHERE devices.id = $device_id";
+					sql_request($dbcon, $sql);
+					echo "OK";
+				break;
+
+			case "set_act_temp":
+					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+					$temp_act = mysqli_real_escape_string($dbcon, $json_decoded->temp_act);
+					$timecode = mysqli_real_escape_string($dbcon, $json_decoded->timecode);
+					$sql = "UPDATE devices SET devices.temp_act = $temp_act WHERE devices.id = $device_id";
+					sql_request($dbcon, $sql);
+					echo "OK";
+				break;
+
+			case "get_device_values":
+					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+					$sql = "SELECT id, name, temp_act, temp_min, temp_max FROM devices WHERE devices.id = $device_id";
+					$resp = sql_request_encode_json($dbcon, $sql);
+					if ($resp->)
+					echo $resp;
+				break;
+
+			case "get_all_devices":
+				$sql = "SELECT id, name FROM devices";
+				sql_request($dbcon, $sql);
+				echo "OK";
+				break;
+
+			case "set_minmaxvalues":
+					$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
+					$temp_min = mysqli_real_escape_string($dbcon, $json_decoded->temp_min);
+					$temp_max = mysqli_real_escape_string($dbcon, $json_decoded->temp_max);
+					$sql = "UPDATE devices SET devices.temp_min = '$temp_min, devices.temp_max = $temp_max WHERE device.id = $device_id";
+					sql_request($dbcon, $sql);
+					echo "OK";
+				break;
+
+			case "send_message"://send mail message through python
+				$message = "python libs/mail.py \"";
+				if ($json_decoded->message != "")
+					$message .= $json_decoded->message;
+				else
+					$message .= "\"empty message - at json_handler\"";
+				$message .= "\"";
+				$command = escapeshellcmd($message);
+				shell_exec($command);
+				echo "OK";
+				break;
 
 		  case "???":
 		        break;
+
 		}
 	}
 	function sql_request_encode_json($dbcon, $sql_request){

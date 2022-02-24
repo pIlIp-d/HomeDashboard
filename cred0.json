@@ -1,0 +1,7 @@
+{
+  "db_cred": {
+    "username": "sql",
+    "password": "your_password",
+    "db_name": "wfoven"
+  }
+}

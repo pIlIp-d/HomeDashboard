@@ -1,7 +1,12 @@
 {
-  "db_cred": {
-    "username": "sql",
-    "password": "your_password",
-    "db_name": "wfoven"
-  }
+    "db_cred": {
+        "username": "sql",
+        "password": "your_password",
+        "db_name": "DatenbankTest"
+    },
+    "mail_cred": {
+        "username": "",
+        "password": "",
+        "server": ""
+    }
 }

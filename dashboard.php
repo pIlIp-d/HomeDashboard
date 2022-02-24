@@ -7,7 +7,7 @@
 	<!--LICENSE in LICENCE.md of CKEditor-editor-inline-->
 	<script src="libs/ckeditor5-editor-inline/inline-editor.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="icon" type="image/png" href="images/Holzbackofen_32x32.png" sizes="32x32">
 	<link rel="icon" type="image/png" href="images/Holzbackofen_96x96.png" sizes="96x96">
 	<link rel="apple-touch-icon" sizes="180x180" href="images/Holzbackofen_180x180.png">
@@ -17,7 +17,7 @@
 
 <body class="unselectable" id="body" onscroll="body_onscroll()">
 	<?php
-		$preset = 1;
+		$preset = 2;
 		if (isset($_GET["preset"])) {
 			$preset = $_GET["preset"];
 		}
@@ -35,7 +35,7 @@ Slide-over / Settings
 
 	<div class="settings-menu unselectable" id="settings-menu" >
 		<span class="settings-menu-content" id="head-container">
-			
+
 			<input type="button" class="button" id="button_back" onclick="click_sidebar('button');" value=" Back ">
 			<input type="button" class="button" id="add_button" onclick="grid.add_element()" value=" Add ">
 			<input type="button" class="button" id="move_button" onclick="mode='move';grid.update();click_sidebar('move');" value=" Move ">
@@ -46,7 +46,7 @@ Slide-over / Settings
 				</select>
 				<select class="select settings-menu-content" id="select_size">
 					<option value='null'>- choose size -</option>
-				</select>	
+				</select>
 				<br>
 				<!--load-->
 				<input type="button" style="left:0;" class="button" value=" Load " onclick="presets.action('','load');">
@@ -58,8 +58,8 @@ Slide-over / Settings
 				<select class="select" id="select_preset" style="margin-top: 1.5rem">
 					<option value='null' id="null">- select preset -</option>
 				</select>
-				
-			</div>	
+
+			</div>
 		</span>
 	</div>
 
@@ -72,4 +72,3 @@ Slide-over / Settings
 </html>
 
 <!-- TODO only full http requests when server says something has changed -->
-

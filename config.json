@@ -15,21 +15,6 @@
       }
     },
     {
-        "name": "bakingplan_timer",
-        "display_name": "Bakingplan Timer",
-        "default": {
-          "filename": "odk_timer_wfo.php",
-          "type": "timer",
-          "sizes": "12,13,14,24,34",
-          "bp_affected":"true"
-        },
-        "special": {
-          "filename": "odk_timer_wfo_quadrat.html",
-          "sizes": "11,44",
-          "bp_affected":"true"
-        }
-    },
-    {
       "name": "odk_timer",
       "display_name": "Timer",
       "default": {
@@ -37,6 +22,11 @@
         "type": "timer",
         "sizes": "12,13,14,24,34",
         "bp_affected":"false"
+      },
+      "special": {
+        "filename": "odk_timer_wfo_quadrat.html",
+        "sizes": "11,44",
+        "bp_affected":"true"
       }
     },
     {

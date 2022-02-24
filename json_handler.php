@@ -11,7 +11,7 @@
 //--------------------------------------------------------------------------
 // JSON decryption if "data" exists -> only ESP requests
 //--------------------------------------------------------------------------
-	if (isset($json_decoded->data)) {
+	if (isset($json_decoded->data)) {//TODO remove XOR "encryption"
 		//get ecrypted and b64encoded data
 		$b64str = $json_decoded->data;
 		//convert base64 to string
@@ -145,16 +145,7 @@
 			$content_decoded->timer_stop_bbq = "";
       break;
     case "send_message":
-    		$message = "python libs/mail.py \"";
-   			if ($json_decoded->message != "") {
-   				$message .= $json_decoded->message;
-   			}
-    		else {
-				$message .= "\"empty message - at json_handler\"";
-			}
-			$message .= "\"";
-			$command = escapeshellcmd($message);
-			shell_exec($command);
+
       break;
 	}
 	// JSON kodieren

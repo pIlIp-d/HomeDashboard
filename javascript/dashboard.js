@@ -339,12 +339,12 @@ class Presets extends Array{ //grid configuration presets
 	constructor(){
 		super();
 		this.last_preset = null;//last selected preset id null,1,2...
-		this.profile_names = [];
+		this.preset_names = [];
 	}
 	init(){
 		this.standard_value = document.getElementById("preset").innerHTML;
-		this.last_preset = this.standard_value;
 		this.get_all_presets();
+		this.last_preset = (this.preset_names.length >= this.standard_value)?this.standard_value:1;//checks if standart value is a possible preset id to start with else just use empty preset
 		this.get_preset(this.standard_value);
 	}
 	get_all_presets(){
@@ -365,7 +365,7 @@ class Presets extends Array{ //grid configuration presets
 			}
 		}
 		try{
-			xhttp.open("GET", "http://"+server+home_dir+"/json_handler_user_agent.php?json=" + this.create_request(request,value), false);
+			xhttp.open("GET", "http://"+server+home_dir+"/odk_db.php?json=" + this.create_request(request,value), false);
 			xhttp.send();
 			this.response_handler(json_response, request);
 		}
@@ -375,34 +375,28 @@ class Presets extends Array{ //grid configuration presets
 	}
 
 	create_request(request,value){
-		console.log(JSON.stringify(this.profile_names)+" "+request + " "+this.last_preset);
-		console.log(this.profile_names);
-		var json_string = "{\"event\":\""+request+"\"";
+		console.log(JSON.stringify(this.preset_names)+" "+request + " "+this.last_preset);
+		console.log(this.preset_names);
+		var json_string = "{\"request_name\":\""+request+"\"";
 		switch (request){
-			case "save_preset":
-			case "set_new_preset": //set new and save
-				var id, name;
-				if (value === "set_new_preset"){
-					id = "new";
-					name = value;
-				}
-				else {
-
-					name = this.profile_names[this.last_preset];
-					id = this.last_preset;
-				}
-				json_string += ",\"profile_id\":\""+id+"\"";
-				json_string += ",\"profile_name\":\"" + name +"\"";
-				json_string += ",\"grid_object_v\":"+ JSON.stringify(grid_vertical) +"";
-				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal) +"";
+			case "set_new_preset":
+				json_string += ",\"preset_name\":\""+ value +"\"";
+				json_string += ",\"grid_object_v\":"+ JSON.stringify(grid_vertical);
+				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal);
+				break;
+			case "save_preset": //set new preset
+				json_string += ",\"preset_id\":\""+ this.last_preset +"\"";
+				json_string += ",\"preset_name\":\""+ this.preset_names[this.last_preset] +"\"";
+				json_string += ",\"grid_object_v\":"+ JSON.stringify(grid_vertical);
+				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal);
 				break;
 			case "delete_preset": //deletes selected preset
-				json_string += ",\"profile_id\":\""+ value +"\"";
+				json_string += ",\"preset_id\":\""+ value +"\"";
 				break;
 			case "get_all_presets": //returns all preset names
 				break;
 			case "get_preset": //returns all preset values of specific preset
-				json_string += ",\"profile_id\":\""+ this.last_preset +"\"";
+				json_string += ",\"preset_id\":\""+ this.last_preset +"\"";
 				break;
 		}
 		json_string += "}";
@@ -414,8 +408,8 @@ class Presets extends Array{ //grid configuration presets
 		var html = "<option value='null' id='null'>- select preset -</option>";
 		for (var i = 0; i < response.length; i++){
 			if (response[i] != "" && response[i] != null){
-				this.profile_names[i] = response[i].profile_name;
-				html += "<option value='"+i+"' id='element' >"+ response[i].profile_name +"</option>";
+				this.preset_names[i] = response[i].name;
+				html += "<option value='"+i+"' id='element' >"+ response[i].name +"</option>";
 			}
 		}
 		html += "<option value='"+i+"' id='new'>save as new preset</option>";
@@ -425,6 +419,7 @@ class Presets extends Array{ //grid configuration presets
 		if (request == "get_preset"){
 			//set the response values in active dashboard
 			var response = JSON.parse(json_response);
+			console.log(response);
 			if (response["grid_object_v"] != "" && response["grid_object_v"] != null &&
 				response["grid_object_h"] != "" && response["grid_object_h"] != null){
 				grid_vertical.reset();
@@ -453,10 +448,15 @@ class Presets extends Array{ //grid configuration presets
 			grid.update();
 			console.log(grid);
 		}
-		else if (request == "get_all_presets")
+		else if (request == "get_all_presets"){
+			console.log(json_response);
+			console.log(JSON.parse(json_response));
+
 			this.createHTML(json_response);
+		}
 		else
 			this.request("get_all_presets","");
+
 	}
 	action(value,name){//@param value currently unused, @function button handling
 		console.log(this.last_preset);
@@ -467,22 +467,22 @@ class Presets extends Array{ //grid configuration presets
 				break;
 			case "new":
 				let value = prompt("Bitte einen Namen für das Preset eingeben!");
-				if (value != null && value != "" && !Object.values(this.profile_names).includes(value))
+				if (value != null && value != "" && !Object.values(this.preset_names).includes(value))
 					this.request("set_new_preset",value);
 				else {
-					delete this.profile_names[value];
+					delete this.preset_names[value];
 					alert("Das hat nicht funktioniert!")
 				}
 				break;
 			case "delete":
-				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du wirklich das Preset '"+this.profile_names[this.last_preset]+"' löschen?")){
+				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du wirklich das Preset '"+this.preset_names[this.last_preset]+"' löschen?")){
 					this.request("delete_preset",this.last_preset);
 					this.last_preset = 0;
 					document.getElementById("select_preset").value = "null";
 				}
 				break;
 			case "save":
-				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.profile_names[this.last_preset]+"' speichern?"))
+				if (this.last_preset != null && this.last_preset != 0 && confirm("Möchtest du die Aktuelle Konfiguration in Preset '"+this.preset_names[this.last_preset]+"' speichern?"))
 					this.request("save_preset",this.last_preset);
 
 				break;

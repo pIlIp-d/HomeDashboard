@@ -7,7 +7,6 @@ const DEVICE_NAME = "Backofen";
 
 const BP_BTN = document.getElementById("bp_mode"); //toggle btn for bp_mode
 
-
 var bp_mode = false;
 var bakingtime;
 
@@ -19,15 +18,9 @@ var bakingtime;
 function http_request(request_name, value = null){
 	console.log("request: "+request_name+" p_id"+PRESET_ID+" t_id: "+TIMER_ID);
 		var json_string = "{\"request_name\":\""+request_name+"\"";
-		if (!bp_mode)
-			json_string += ",\"preset_id\":\""+PRESET_ID+"\"";
+		json_string += ",\"preset_id\":\""+PRESET_ID+"\"";
 		switch (request_name){
 			case "del_timer":
-				if (bp_mode){
-					;//TODO message -> next recipe
-					bp_mode = false;
-					return;//?? desnt work todo fix if ...
-				}
 				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
 				break;
 			case "set_timer":
@@ -126,11 +119,7 @@ function set_timer_values(){
 	TIMER_SECOND.value = ((ACT_SECOND < 10)?"0":"")+ ACT_SECOND.toString();
 }
 function check_clock(){
-	if (bp_mode){
-		get_active_recipe();
-		http_request("get_bp_timer",(new Date().getTime() + 1000*60*bakingtime));//currenttime + bakingtime (and convert from min to ms)
-	}
-	else http_request("get_timer");
+	http_request("get_timer");
 }
 function reset_timer(){
 	timer_exists = false;
@@ -196,9 +185,14 @@ function reset_timer(){
 function toggle_bp_mode(bool = null){
 	if (bool != null)//set manually instead of toggle
 		bp_mode = bool;
-	if (!bp_mode)//toggle
+	if (!bp_mode){
+		get_active_recipe();
+		http_request("set_timer",(new Date().getTime() + 1000*60*bakingtime));//currenttime + bakingtime (and convert from min to ms)
 		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
-	else
+	}
+	else {
 		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_regular.svg";
+		btn_stop();
+	}
 	bp_mode = 1^bp_mode;
 }
