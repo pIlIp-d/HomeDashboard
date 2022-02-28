@@ -11,6 +11,10 @@ const TIMEOUT = 30;
 var TACT = document.getElementById("tact_value");
 var TMIN = document.getElementById("tmin_select");
 var TMAX = document.getElementById("tmax_select");
+const canvas = document.getElementById("canvas");
+var canv_context = canvas.getContext("2d");
+
+var temp_history = [];
 
 // @param recipe_id - recipe of active recipe for min/max temp in bp_mode
 var recipe_id;//for recipe temp
@@ -24,6 +28,10 @@ TMIN.addEventListener('change', function(){tminmax_changed("tmin_select")});
 TMAX.addEventListener('change', function(){tminmax_changed("tmax_select")});
 
 function init(){
+	//set canvas width / height
+	canvas.width  = window.screen.availWidth;
+	canvas.height = window.screen.availHeight;
+
 	SENSOR_ID = document.getElementById("sensor_id").innerHTML;
 	change_view();
 	// Headername anpassen
@@ -65,6 +73,7 @@ function tminmax_set_options(target, target_min, target_max){
 }
 
 function interval_main_tick(){
+	draw_temp_graph();
 	if (bp_mode) xhttp_send("get_active_recipe");
 	xhttp_send("get_device_values");
 	temperature_set_color();
@@ -85,6 +94,7 @@ function temperature_set_color(){
 	var tact = parseInt(TACT.innerHTML);
 	var tmin = parseInt(TMIN.value);
 	var tmax = parseInt(TMAX.value);
+
 	document.getElementById("tact_value").style.color = "green";
 	document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_green.svg";
 	document.getElementById("tact_unit").style.color = "green";
@@ -93,11 +103,15 @@ function temperature_set_color(){
 		document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_blue.svg";
 		document.getElementById("tact_unit").style.color = "blue";
 	}
-	if ((tact > tmax) || (TACT.innerHTML == "--")){
+	if (tact > tmax || TACT.innerHTML == "--"){
 		document.getElementById("tact_value").style.color = "red";
 		document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_red.svg";
 		document.getElementById("tact_unit").style.color = "red";
 	}
+	//for drawing the graph
+	temp_history.push([TACT.innerHTML, document.getElementById("tact_value").style.color]);
+	if (temp_history.length > 50)
+		temp_history.shift();//only save the last 50 temps
 }
 
 function tminmax_changed(id){
@@ -166,22 +180,18 @@ function response_handler(request_name, response){
 		case "get_active_recipe":
 		set_Active_Recipe(response);
 			break;
-		}
+	}
 }
 
 function temperature_refresh(json_obj){
 	var json_obj = JSON.parse(json_obj);
 	// aktuelle Temperatur und Min-Max-Werte anzeigen
-
 	TACT.innerHTML = json_obj.temp_act;
 	if (!bp_mode){
 		TMIN.value = json_obj.temp_min;
 		TMAX.value = json_obj.temp_max;
 	}
 }
-//----------------------------
-//---- BP_MODE handling ------
-//----------------------------
 
 /**
 * response handler
@@ -201,4 +211,41 @@ function set_Active_Recipe(json_response){
 	tminmax_set_options(TMIN, 0, temp_max);
 	TMIN.value = temp_min;
 	TMAX.value = temp_max;
+}
+
+function draw_temp_graph(){
+	if (canvas.getContext){
+		//clear
+		canv_context.beginPath();
+		canv_context.clearRect(-10, -10, canvas.width+10, canvas.height+10);
+		canv_context.stroke();
+
+		if (document.getElementById("show").innerHTML == '0'){
+			let width = canvas.width;
+			let height = canvas.height;
+			//get highest temp to make relative height
+			let largest = 0;
+			for (let temp in temp_history){
+				if (temp_history[temp][0] != "--" && temp_history[temp][0] > largest)
+					largest = temp_history[temp][0];
+			}
+			largest = parseInt(largest) + 120;//padding on top
+
+			let one_part = width / 50;//wdth of single datapoint
+			let x = width;
+			let last_temp = 1000;//for seamless line
+			for (let i = temp_history.length-1; i >= 0; i--){
+				if (temp_history[i][0] != '--'){
+					canv_context.lineWidth = 7;
+					canv_context.strokeStyle = temp_history[i][1];
+					canv_context.beginPath();
+					canv_context.moveTo(x + one_part, last_temp);
+					canv_context.lineTo(x, largest - parseInt(temp_history[i][0]));
+					canv_context.stroke();
+					last_temp = largest - parseInt(temp_history[i][0]);
+				}
+				x -= one_part;//move one datapoint to the left
+			}
+		}
+	}
 }

@@ -1,7 +1,7 @@
 //TODO load button in recipies for min/max temp
 
-const server = location.host;
-const home_dir = "/HomeDashboard";
+const HOMESERVER_URL = "/HomeDashboard";
+const DB_URL = HOMESERVER_URL + "/odk_db.php";
 const INTERVALL_MAIN_TICKER = 1000;
 var INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
 var REFRESHED = false;
@@ -48,7 +48,6 @@ class Grid extends Array{
 				while(gaps[i]-->0){
 					for (let all=i;all<this.length;all++)//alle verscchieben von lücke bis ende
 						this[all].pos++;
-
 					this.push(new GridObject("dummy","11",i));
 				}
 				this.update();
@@ -297,7 +296,6 @@ class Widgets{ //all possible properties of widget-types (~ Widget-"presets")
 						widget_sizes = add_string_to_array(widget_sizes,special.sizes);
 				}
 				console.log(widget_sizes);
-
 				this.widgets.push(new Widget(obj.widget[w].name,
 											 obj.widget[w].display_name,
 											 default_,special,widget_sizes
@@ -366,7 +364,7 @@ class Presets extends Array{ //grid configuration presets
 			}
 		}
 		try{
-			xhttp.open("GET", "http://"+server+home_dir+"/odk_db.php?json=" + this.create_request(request,value), false);
+			xhttp.open("GET", DB_URL + "?json=" + this.create_request(request,value), false);
 			xhttp.send();
 			this.response_handler(json_response, request);
 		}

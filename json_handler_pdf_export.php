@@ -9,12 +9,10 @@ if(!empty($_POST['data'])){
     $file1 = "data/".$recipe_name.".txt";
     $file2 = "data/".$recipe_name.".pdf";
 
-    if (!file_exists($file1)){
+    if (!file_exists($file1))
         file_put_contents($file1, "");
-    }
-    if (!file_exists($file2)){
+    if (!file_exists($file2))
         file_put_contents($file2, "");
-    }
 
     $file = fopen($file1, 'r+');
     file_put_contents($file1, base64_decode($json, TRUE));
@@ -31,9 +29,9 @@ if(!empty($_POST['data'])){
         echo $command;
         shell_exec($command);
     }
-} else {
-    echo "No Data Sent";
 }
+else
+    echo "No Data Sent";
 
 //send Types: send Push, send mail(adress), export pdf
 

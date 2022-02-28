@@ -1,13 +1,13 @@
 # HomeDashboard
-A widget system for local web pages. 
+A widget system for local web pages.
 
 Thanks to Michael Oesterreich for letting me contribute to his project.
 He started the project and implemented the MySQL, the first php json handler, the recipe, bakingplan and odk_wfo.php.
-The Dashboard was his idea and he figured out how to use the CSS grid.
+The Dashboard was his idea and he figured out how to use the CSS grid. The sensor and microcontroller program was coded by him as well.
 
 The rest (except [these](#software-license-agreements)) is coded by me.
 
-### Required 
+### Required
 
 Webserver, MySQL, python3(for Mail export)
 I used XAMPP.
@@ -64,7 +64,7 @@ The bakingplans are in `/odk_bakingplan.php`.
 
 # Sensors
 
-ESP32 temperature sensor. 
+ESP32 temperature sensor.
 cpp file `/libs/odk/`
 
 
@@ -79,7 +79,7 @@ Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All 
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
-**CKEditor** is a trademark of [CKSource](http://cksource.com) Frederico Knabben. 
+**CKEditor** is a trademark of [CKSource](http://cksource.com) Frederico Knabben.
 All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
 #
 **jsPDF** - https://github.com/MrRio/jsPDF <br>

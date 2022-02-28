@@ -400,7 +400,7 @@ function request_handling($request_name,$dbcon){
 			if (isset($json_decoded->$timeout))
 				$timeout = mysqli_real_escape_string($dbcon, $json_decoded->timeout);
 			$resp = json_decode(sql_request_encode_json($dbcon, $sql))["0"];
-			if ($resp->timecode + $timeout  < time())
+			if ((int)$resp->timecode + (int)$timeout  < time())
 				$resp->temp_act = "--";
 			echo json_encode($resp);
 			break;
@@ -481,28 +481,28 @@ function request_handling($request_name,$dbcon){
 
 	}
 }
-	function sql_request_encode_json($dbcon, $sql_request){
-		return json_encode(mysqli_fetch_all(sql_request($dbcon, $sql_request),MYSQLI_ASSOC));
-	}
+function sql_request_encode_json($dbcon, $sql_request){
+	return json_encode(mysqli_fetch_all(sql_request($dbcon, $sql_request),MYSQLI_ASSOC));
+}
 
-	function sql_request($dbcon, $sql_request){
-		mysqli_report(MYSQLI_REPORT_ERROR);
-		try {
-			return mysqli_query($dbcon, $sql_request);
-		}
-		catch(mysql_sql_exception $e){
-			error_log($e->__toString() . "------> SQL: " . $sql);
-			echo "DB_ERROR:" . $e->__toString();
-		}
+function sql_request($dbcon, $sql_request){
+	mysqli_report(MYSQLI_REPORT_ERROR);
+	try {
+		return mysqli_query($dbcon, $sql_request);
 	}
+	catch(mysql_sql_exception $e){
+		error_log($e->__toString() . "------> SQL: " . $sql);
+		echo "DB_ERROR:" . $e->__toString();
+	}
+}
 
-	function db_connect($user, $pass, $db){
-		$dbcon = mysqli_connect("localhost", $user, $pass, $db);
-		return($dbcon);
-	}
+function db_connect($user, $pass, $db){
+	$dbcon = mysqli_connect("localhost", $user, $pass, $db);
+	return($dbcon);
+}
 
-	function db_close($dbcon){
-		mysqli_close($dbcon);
-	}
+function db_close($dbcon){
+	mysqli_close($dbcon);
+}
 
 ?>

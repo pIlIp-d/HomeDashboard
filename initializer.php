@@ -7,24 +7,27 @@ $password = "your_password";
 $dbname =  "datenbankname";
 $servername = "localhost";
 
-function connect_database(){
-    global $conn, $servername, $high_priviledge_user, $high_priviledge_user_password;
-    $conn = new mysqli($servername, $high_priviledge_user, $high_priviledge_user_password);
+function connect_database($servername, $user, $password){
+    $conn = new mysqli($servername, $user, $password);
     if ($conn->connect_error)//check connection
       die("Connection failed: " . $conn->connect_error);
+    return $conn;
 }
-function create_database(){
-    global $conn, $dbname, $servername, $high_priviledge_user, $high_priviledge_user_password;
+function create_database($conn, $dbname, $servername, $user, $password){
     $sql = "CREATE DATABASE $dbname";
-    if ($conn->query($sql) === TRUE)
+    if ($conn->query($sql) === TRUE)//=== to exclude error when no bool is returned
         echo "<br>Database '$dbname' created successfully";
     else
         echo "<br>Error creating database: <br>".$conn->error;
-    $conn = new mysqli($servername, $high_priviledge_user, $high_priviledge_user_password, $dbname);
+    return new mysqli($servername, $high_priviledge_user, $high_priviledge_user_password, $dbname);
 }
 
-function create_table($table_name){
-    global $conn;
+function create_tables($conn, $table_list){
+    foreach($table_list as $table)
+        create_table($conn, $table);
+}
+
+function create_table($conn, $table_name){
     switch($table_name){
         case "bakingplans":
             $sql = "CREATE TABLE bakingplans(
@@ -104,8 +107,7 @@ function create_table($table_name){
     }
 }
 
-function safe_credentials(){
-    global $username, $password, $dbname;
+function safe_credentials($dbname, $username, $password){
     $filename = "cred.json";
     if (file_exists($filename))
         return;
@@ -149,7 +151,7 @@ function create_examples(){
                             "{\"request_name\":\"insert_device\",\"device_name\":\"meat\"}"
 
                         );
-    ob_start();
+    ob_start();//echo/output buffer -> buffers echos of odk_db.php
     foreach ($json_strings as $key => $json){
         if ($key == 0){
             $_GET["json"] = $json;
@@ -170,21 +172,13 @@ function create_examples(){
 $high_priviledge_user = "root";
 $high_priviledge_user_password = "";
 
-connect_database();
-create_database();
+$conn = connect_database($servername, $high_priviledge_user, $high_priviledge_user_password);
+$conn = create_database($conn, $dbname, $servername, $high_priviledge_user, $high_priviledge_user_password));
 
-create_table("bakingplans");
-create_table("bakingplans_recipes");
-create_table("ingredients");
-create_table("recipes");
-create_table("recipes_ingredients");
-create_table("presets");
-create_table("devices");
-create_table("timers");
-safe_credentials();
+create_table($conn, array("bakingplans","bakingplans_recipes","ingredients","recipes","recipes_ingredients","presets","devices","timers"););
+safe_credentials($dbname, $username, $password);
 create_examples();
 
 $conn->close();
-
 
 ?>
