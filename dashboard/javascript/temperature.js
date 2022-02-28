@@ -1,25 +1,39 @@
-var DEVICE_ID = "";
+//TODO - min max values only in specified range of values, curently doesnt work when changing bp mode
+
+const DEVICE_ID = "odk";
 var SENSOR_ID = "";
 
-const HOMESERVER_URL= "/HomeDashboard/";
+const HOMESERVER_URL = "/HomeDashboard/";
+const DB_URL = HOMESERVER_URL + "odk_db.php";
 const INTERVALL_MAIN_TICKER = 1000;
 const TIMEOUT = 30;
 
+var TACT = document.getElementById("tact_value");
+var TMIN = document.getElementById("tmin_select");
+var TMAX = document.getElementById("tmax_select");
+const canvas = document.getElementById("canvas");
+var canv_context = canvas.getContext("2d");
 
+var temp_history = [];
 
-const TACT = document.getElementById("tact_value");
-const TMIN = document.getElementById("tmin_select");
-const TMAX = document.getElementById("tmax_select");
-TMIN.addEventListener("change", tminmax_changed(TMIN.id));
-TMAX.addEventListener("change", tminmax_changed(TMAX.id));
+// @param recipe_id - recipe of active recipe for min/max temp in bp_mode
+var recipe_id;//for recipe temp
+//@param bp_mode - 	bp_mode true  -> min/max temp from active bakingplan recipe(recipe_id)
+//					bp_mode false -> min/max temp from device/ manual mode
+var bp_mode = true;
 
 document.addEventListener("DOMContentLoaded", init());
 
+TMIN.addEventListener('change', function(){tminmax_changed("tmin_select")});
+TMAX.addEventListener('change', function(){tminmax_changed("tmax_select")});
+
 function init(){
-	change_view();
-	// Gerät festlegen
-	DEVICE_ID = "odk";
+	//set canvas width / height
+	canvas.width  = window.screen.availWidth;
+	canvas.height = window.screen.availHeight;
+
 	SENSOR_ID = document.getElementById("sensor_id").innerHTML;
+	change_view();
 	// Headername anpassen
 	set_headername();
 	// Min-Max-Anzeige initialisieren
@@ -27,26 +41,60 @@ function init(){
 	tminmax_set_options(TMAX, 0, 500);
 	TMIN.value = 250;
 	TMAX.value = 250;
+
+	xhttp_send("get_active_recipe");
+	toggle_bp_mode(false);
 	// Haupt-Intervall einschalten
 	INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
-	get_Active_Bakingplan();
 }
-
-function interval_main_tick(){
-	// alle Werte vom Server lesen
-	xhttp_get_all_values();
-	// Farbe der Temperaturanzeige steuern
-	temperature_set_color();
-}
-	
 function set_headername(){
 	document.getElementById("header_text").innerHTML = document.getElementById("display_name").innerHTML;
 }
-	
+
+/**
+* sets the select options for min and max temp selects in html
+* @param target - document.object (TMIN or TMAX)
+* @param target_min - lower end of range
+* @param target_max - upper end of range
+*/
+function tminmax_set_options(target, target_min, target_max){
+	const min = parseInt(target_min);
+	const max = parseInt(target_max);
+	var value = parseInt(target.value);
+	if (value < min)
+		value = min;
+	if (value > max)
+		value = max;
+	target.options.length = 0;
+	for (i = min; i < max + 1; i = i + 10) {
+		target.options[target.options.length] = new Option(i);
+		target.value = value;
+	}
+}
+
+function interval_main_tick(){
+	draw_temp_graph();
+	if (bp_mode) xhttp_send("get_active_recipe");
+	xhttp_send("get_device_values");
+	temperature_set_color();
+}
+
+function toggle_bp_mode(bool = null){
+	if (bool != null)//set
+		bp_mode = bool^1;//toogle twice -> set to actual bool value
+	//toggle
+	if (bp_mode)
+		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_regular.svg";
+	else
+		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
+	bp_mode = 1^bp_mode;
+}
+
 function temperature_set_color(){
 	var tact = parseInt(TACT.innerHTML);
 	var tmin = parseInt(TMIN.value);
-	var tmax = parseInt(TMAX.value);	
+	var tmax = parseInt(TMAX.value);
+
 	document.getElementById("tact_value").style.color = "green";
 	document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_green.svg";
 	document.getElementById("tact_unit").style.color = "green";
@@ -55,14 +103,19 @@ function temperature_set_color(){
 		document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_blue.svg";
 		document.getElementById("tact_unit").style.color = "blue";
 	}
-	if ((tact > tmax) || (TACT.innerHTML == "--")){
+	if (tact > tmax || TACT.innerHTML == "--"){
 		document.getElementById("tact_value").style.color = "red";
 		document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_red.svg";
 		document.getElementById("tact_unit").style.color = "red";
 	}
+	//for drawing the graph
+	temp_history.push([TACT.innerHTML, document.getElementById("tact_value").style.color]);
+	if (temp_history.length > 50)
+		temp_history.shift();//only save the last 50 temps
 }
-	
+
 function tminmax_changed(id){
+	recipe_changed = false;
 	// Min-Max-Werte für korrespondierendes Element einstellen
 	var target;
 	var target_min = 0;
@@ -74,176 +127,125 @@ function tminmax_changed(id){
 			break;
 		case "tmax_select":
 			target = TMIN;
-			target_max = document.getElementById(id).value;;
+			target_max = document.getElementById(id).value;
 			break;
 	}
 	tminmax_set_options(target, target_min, target_max);
 	// aktuelle Werte auf Server schreiben
-	xhttp_send("set_minmaxvalues", "", "");
+	xhttp_send("set_minmaxvalues");
 }
 
-function tminmax_set_options(target, target_min, target_max){
-	const min = parseInt(target_min);
-	const max = parseInt(target_max);
-	var value = parseInt(target.value);
-	if (value < min)
-		value = min;
-	if (value > max)	
-		value = max;
-	target.options.length = 0;
-	for (i = min; i < max + 1; i = i + 10) {
-		target.options[target.options.length] = new Option(i);
-		target.value = value;
-	}
-}
-
-function xhttp_send(event, timeout, timer_stop){
-	var xhttp = new XMLHttpRequest();
-	var response = "";
-	// JSON-String erzeugen
+/**
+* http request sending and -> to response handling
+* @param request_name used on serverside to create response
+*/
+function xhttp_send(request_name){
 	var json_string = "{"
-	json_string += "\"event\":\"" + event + "\",";
-	json_string += "\"device_id\":\"" + DEVICE_ID + "\",";	
-	switch(event){
-		
-		case "get_allvalues":
-			json_string += "\"timeout\":\"" + TIMEOUT + "\"";
+	json_string += "\"request_name\":\"" + request_name + "\",";
+	json_string += "\"device_name\":\"" + SENSOR_ID + "\"";
+	switch(request_name){
+		case "get_device_values":
+			json_string += ",\"timeout\":\"" + TIMEOUT + "\"";
 			break;
 
 		case "set_minmaxvalues":
-		// ---------------------------------------------------------------------------------
-			switch(SENSOR_ID){
-				case "wfo_top":
-					json_string += "\"temp_min_top\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_top\":\"" + TMAX.value + "\"";	
-					break;
-				case "wfo_bottom":
-					json_string += "\"temp_min_bottom\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_bottom\":\"" + TMAX.value + "\"";	
-					break;
-				case "bbq_left":
-					json_string += "\"temp_min_left\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_left\":\"" + TMAX.value + "\"";	
-					break;
-				case "bbq_right":
-					json_string += "\"temp_min_right\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_right\":\"" + TMAX.value + "\"";	
-					break;
-				case "meat":
-					json_string += "\"temp_min_meat\":\"" + TMIN.value + "\",";
-					json_string += "\"temp_max_meat\":\"" + TMAX.value + "\"";	
-					break;
-			}
+			toggle_bp_mode(false);//-> manual mode because min/max were changed
+			json_string += ",\"temp_min\":\"" + TMIN.value + "\",";
+			json_string += "\"temp_max\":\"" + TMAX.value + "\"";
 			break;
-		
+
+		case "get_active_recipe":
+			break;
 	}
 	json_string += "}";
 	// HTTP-Request an Server schicken
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200){
-			response = this.responseText;
-			return response;
-		}
-	};
-	try
-	{
-		xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + json_string, false);  
-		xhttp.send();
-	}
-	catch(err){
-		console.log("Error sending XLMHttpRequest: "+err);
-	}
-}
-
-function xhttp_get_all_values(){
-	// Lesen aller Werte vom Server per HTTP-Request
+	var response = "";
 	var xhttp = new XMLHttpRequest();
-	var json_response = "";
 	xhttp.onreadystatechange = function() {
-		//console.log("http status: "+ this.status);
-		if (this.readyState == 4 && this.status == 200) {
-			json_response = this.responseText;
-			temperature_refresh(json_response);
-		}
-		else {
-			if (this.status > 399)	// TODO: Fehlerfall
-				console.log("error or wrong response code");
-		}
-	}
-	xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + create_get_allvalues("30"), false);  
+		if (this.readyState == 4 && this.status == 200)
+			response = this.responseText;
+		else if (this.readyState != 1 || this.status != 0)//weird response exception, wich the browser can handle fine
+			console.log("error or wrong response code");
+	};
+	xhttp.open("GET", DB_URL + "?json=" + json_string, false);
 	xhttp.send();
+	response_handler(request_name, response);
 }
 
-function create_get_allvalues(timeout){
-var json_string = "{"
-	json_string += "\"device_id\":\"" + DEVICE_ID + "\",";	
-	json_string += "\"event\":\"get_allvalues\",";
-	json_string += "\"timeout\":\"" + timeout + "\"";
-	json_string += "}";
-	return json_string;
+function response_handler(request_name, response){
+	switch (request_name){
+		case "get_device_values":
+			temperature_refresh(response);
+			break;
+		case "get_active_recipe":
+		set_Active_Recipe(response);
+			break;
+	}
 }
-
 
 function temperature_refresh(json_obj){
-	//response Handler
 	var json_obj = JSON.parse(json_obj);
 	// aktuelle Temperatur und Min-Max-Werte anzeigen
-	switch(SENSOR_ID){
-		case "wfo_top":
-			TACT.innerHTML = json_obj.temp_act_top;
-			TMIN.value = json_obj.temp_min_top;
-			TMAX.value = json_obj.temp_max_top;
-			break;
-		case "wfo_bottom":
-			TACT.innerHTML = json_obj.temp_act_bottom;
-			TMIN.value = json_obj.temp_min_bottom;
-			TMAX.value = json_obj.temp_max_bottom;
-			break;
-		case "bbq_left":
-			TACT.innerHTML = json_obj.temp_act_left;
-			TMIN.value = json_obj.temp_min_left;
-			TMAX.value = json_obj.temp_max_left;
-			break;
-		case "bbq_right":
-			TACT.innerHTML = json_obj.temp_act_right;
-			TMIN.value = json_obj.temp_min_right;
-			TMAX.value = json_obj.temp_max_right;
-			break;
-		case "meat":
-			TACT.innerHTML = json_obj.temp_act_meat;
-			TMIN.value = json_obj.temp_min_meat;
-			TMAX.value = json_obj.temp_max_meat;
-			break;
+	TACT.innerHTML = json_obj.temp_act;
+	if (!bp_mode){
+		TMIN.value = json_obj.temp_min;
+		TMAX.value = json_obj.temp_max;
 	}
+}
 
-}
-function get_Active_Bakingplan(){
-	xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			json_response = this.responseText;
-				
-			set_Active_Recipe(json_response);
-		}
-		else {
-			if (this.status > 399)	// TODO: Fehlerfall
-				console.log("error or wrong response code");
-		}
-	}
-	xhttp.open("GET", bakingplanRequest(), false);  
-	xhttp.send();
-}
-function bakingplanRequest(){
-	request =  "http://localhost/HomeDashboard/odk_db.php?json={"
-	request += "\"request_name\":\"get_active_recipe\"}";
-	return request;
-}
+/**
+* response handler
+* changes minmax_values if active recipe has changed
+* @param json_response json recipe
+*/
 function set_Active_Recipe(json_response){
 	let response = JSON.parse(json_response)[0];
-	console.log(response);
+	if (recipe_id != response.id){//recipe changed
+		toggle_bp_mode(true);
+		recipe_changed = true;
+		recipe_id = response.id;
+	}
 	let recipe_temp = response["bakingtemperature"];
-	console.log(recipe_temp);
-	TMIN.value = recipe_temp-20;
-	TMAX.value = recipe_temp-0+20;
+	let temp_min = recipe_temp-20;
+	let temp_max = recipe_temp-0+20;
+	tminmax_set_options(TMIN, 0, temp_max);
+	TMIN.value = temp_min;
+	TMAX.value = temp_max;
+}
 
+function draw_temp_graph(){
+	if (canvas.getContext){
+		//clear
+		canv_context.beginPath();
+		canv_context.clearRect(-10, -10, canvas.width+10, canvas.height+10);
+		canv_context.stroke();
+
+		if (document.getElementById("show").innerHTML == '0'){
+			let width = canvas.width;
+			let height = canvas.height;
+			//get highest temp to make relative height
+			let largest = 0;
+			for (let temp in temp_history){
+				if (temp_history[temp][0] != "--" && temp_history[temp][0] > largest)
+					largest = temp_history[temp][0];
+			}
+			largest = parseInt(largest) + 120;//padding on top
+
+			let one_part = width / 50;//wdth of single datapoint
+			let x = width;
+			let last_temp = 1000;//for seamless line
+			for (let i = temp_history.length-1; i >= 0; i--){
+				if (temp_history[i][0] != '--'){
+					canv_context.lineWidth = 7;
+					canv_context.strokeStyle = temp_history[i][1];
+					canv_context.beginPath();
+					canv_context.moveTo(x + one_part, last_temp);
+					canv_context.lineTo(x, largest - parseInt(temp_history[i][0]));
+					canv_context.stroke();
+					last_temp = largest - parseInt(temp_history[i][0]);
+				}
+				x -= one_part;//move one datapoint to the left
+			}
+		}
+	}
 }
