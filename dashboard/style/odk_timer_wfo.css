@@ -24,7 +24,7 @@ html{
 #time {
 	position: absolute;
 	top: 47%;
-	left:  calc(50% - 2.6rem);	
+	left:  calc(50% - 2.6rem);
 }
 .button{
 	position: absolute;
@@ -33,7 +33,7 @@ html{
 	margin: 0;
 	padding: 0;
 	width: 1.0rem;
-	height: 1.0rem;	
+	height: 1.0rem;
 }
 #start{
 	display:  block;
@@ -57,4 +57,14 @@ html{
 .dots{
 	margin: 0;
 	paddding: 0;
+}
+#bp_mode{
+	font-size: 1.25em;
+	visibility: visible;
+	position: fixed;
+	display: block;
+	width: 13%;
+	height: 20%;
+	right: 0.1rem;
+	bottom: 0.1rem;
 }

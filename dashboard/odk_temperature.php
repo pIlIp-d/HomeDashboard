@@ -5,11 +5,8 @@
 	<script src="javascript/temperature_view.js"></script>
 </head>
 
-
-
-
 <body>
-	<!-- 
+	<!--
 	einlesen des übergebenen Sensors per PHP(adresse) in unsichtbares DIV-Element
 	- kann später per JS ausgelesen werden
 	-->
@@ -39,19 +36,21 @@
 	<div id="display_name" hidden><?php echo $display_name; ?></div>
 	<div id="show" hidden><?php echo $show; ?></div>
 	<div id="unit" hidden><?php echo $unit; ?></div>
-	
-	<div id="container"> 
+
+	<div id="container">
 		<div id="header_text">
 			...
 		</div>
 		<div id="header_symbol">
 			<img id="bell_1" src="/HomeDashboard/images/bell-slash.svg" alt="bell-slash">
+			<img id="bp_mode" src="/HomeDashboard/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
+
 		</div>
 		<div id="tact" onclick="change_view(1); window.parent.postMessage('<?php echo $id; ?> set_show', 'http://'+location.host+'/HomeDashboard/dashboard.php');">
 				<img class="thermo" id="tact_symbol" src="/HomeDashboard/images/sym_thermo_black.svg" width="8%" height="8%" alt="thermometer">
-				<span class="temp" id="tact_value">230</span><sup class="unit" id="tact_unit"><?php echo $unit; ?></sup>				
+				<span class="temp" id="tact_value">230</span><sup class="unit" id="tact_unit"><?php echo $unit; ?></sup>
 		</div>
-		
+
 		<div id="tmin">
 			<select class="select" id="tmin_select"></select><sup class="unit" id="tmin_unit"><?php echo $unit; ?></sup>
 		</div>
@@ -65,11 +64,13 @@
 			max
 		</div>
 	</div>
+	<canvas id="canvas" style="z-index:-5;width:100%;height:100%"></canvas>
+
 </body>
 <script src="javascript/temperature.js"></script>
 <script type="text/javascript">
 	//TODO Recipes option for only bakingplan
-	
+
 
 //Request URL: http://localhost/HomeDashboard/odk_db.php?json={%22request_name%22:%22get_active_bakingplan%22}
 //Request URL: http://localhost/HomeDashboard/odk_db.php?json={%22request_name%22:%22bakingplan_get_all_recipes%22}

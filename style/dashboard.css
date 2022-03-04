@@ -157,6 +157,21 @@ Settings Menu 			TODO: Colors;
 				grid-row: span 4;
 				grid-column: span 4;
 			}
+			.tile_54 {
+				height:  calc(var(--height1) * 5);
+				grid-row: span 4;
+				grid-column: span 4;
+			}
+			.tile_64 {
+				height:  calc(var(--height1) * 6);
+				grid-row: span 4;
+				grid-column: span 4;
+			}
+			.tile_74 {
+				height:  calc(var(--height1) * 7);
+				grid-row: span 4;
+				grid-column: span 4;
+			}
 		}
 		@media only screen and (min-width: 601px){
 			.container {
