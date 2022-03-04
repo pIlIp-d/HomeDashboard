@@ -78,7 +78,7 @@
       "default": {
         "filename": "bakingplan_editor.php",
         "scrolling": "yes",
-        "bp_affected":"true"
+        "bp_affected": "true"
       }
     },
     {
@@ -86,7 +86,8 @@
       "display_name": "Backplan",
       "default": {
         "filename": "bakingplan.php",
-        "bp_affected":"true"
+        "bp_affected": "true",
+        "scrolling": "yes"
       }
     },
     {
