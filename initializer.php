@@ -1,4 +1,5 @@
 <?php
+ini_set("display_erros",1);
 
 //User for DB
 $username = "sql";
@@ -19,15 +20,17 @@ function create_database($conn, $dbname, $servername, $user, $password){
         echo "<br>Database '$dbname' created successfully";
     else
         echo "<br>Error creating database: <br>".$conn->error;
-    return new mysqli($servername, $high_priviledge_user, $high_priviledge_user_password, $dbname);
+    return new mysqli($servername, $user, $password, $dbname);
 }
 
 function create_tables($conn, $table_list){
-    foreach($table_list as $table)
+    foreach($table_list as $key => $table)
         create_table($conn, $table);
 }
 
 function create_table($conn, $table_name){
+    echo $table_name;
+    $sql = "";
     switch($table_name){
         case "bakingplans":
             $sql = "CREATE TABLE bakingplans(
@@ -173,9 +176,9 @@ $high_priviledge_user = "root";
 $high_priviledge_user_password = "";
 
 $conn = connect_database($servername, $high_priviledge_user, $high_priviledge_user_password);
-$conn = create_database($conn, $dbname, $servername, $high_priviledge_user, $high_priviledge_user_password));
+$conn = create_database($conn, $dbname, $servername, $high_priviledge_user, $high_priviledge_user_password);
 
-create_table($conn, array("bakingplans","bakingplans_recipes","ingredients","recipes","recipes_ingredients","presets","devices","timers"););
+create_tables($conn, array("bakingplans","bakingplans_recipes","ingredients","recipes","recipes_ingredients","presets","devices","timers"));
 safe_credentials($dbname, $username, $password);
 create_examples();
 
