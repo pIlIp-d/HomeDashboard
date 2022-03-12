@@ -1,24 +1,24 @@
 html {
 	font-family: Arial;
-}		
+}
 * {
 	margin:0;
 	padding:0;
 	color: black;
 }
-#container { 
+#container {
 	width: 100%;
 	height: 100%;
 	font-size: 5vw;
-}		
-#header_text { 
+}
+#header_text {
 	position: absolute;
 	height: auto;
 	width: auto;
 	left: 3px;
 	top: 0px;
 	font-size: 1.3em;
-} 
+}
 #header_symbol {
 	position: absolute;
 	height: 7%;
@@ -26,7 +26,7 @@ html {
 	right: 3px;
 	top: 3px;
 	font-size: 1.25em;
-} 
+}
 #tact {
 	position: absolute;
 	height: auto;
@@ -34,7 +34,7 @@ html {
 	left: calc(50% - 1.3em);
 	top: calc(50% - 0.5em);
 	font-size: 3.0em;
-} 
+}
 #tmin_label{
 	position: absolute;
 	height: auto;
@@ -42,7 +42,7 @@ html {
 	left: 3px;
 	bottom: calc(1.7em + 3px);
 	font-size: 1.25em;
-} 
+}
 #tmax_label{
 	position: absolute;
 	height: auto;
@@ -50,7 +50,7 @@ html {
 	right: 3px;
 	bottom: calc(1.7em + 3px);
 	font-size: 1.25em;
-} 
+}
 #tmin{
 	position: absolute;
 	height: auto;
@@ -58,7 +58,7 @@ html {
 	left: 3px;
 	bottom: -3px;
 	font-size: 3.0em;
-} 
+}
 #tmax{
 	position: absolute;
 	height: auto;
@@ -66,7 +66,15 @@ html {
 	right: 3px;
 	bottom: -3px;
 	font-size: 3.0em;
-} 
+}
+#alarm_select{
+	display: none;
+	position: fixed;
+	right: 10px;
+}
+#alarm_mode{
+		height:1em;
+}
 #bell {
 	position: absolute;
 	height: auto;
@@ -74,7 +82,7 @@ html {
 	right: 3px;
 	top: 3px;
 	font-size: 1.25em;
-} 
+}
 .unit{
 	font-size: 0.4em;
 }

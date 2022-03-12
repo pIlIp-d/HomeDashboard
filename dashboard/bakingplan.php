@@ -6,7 +6,10 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <style type="text/css">
-
+	*{
+		margin:0;
+		padding:0;
+	}
 	.unselectable {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -14,117 +17,101 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-
 		font-family: Arial;
 		width:100%;
 		height:100%;
-		display: flex;
+		display: block;
 		justify-content: center;
 	}
-/*SELECT*/
-.settings-menu-select{
-	margin-top: 1rem;
-	margin-bottom:  1rem;
-	margin-left: 1rem;
-}
-.select {
-	-moz-appearance: none;
-	-webkit-appearance: none;
-	appearance: none;
-	border: none;
-	color: #000000;
-	cursor: pointer;
-	text-align: center;
-	font-family: Arial;
-	font-size: 1.0rem;
-	height: 1.5rem;
-	width: auto;
-	outline: none;
-	margin-top: 0.5rem;
-	margin-left: 0.25rem;
-}
+
+	.select {
+		position: fixed;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		border: none;
+		color: #000000;
+		cursor: pointer;
+		text-align: center;
+		font-family: Arial;
+		font-size: 1.0rem;
+		height: 1.5rem;
+		width: 100%;
+		outline: none;
+	}
 	#bp_name {
+		z-index: 10;
 		border-bottom: thin solid lightgray;
 		font-size: 1rem;
 		width: 100%;
+		text-align: center;
+		position: fixed;
+		margin-bottom: 0.5rem;
+	}
+	#bakingplan_table{
+		position:absolute;
+		width:95%;
+		top: 2rem;
+		font-size: 0.7rem;
+		display: block;
+		text-align: center;
+		justify-content: center;
+	}
+	.recipe{
+		margin-left:5%;
+		cursor: pointer;
+		margin-top: 0.25rem;
+		margin-bottom: 0.25rem;
+		border: thin solid lightgray;
+		border-collapse: collapse;
+		border-radius: 5px;
+		background-color: #f3f3f3;
+		position: absolutue;
+		justify-content: center;
+		display:block;
+		height: 3rem;
+		width: 90%;
+	}
+	.active_bakingplan_container{
+		padding: 0;
+		border: thin solid lightgray;
+		border-collapse: collapse;
+		border-radius: 5px;
+		background-color: #f0f0f0;
+
+		position: fixed;
+		display: block;
+		justify-content: center;
+		height: 50%;
+		width: 75%;
+		text-align: center;
+		top: 3rem;
+	}
+	.active-recipe{
+		background-color: #dadada;
+	}
+	#recipe_name {
+		width: 100%;
+		height: 50%;
+		font-size: 1.25rem;
 		position: relative;
 	}
-		.active_bakingplan_container{
-			padding: 0;
-			border: thin solid lightgray;
-			border-collapse: collapse;
-			border-radius: 5px;
-			background-color: #f0f0f0;
-
-			position: fixed;
-			display: block;
-			justify-content: center;
-			height: 50%;
-			width: 75%;
-			text-align: center;
-			top: 3rem;
-		}
-		.text_div {
-
-		}
-		#recipe_name {
-			top: 0.5rem;
-			height: 50%;
-			font-size: 1.5rem;
-			width: 100%;
-			position: relative;
-		}
 	/* recipe Information */
-		.rec_info {
-			display: flex;
-			width:100%;
-		}
-		.rec_info_text {
-			font-size: 2em;
-			position: relative;
-			bottom: 0.2em;
-		}
-		#bakingtime_container {
-			width: 100%;
-			left:10%;
-		}
-		#bakingtemperature_container {
-			width: 100%;
-			right:10%;
-		}
-
-		.next_bakingplan_container{
-			padding: 0;
-			border: thin solid lightgray;
-			border-collapse: collapse;
-			border-radius: 5px;
-			background-color: #f0f0f0;
-			position: fixed;
-			display: flex;
-			height: 17%;
-			width: 75%;
-			bottom: 0.3rem;
-			right:5%;
-			font-size: 1rem;
-		}
-
+	.rec_info {
+		display: flex;
+		width:100%;
+		justify-content: center;
+	}
+	.rec_info_text {
+		position: relative;
+		bottom: 0.5rem;
+	}
 	/* next/prev Buttons */
-		.svg {
-			padding: 5px;
-			width: 25px;
-			height: 25px;
-		}
-		#btn_next{
-			width: 30%;
-			position: relative;
-			top:0.3rem;
-			left: 0.5rem;
-		}
-		#next_recipe{
-			position: relative;
-			top:0.3rem;
-			width: 70%;
-		}
+	.svg {
+		padding: 5px;
+		width: 15px;
+		height: 15px;
+	}
 
 </style>
 <script src="../libs/jquery-3.6.0.min.js"></script>
@@ -145,27 +132,8 @@
 	?>
 	<div id="preset_id" hidden><?php echo $preset_id; ?></div>
 	<main id="main" class="unselectable">
-	<!--	<div class="btn" id="btn_prev">❮</div>-->
-
-		<select class="text_div select" id="bp_name">
-		</select>
-		<div class="active_bakingplan_container">
-			<div class="text_div" id="recipe_name"></div>
-			<div class="rec_info">
-				<div id="bakingtime_container">
-					<span class="rec_info_text" id="bakingtime"></span>
-					<img class="svg" id="sym_clock" src="../images/sym_clock.svg" alt="sym_clock" style="margin-right: 5px;">
-				</div>
-				<div id="bakingtemperature_container">
-					<span class="rec_info_text" id="bakingtemperature"></span>
-					<img class="svg" id="sym_thermo" src="../images/sym_thermo.svg" alt="sym_thermo" style="margin-right: 5px; width:15px;">
-				</div>
-			</div>
-		</div>
-		<div class="next_bakingplan_container" onclick="next_recipe();">
-			<div class="btn" id="btn_next">Next ❯</div>
-			<div class="text" id="next_recipe"></div>
-		</div>
+		<select class="text_div select" id="bp_name"></select>
+		<div id='bakingplan_table'></div>
 	</main>
 </body>
 <script type="text/javascript">
@@ -179,7 +147,6 @@ var bakingplans = [];
 var active_bp;
 var active_recipe;
 var bakingplan_recipes;
-var active_recipe_list_id = null;
 
 const BP_SELECT = document.getElementById("bp_name");
 
@@ -189,30 +156,19 @@ function init(){
 	xhttp_send("get_active_bakingplan");
 	xhttp_send("get_active_recipe");
 	xhttp_send("bakingplan_get_all_recipes");
-
-	load_active_recipe_html();
+	create_html();
 }
-
-function next_recipe(){
-	let next_recipe_id = (active_recipe_list_id++ + 1 ) % bakingplan_recipes.length;
-	xhttp_send("set_active_recipe",bakingplan_recipes[next_recipe_id].r_id);
-	xhttp_send("get_active_recipe");
-	load_active_recipe_html();
-}
-function load_active_recipe_html(){
+function create_html(){
 	//bakingplan html
 	BP_SELECT.options = 0;
 	for (let i = 0; i < bakingplans.length; i++)
 		BP_SELECT.options[i] = new Option(bakingplans[i].name, bakingplans[i].id);
 	BP_SELECT.value = active_bp.id;
-	//active recipe html
-	document.getElementById("recipe_name").innerHTML = active_recipe.name;
-	document.getElementById("bakingtime").innerHTML = active_recipe.bakingtime;
-	document.getElementById("bakingtemperature").innerHTML = active_recipe.bakingtemperature;
-	//next recipehtml
-	let next_recipe_id = (active_recipe_list_id + 1 ) % bakingplan_recipes.length;
-	document.getElementById("next_recipe").innerHTML = bakingplan_recipes[next_recipe_id].r_name;
-
+	//bakingplan recipes html
+	var html = "";
+	for (let i = 0; i < bakingplan_recipes.length; i++)
+		html += get_recipe_html(i, bakingplan_recipes[i].r_name, bakingplan_recipes[i].r_bakingtemperature, bakingplan_recipes[i].r_bakingtime, (active_recipe.id == i));
+	document.getElementById("bakingplan_table").innerHTML = html;
 }
 
 function xhttp_send(request, value = null){
@@ -231,9 +187,11 @@ function xhttp_send(request, value = null){
 }
 
 function createRequest(request, value){
+	console.log(request+" "+value);
 	var json_string = "\"request_name\":\""+ request +"\"";
 	switch(request){
 		case "get_all_bakingplans":
+			break;
 		case "get_active_bakinplan":
 			//do nothing else
 			break;
@@ -247,10 +205,12 @@ function createRequest(request, value){
 	return json_string;
 }
 
-function restart_bakingplan(){
-	console.log("reset");
-	active_recipe_list_id = 0;
-	xhttp_send("set_active_recipe",bakingplan_recipes[0].r_id);
+function activate_bp_recipe(id){
+	const recs = document.getElementsByClassName("recipe");
+	for (let i = 0; i < recs.length; i++)
+		recs[i].classList.remove("active-recipe");
+	document.getElementById(""+id).classList.add("active-recipe");
+	xhttp_send("set_active_recipe",bakingplan_recipes[id].r_id);
 	xhttp_send("get_active_recipe");
 }
 
@@ -263,20 +223,10 @@ function handle_response(request, response){
 			break;
 		case "get_active_recipe":
 			active_recipe = json_response[0];
+			console.log(active_recipe);
 			break;
 		case "bakingplan_get_all_recipes":
 			bakingplan_recipes = json_response;
-			let contains = false;
-			for (let i = 0; i < bakingplan_recipes.length; i++){
-				if (bakingplan_recipes[i].r_id == active_recipe.id){
-					if (null == active_recipe_list_id)
-						active_recipe_list_id = i;//first run time only
-					contains = true;
-					break;
-				}
-			}
-			if (!contains)//active recipe is not in active bakingplan
-				restart_bakingplan();
 			break;
 		case "set_active_recipe":
 			break;
@@ -285,11 +235,29 @@ function handle_response(request, response){
 			break;
 	}
 }
+function get_recipe_html(id, name, temp, time, active = false){
+	var act = (active)?" active-recipe":"";//add class active_recipe if active==true
+	html = "\
+		<div class='recipe"+act+"' id='"+id+"' onclick='activate_bp_recipe("+id+")'>\
+			<div class='text_div name' id='recipe_name'>"+ name +"</div>\
+			<div class='rec_info'>\
+				<div class='bakingtime_container'>\
+					<span class='rec_info_text' id='bakingtime'>"+ time +"</span>\
+					<img class='svg' id='sym_clock' src='../images/sym_clock.svg' alt='sym_clock' style='margin-right: 5px;'>\
+				</div>\
+				<div class='bakingtemperature_container'>\
+					<span class='rec_info_text' id='bakingtemperature'>"+ temp +"</span>\
+					<img class='svg' id='sym_thermo' src='../images/sym_thermo.svg' alt='sym_thermo' style='margin-right: 5px; width:15px;'>\
+				</div>\
+			</div>\
+		</div>\
+	";
+	return html;
+}
 
 //listener for bp_select change
 document.querySelector('#bp_name').addEventListener("change", function() {
 	xhttp_send("bakingplan_activate",BP_SELECT.value);
-	active_recipe_list_id = null;
 	init();
 });
 

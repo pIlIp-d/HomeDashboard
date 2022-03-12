@@ -58,10 +58,15 @@ html{
 	margin: 0;
 	paddding: 0;
 }
-#bp_mode{
+#alarm_mode{
+	height: 1.3em;
+	padding-bottom: 1.4em;
+}
+
+img {
 	font-size: 1.25em;
 	visibility: visible;
-	position: fixed;
+	position: absolute;
 	display: block;
 	width: 13%;
 	height: 20%;

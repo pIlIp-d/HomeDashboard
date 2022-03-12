@@ -7,10 +7,10 @@ from email.message import EmailMessage
 #init values
 message = EmailMessage()
 message['Subject'] = 'Home Dashboard Rezept'
-message['From'] = ''#your server mail
+message['From'] = 'pythonmail1@gmx.de'#your server mail
 message['To'] = str(sys.argv[2])
 message.set_content(str(sys.argv[1]))
-file = "data/"+str(sys.argv[3])
+#file = "data/"+str(sys.argv[3])
 
 def file_attach(email,filename):
 	with open(filename, "rb") as file:
@@ -21,10 +21,10 @@ def file_attach(email,filename):
 def sendmail(message):
 	server = smtplib.SMTP('mail.gmx.net')#change to your mail-server
 	server.starttls()
-	server.login('','')#mail,pw
+	server.login('pythonmail1@gmx.de','UwZxXspT9a0C1CRi2p7Z16O0wPXWIT6')#mail,pw
 	server.send_message(message)
 	server.quit()
 
-file_attach(message,file+".pdf")
+#file_attach(message,file+".pdf")
 #file_attach(message,file+".txt")
 sendmail(message)

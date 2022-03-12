@@ -7,8 +7,14 @@ const DEVICE_NAME = "Backofen";
 
 const BP_BTN = document.getElementById("bp_mode"); //toggle btn for bp_mode
 
+var active_timer = false;//true -> active timer somehow -> message if afterwards gets to 0
+
 var bp_mode = false;
 var bakingtime;
+
+//@param alarm_mode - 	alarm_mode true  -> timer over sends message
+//						alarm_mode false -> no alarm message
+var alarm_mode = false;
 
 /**
 * http request sending and -> to response handling
@@ -20,6 +26,7 @@ function http_request(request_name, value = null){
 		json_string += ",\"preset_id\":\""+PRESET_ID+"\"";
 		switch (request_name){
 			case "del_timer":
+				active_timer = false;
 				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
 				break;
 			case "set_timer":
@@ -30,6 +37,9 @@ function http_request(request_name, value = null){
 				json_string += ",\"timer_id\":\""+TIMER_ID+"\"";
 				break;
 			case "get_active_recipe":
+				break;
+			case "send_alarm":
+				json_string += ",\"message\":\"" + value + "\"";
 				break;
 		}
 		json_string += "}";
@@ -66,6 +76,7 @@ function handleHTTPresponse(request_name,json_response){
 				var timenow = new Date().getTime();
 				var diff = Math.round((json_response - timenow) / 1000);
 				if (diff > 0){
+					active_timer = true;
 					//Timer-Uhr setzten
 					ACT_HOUR = parseInt((diff / 3600) % 24);
 					ACT_MINUTE = parseInt((diff / 60) % 60);
@@ -73,8 +84,11 @@ function handleHTTPresponse(request_name,json_response){
 					set_timer_values();
 					btn_start(false);
 				}
-				else
+				else{
+					if (active_timer && alarm_mode)
+						http_request("send_alarm","Timer Alarm");
 					btn_stop();
+				}
 			break;
 
 		case "get_active_recipe":
@@ -82,6 +96,18 @@ function handleHTTPresponse(request_name,json_response){
 			break;
 	}
 }
+
+function toggle_alarm_mode(bool = null){
+	if (bool != null)//set
+		alarm_mode = bool^1;//toogle twice -> set to actual bool value
+	//toggle
+	if (alarm_mode)
+		document.getElementById("alarm_mode").src = HOMESERVER_URL+"images/bell-slash.svg";
+	else
+		document.getElementById("alarm_mode").src = HOMESERVER_URL+"images/bell-solid.svg";
+	alarm_mode = 1^alarm_mode;
+}
+
 
 function set_timer_values(){
 	//werte zweistellig machen und anzeigen

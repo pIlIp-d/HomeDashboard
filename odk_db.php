@@ -367,8 +367,27 @@ function request_handling($request_name,$dbcon){
 			echo "OK";
 			break;
 
+		case "set_act_temps":
+			$timecode = time();
+			$timestring = date("d.m.Y-H:i:s", $timecode);
+			/*@param
+			{
+				"request_name":"set_act_temps",
+				"act_temps":{
+					"device_name":"temp",
+					"wfo_top":"200",
+					"grill_left":"180"
+				}
+			}*/
+			foreach ($json_decoded->act_temps as $device => $temp){
+				$sql = "UPDATE devices SET devices.temp_act = $temp, devices.timecode = $timecode, devices.timestring = '$timestring' WHERE devices.name = '".mysqli_real_escape_string($dbcon,$device)."'";
+				sql_request($dbcon, $sql);
+			}
+			echo "OK";
+			break;
+
 		case "set_act_temp":
-			//@param (device_name OR device_id) + temp_act
+			//@param (device_name OR device_id) AND temp_act
 			$temp_act = mysqli_real_escape_string($dbcon, $json_decoded->temp_act);
 			$timecode = time();
 			$timestring = date("d.m.Y-H:i:s", $timecode);
@@ -464,6 +483,33 @@ function request_handling($request_name,$dbcon){
 			$sql = "SELECT time FROM timers WHERE timers.preset_id = $preset_id AND timers.timer_id = $timer_id;";
 			$resp = sql_request_encode_json($dbcon, $sql);
 			echo json_decode($resp)[0]->time;
+			break;
+
+		case "send_alarm":
+			//@param message - Message Content / Alarm name
+			//sendig POST request to pushover API
+			$message_cred = json_decode(file_get_contents("cred.json"))->message_cred;
+			curl_setopt_array($ch = curl_init(), array(
+			  CURLOPT_URL => "https://api.pushover.net/1/messages.json",
+			  CURLOPT_POSTFIELDS => array(
+			    "token" =>  $message_cred->api_key,
+			    "user" => $message_cred->user,
+			    "device" => "odk",
+			    "message" => mysqli_real_escape_string($dbcon, $json_decoded->message),
+			    "priority" => "1",
+			    "expire" => "60",
+			    "retry" => "30",
+			    "sound" => "updown"
+			  ),
+			  CURLOPT_SAFE_UPLOAD => true,
+			  CURLOPT_RETURNTRANSFER => true,
+			));
+			$resp = curl_exec($ch);
+			curl_close($ch);
+			if (json_decode($resp)->status == 1)
+			    echo "OK";
+			else
+			    echo $resp;
 			break;
 
 		case "send_message"://send mail message through python
