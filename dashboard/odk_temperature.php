@@ -1,4 +1,5 @@
-<!DOCTYPE HTML><html>
+<!DOCTYPE html>
+<html>
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="style/temperature.css">
@@ -41,8 +42,12 @@
 		<div id="header_text">
 			...
 		</div>
+
+		<select class="text_div select" id="alarm_select">
+			<option value='null'>- select alarm -</option>
+		</select>
 		<div id="header_symbol">
-			<img id="bell_1" src="/HomeDashboard/images/bell-slash.svg" alt="bell-slash">
+			<img id="alarm_mode" src="/HomeDashboard/images/bell-slash.svg" alt="bell-slash" onclick='toggle_alarm_mode()'>
 			<img id="bp_mode" src="/HomeDashboard/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
 
 		</div>
