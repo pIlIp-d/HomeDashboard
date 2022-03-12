@@ -1,5 +1,6 @@
 <?php
 
+ini_set('display_errors',1);
 //User for DB
 $username = "sql";
 $password = "your_password";
