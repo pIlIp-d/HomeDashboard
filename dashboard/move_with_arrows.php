@@ -20,7 +20,7 @@
 <div id="button_id" hidden><?php echo $id; ?></div>
  <span id="name" style="font-family: Arial;z-index: -100" ><?php echo $id; echo $name; ?></span>
 <div class="grid-container">
-<!-- 
+<!--
   buttons return their ID(Number) + their ID(name) through postMessage to dashboard
 -->
   <!-- up -->
@@ -41,7 +41,7 @@
 </body>
 <script type="text/javascript">
   window.addEventListener('DOMContentLoaded', init());
-  
+
   function init(){
     remove_X_from_dummies();
     grey_out_arrows();

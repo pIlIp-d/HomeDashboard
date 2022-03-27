@@ -16,7 +16,7 @@
 
 </body>
 <script type="text/javascript">
-	
+
 var click_state = false;
 var DELAY_BUTTON_RESET;
 

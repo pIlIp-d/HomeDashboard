@@ -448,10 +448,6 @@ function request_handling($request_name,$dbcon){
 			echo "OK";
 			break;
 
-		case "set_all_values":
-			//TODO request from sensor device to set multiple values with one request
-			break;
-
 	//--------------------------------------------------------------------------
 	//--------- TIMERS ---------------------------------------------------------
 	//--------------------------------------------------------------------------

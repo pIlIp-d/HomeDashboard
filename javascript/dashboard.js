@@ -54,6 +54,14 @@ class Grid extends Array{
 				break;
 			}
 		}
+		// add dummies to the end to assure moveing is possible
+		if (mode === "move"){
+			var count = this[this.length-1].stop % 4;
+			if (count == 0) return;
+			for (var i = 3; i >= count; i--)//TODO horiozontal mode
+				this.push(new GridObject("dummy","11"));
+		}
+
 	}
 	update(){//updates + reloads grid after every change that occurs
 		let grid_size = 1, grid_pos = 1, gaps = [], modulo = 4;
@@ -123,7 +131,7 @@ class GridObject { //single widget with properties
 		console.log(this);
 	}
 	createHTML(){
-		let type = this.type, scrolling = "no", source = "/HomeDashboard/dashboard/", html = "";
+		let type = this.type, scrolling = "no", source = "/HomeDashboard/dashboard/", html = "", size="11",special=false;
 		if (mode === "move")
 			type = "move";
 		//---div for grid---
@@ -133,17 +141,13 @@ class GridObject { //single widget with properties
 			html += "onclick=\"click_sidebar('settings');\"><img src=\"images/btn_edit.svg\" style=\"width: 4rem;height:4rem;\">";
 		}
 		else {
-			for (let g = 0; g < widgets.widgets.length; g++){
+			for (let g in widgets.widgets){
 				const widget = widgets.widgets[g];
 				if (type === widget.name){
-					if (!("sizes" in widget.default) || widget.default.sizes.includes(this.size)){
-						source += widget.default.filename;//size equals spec for default widget
-					}
-					else if ("special" in widget && widget.special.sizes.includes(this.size)){
-						source += widget.special.filename;//size equals spec for special widget
-					}
+					if ("sizes" in widget.default && !widget.default.sizes.includes(this.size) && "special" in widget && widget.special.sizes.includes(this.size))
+						special = true;//size is not in default config for this type
 					else if ("sizes" in widget.default && !(widget.default.sizes.includes(this.size))){
-						source += widget.default.filename;//no fitting this.size
+						//size is not in default or special config for this type
 						for (d in this.sizes){//sets size to first allowed size
 							if (widget.default.sizes.includes(d)){
 								this.size = this.sizes[d];
@@ -151,15 +155,21 @@ class GridObject { //single widget with properties
 							}
 						}
 					}
-					if ("scrolling" in widget.default && widget.default.scrolling == "yes")
+					if (!special)
+						source += widget.default.filename;//size equals spec for default widget
+					else
+						source += widget.special.filename;//size equals spec for special widget
+					if (special && "scrolling" in widget.special && widget.special.scrolling == "yes" ||
+						!special && "scrolling" in widget.default && widget.default.scrolling == "yes")
 						scrolling = "yes";
-					if ("type" in widget.default){
-						switch (widget.default.type){
-							case "temp":
-								source += "?sensor="+widget.name;
-								source += "&display_name="+widget.display_name;
-								source += "&show="+this.display;
-								source += "&id="+this.pos;
+					if (!special && "type" in widget.default || special && "type" in widget.special){
+						let sw = (special)?widget.special.type:widget.default.type;
+						source += "?name="+grid[this.pos].type;
+						source += "&display_name="+widget.display_name;
+						source += "&show="+this.display;
+						source += "&id="+this.pos;
+						switch (sw){
+							case "sensor":
 								source += "&unit="+widget.unit;
 								break;
 							case "move":
@@ -187,13 +197,11 @@ class GridObject { //single widget with properties
 									}
 								}
 								var arrow_string = ""+top+right+bottom+left;
-								source += "?id="+ this.pos + "&name=" + grid[this.pos].type+"&arrows="+arrow_string;
+								source += "&arrows="+arrow_string;
 								break;
 							case "url":
-								source = widget.default.filename;
-								break;
-							case "button":
-								source += "?name="+ widget.name;
+								if (!special) source = widget.default.filename;
+								else source = widget.special.filename;
 								break;
                             case "timer":
                                 source += "?preset_id="+ presets.last_preset+"&timer_id="+GridObject.timer_count;
@@ -250,8 +258,6 @@ class Widgets{ //all possible properties of widget-types (~ Widget-"presets")
 					s.display_name,
 					s.sensor_id,
 					s.type,
-					s.min_value,
-					s.max_value,
 					s.unit));
 			}
 		}
@@ -322,13 +328,11 @@ class Widget{//struct
 }
 
 class Sensor{ //struct
-	constructor(name,display_name,id,type,min,max,unit){
+	constructor(name,display_name,id,type,unit){
 		this.name = name;
 		this.display_name = display_name;
 		this.id = id;
 		this.type = type;
-		this.min_value = min;
-		this.max_value = max;
 		this.unit = unit;
 	}
 }
@@ -363,7 +367,7 @@ class Presets extends Array{ //grid configuration presets
 					console.log("error or wrong response code");
 			}
 		}
-		try{
+		try {
 			xhttp.open("GET", DB_URL + "?json=" + this.create_request(request,value), false);
 			xhttp.send();
 			this.response_handler(json_response, request);
@@ -374,12 +378,10 @@ class Presets extends Array{ //grid configuration presets
 	}
 
 	create_request(request,value){
-		console.log(JSON.stringify(this.preset_names)+" "+request + " "+this.last_preset + " "+ value);
-		console.log(this.preset_names);
 		var json_string = "{\"request_name\":\""+request+"\"";
 		switch (request){
 			case "set_new_preset":
-				json_string += ",\"preset_name\":\""+ value +"\"";
+				json_string += ",\"preset_name\":\""+ this.preset_ids[value] +"\"";
 				json_string += ",\"grid_object_v\":"+ JSON.stringify(grid_vertical);
 				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal);
 				break;
@@ -390,7 +392,7 @@ class Presets extends Array{ //grid configuration presets
 				json_string += ",\"grid_object_h\":"+ JSON.stringify(grid_horizontal);
 				break;
 			case "delete_preset": //deletes selected preset
-				json_string += ",\"preset_id\":\""+ value +"\"";
+				json_string += ",\"preset_id\":\""+ this.preset_ids[value] +"\"";
 				break;
 			case "get_all_presets": //returns all preset names
 				break;
@@ -463,7 +465,7 @@ class Presets extends Array{ //grid configuration presets
 				this.request("get_all_presets","");
 		}
 	}
-	action(value,name){//@param value currently unused, @function button handling
+	action(value,name){//@param value preset if starting by empty=0 @param name - request name to be send, @function button handling
 		switch(name){
 			case "null":
 				break;
@@ -609,6 +611,8 @@ class Presets extends Array{ //grid configuration presets
 		else if (window.innerWidth <= 600)
 			view = "vertical";
 	}
+
+	//to be deleted
 	function add_string_to_array(arr, str){
 		strarr = str.split(",");
 		for (s in strarr)

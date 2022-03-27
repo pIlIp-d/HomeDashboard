@@ -17,8 +17,8 @@
 		$show = 0;
 		$id = 0;
 		$unit = "°C";
-		if (isset($_GET["sensor"])) {
-			$sensor = $_GET["sensor"];
+		if (isset($_GET["name"])) {
+			$sensor = $_GET["name"];
 		}
 		if (isset($_GET["display_name"])) {
 			$display_name = $_GET["display_name"];
