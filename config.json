@@ -10,15 +10,16 @@
       "name": "temperature",
       "display_name": "sensor",
       "default": {
+        "device_id":"001",
         "type": "temp",
         "filename": "temperature.php"
       }
     },
     {
-      "name": "odk_timer",
+      "name": "timer",
       "display_name": "Timer",
       "default": {
-        "filename": "odk_timer_wfo.php",
+        "filename": "timer.php",
         "type": "timer",
         "sizes": "12,13,14,24,34"
       },

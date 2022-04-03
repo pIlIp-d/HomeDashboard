@@ -8,12 +8,15 @@ const DB_URL = HOMESERVER_URL + "odk_db.php";
 const INTERVALL_MAIN_TICKER = 1000;
 const TIMEOUT = 30;
 
+var simpleErrorCounter = 0;
+
 var NAME = document.getElementById("display_name");
 var TACT = document.getElementById("tact_value");
 var TMIN = document.getElementById("tmin_select");
 var TMAX = document.getElementById("tmax_select");
 const canvas = document.getElementById("canvas");
 var canv_context = canvas.getContext("2d");
+
 
 var temp_history = [];
 
@@ -275,12 +278,20 @@ function xhttp_send(request_name, value = null){
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200)
 			response = this.responseText;
+		else if (this.status == 404){
+			if (simpleErrorCounter++ < 1)
+				alert("No Data for "+ NAME.innerHTML +" Found!\nMaybe the database entry hasn't been made yet.");
+			else
+				console.log(404);
+			return;
+		}
 		else if (this.readyState != 1 || this.status != 0)//weird response exception, wich the browser can handle fine
 			console.log("error or wrong response code");
 	};
 	xhttp.open("GET", DB_URL + "?json=" + json_string, false);
 	xhttp.send();
 	response_handler(request_name, response);
+
 }
 
 function response_handler(request_name, response){

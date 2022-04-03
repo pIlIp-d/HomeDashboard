@@ -1,5 +1,20 @@
 # Documentation
 
+Documentation for Architecture, source code and overall devs who want to develop ontop of this project.
+
+## **dashboard.php**
+
+GET parameters  
+    
+    preset defaults to 1(preset numeration starts at 0)
+    determents which preset is loaded at the beginning.
+    if this preset isn't found the empty preset is loaded.
+
+HTML
+
+    Main content is loaded inside Iframes. (id=container)
+    The Settings slide over has buttons which interact directly with javascript and selects which are filled after recieving the right data.
+
 ## config.json Example
 
 <details><summary>Config.json</summary>
@@ -70,7 +85,6 @@
               "scrolling": "yes"
             }
           }
-
       ],
       "sizes":  ["11","12","13","14","24","34","44","54","64","74"],
       "devices": [

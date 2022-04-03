@@ -74,11 +74,6 @@
 </body>
 <script src="javascript/temperature.js"></script>
 <script type="text/javascript">
-	//TODO Recipes option for only bakingplan
-
-
-//Request URL: http://localhost/HomeDashboard/odk_db.php?json={%22request_name%22:%22get_active_bakingplan%22}
-//Request URL: http://localhost/HomeDashboard/odk_db.php?json={%22request_name%22:%22bakingplan_get_all_recipes%22}
 
 </script>
 </html>

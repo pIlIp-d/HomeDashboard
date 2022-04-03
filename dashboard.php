@@ -37,11 +37,11 @@ Slide-over / Settings
 		<span class="settings-menu-content" id="head-container">
 
 			<input type="button" class="button" id="button_back" onclick="click_sidebar('button');" value=" Back ">
-			<input type="button" class="button" id="add_button" onclick="grid.add_element()" value=" Add ">
-			<input type="button" class="button" id="move_button" onclick="mode='move';grid.update();click_sidebar('move');" value=" Move ">
+			<input type="button" class="button" id="add_button" onclick="DASHBOARD.grid.add_element()" value=" Add ">
+			<input type="button" class="button" id="move_button" onclick="mode='move';DASHBOARD.grid.update();click_sidebar('move');" value=" Move ">
 			<br>
 			<div class="settings-menu-select">
-				<select class="select settings-menu-content" id="select_type" onchange="change_html_sizes();">
+				<select class="select settings-menu-content" id="select_type" onchange="DASHBOARD.widgets.change_html_sizes();">
 					<option value='null'>- choose type -</option>
 				</select>
 				<select class="select settings-menu-content" id="select_size">
@@ -49,11 +49,11 @@ Slide-over / Settings
 				</select>
 				<br>
 				<!--load-->
-				<input type="button" style="left:0;" class="button" value=" Load " onclick="presets.action('','load');">
+				<input type="button" style="left:0;" class="button" value=" Load " onclick="DASHBOARD.action('','load');">
 				<!--save-->
-				<input type="button" style="left:0;" class="button" value=" Save " onclick="presets.action('','save');">
+				<input type="button" style="left:0;" class="button" value=" Save " onclick="DASHBOARD.action('','save');">
 				<!--delete-->
-				<input type="button" style="left:0;" class="button" value=" Delete " onclick="presets.action('','delete');">
+				<input type="button" style="left:0;" class="button" value=" Delete " onclick="DASHBOARD.action('','delete');">
 				<br>
 				<select class="select" id="select_preset" style="margin-top: 1.5rem">
 					<option value='null' id="null">- select preset -</option>
@@ -65,9 +65,11 @@ Slide-over / Settings
 
 </body>
 <noscript>Please activate JavaScript!</noscript>
-<script src="javascript/dashboard_move.js"></script>
 
-<script src="javascript/dashboard.js"></script>
+<script src="javascript/dashboard/grid.js"></script>
+<script src="javascript/dashboard/widget.js"></script>
+<script src="javascript/dashboard/dashboard.js"></script>
+<script src="javascript/dashboard/script.js"></script>
 
 </html>
 

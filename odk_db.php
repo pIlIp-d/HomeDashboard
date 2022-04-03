@@ -409,16 +409,22 @@ function request_handling($request_name,$dbcon){
 			$sql = "SELECT id, name, temp_act, temp_min, temp_max, timecode FROM devices ";
 			if (isset($json_decoded->device_id)){
 				$device_id = mysqli_real_escape_string($dbcon, $json_decoded->device_id);
-				$sql .= "WHERE devices.id = $device_id";
+				$sql .= " WHERE EXISTS (SELECT * FROM devices WHERE devices.id = $device_id) AND devices.id = $device_id";
 			}
 			else {
 				$device_name = mysqli_real_escape_string($dbcon, $json_decoded->device_name);
-				$sql .= "WHERE devices.name = '$device_name'";
+				$sql .= " WHERE EXISTS (SELECT * FROM devices WHERE devices.name = '$device_name') AND devices.name = '$device_name'";
 			}
 			$timeout = 50;
 			if (isset($json_decoded->$timeout))
 				$timeout = mysqli_real_escape_string($dbcon, $json_decoded->timeout);
-			$resp = json_decode(sql_request_encode_json($dbcon, $sql))["0"];
+			$resp = json_decode(sql_request_encode_json($dbcon, $sql));
+			if (Count($resp) > 0)
+				$resp = $resp["0"];
+			else{
+				http_response_code(404);
+				return;
+			}
 			if ((int)$resp->timecode + (int)$timeout  < time())
 				$resp->temp_act = "--";
 			echo json_encode($resp);
