@@ -59,110 +59,87 @@ class GridObject { //single widget with properties
 		grid.splice(this.pos,1);
 	}
 	show(){
-		console.log(this);
+        console.log(this);
 	}
-	createHTML(){
-		let type = this.type, scrolling = "no", source = HOMESERVER_URL+"/dashboard/", html = "", size="11",special=false;
-		if (mode === "move")
-			type = "move";
-		//---div for grid---
-		html += "<div id=\"" + this.pos + "\" ";
-		if (type === "settings"){
-			html += "class=\"tile tile_" + this.size + " grid_object menu-toggle\"";
-			html += "onclick=\"click_sidebar('settings');\"><img src=\"images/btn_edit.svg\" style=\"width: 4rem;height:4rem;\">";
-		}
-		else {
-			for (let g in this.widgets.widgets){
-				const widget = this.widgets.widgets[g];
-				if (type === widget.name){
-					if ("sizes" in widget.default && !widget.default.sizes.includes(this.size) && "special" in widget && widget.special.sizes.includes(this.size))
-						special = true;//size is not in default config for this type
-					else if ("sizes" in widget.default && !(widget.default.sizes.includes(this.size))){
-						//size is not in default or special config for this type
-						for (d in this.sizes){//sets size to first allowed size
-							if (widget.default.sizes.includes(d)){
-								this.size = this.sizes[d];
-								break;
-							}
-						}
-					}
-					if (!special)
-						source += widget.default.filename;//size equals spec for default widget
-					else
-						source += widget.special.filename;//size equals spec for special widget
-					if (special && "scrolling" in widget.special && widget.special.scrolling == "yes" ||
-						!special && "scrolling" in widget.default && widget.default.scrolling == "yes")
-						scrolling = "yes";
-					if (!special && "type" in widget.default || special && "type" in widget.special){
-						let sw = (special)?widget.special.type:widget.default.type;
-						source += "?name="+this.type;
-						source += "&display_name="+widget.display_name;
-						source += "&show="+this.display;
-						source += "&id="+this.pos;
-                        for (let t in this.widgets.sensors){
-                            if (type == this.widgets.sensors[t].name){
-                                source += "&unit="+this.widgets.sensors[t].unit;
+    createHTML(){
+        let type = this.type, scrolling = "no", source = "dashboard/", html = "", size=this.size;
+        if (mode === "move")
+            type = "move";
+        html += "<div id=\"" + this.pos + "\" ";
+
+        if (type === "settings"){
+    		html += "class=\"tile tile_" + this.size + " grid_object menu-toggle\"";
+    		html += "onclick=\"click_sidebar('settings');\"><img src=\"images/btn_edit.svg\" style=\"width: 4rem;height:4rem;\">";
+        }
+        else if (type === "dummy")
+            html += "class=\"tile tile_11 dummy\">"
+        else {
+            if (type === "move"){
+                //check for gray Arrows
+                var left = 0;
+                var right = 0;
+                var top = 0;
+                var bottom = 0;
+                var mod;
+                if (view === "vertical")
+                    mod = 4;
+                else if (view === "horizontal")
+                    mod = 8;
+                if (this.start % mod === 1)
+                    left = 1;
+                if (this.stop % mod === 0)
+                    right = 1;
+                if (this.stop <= mod)
+                    top = 1;
+                for (let len = DASHBOARD.grid.length-1; len >= 0; len--){
+                    if (DASHBOARD.grid[len].start % mod === 1){
+                        if (this.pos >= len)
+                            bottom = 1; //if in last row
+                        break;
+                    }
+                }
+                source += "move_with_arrows.php";
+                var arrow_string = ""+top+right+bottom+left;
+                var iframe_json = {
+                    arrows: arrow_string,
+                    name: this.type,
+                    id: this.pos
+                };
+            }
+            else {
+    			for (let g in this.widgets.widgets){
+    				var widget = this.widgets.widgets[g];
+    				if (type === widget.name){
+    					source += widget.filename;
+    					if ("scrolling" in widget && widget.scrolling == "yes")
+    						scrolling = "yes";
+                        var iframe_json = JSON.parse(JSON.stringify(widget));//copy obj / create new instance
+                        delete iframe_json.sizes;//remove sizes array from general widget
+                        delete iframe_json.filename;
+                        iframe_json.show = this.display;//state of display 1 / 0
+                        iframe_json.id = this.pos;
+                        iframe_json.preset_id = DASHBOARD.preset_ids[last_preset];//TODO maybe get value through different way
+
+                        switch (type){
+                            case "url":
+                                source = widget.filename;
                                 break;
-                            }
+                            case "...":
+                                /*custom widgets
+                                add parameter to iframe_json
+                                iframe_json.custom_value_name = value;
+                                */
+                                break;
                         }
-						switch (sw){
-                            case "move":
-								//check for gray Arrows
-								var left = 0;
-								var right = 0;
-								var top = 0;
-								var bottom = 0;
-								var mod;
-								if (view === "vertical")
-									mod = 4;
-								else if (view === "horizontal")
-									mod = 8;
-								if (this.start % mod === 1)
-									left = 1;
-								if (this.stop % mod === 0 || this.pos === DASHBOARD.grid.length-1)
-									right = 1;
-								if (this.stop <= mod)
-									top = 1;
-								for (let len = DASHBOARD.grid.length-1; len >= 0; len--){
-									if (DASHBOARD.grid[len].start % mod === 1){
-										if (this.pos >= len)
-											bottom = 1; //if in last row
-										break;
-									}
-								}
-								var arrow_string = ""+top+right+bottom+left;
-								source += "&arrows="+arrow_string;
-								break;
-							case "url":
-								if (!special) source = widget.default.filename;
-								else source = widget.special.filename;
-								break;
-                            case "timer":
-                                source += "?preset_id="+ last_preset+"&timer_id="+GridObject.timer_count;
-								GridObject.timer_count++;
-								break;
-						}
-					}
-					switch (type){
-							//Custom Widget HTML
-						case "notes":
-							html += "class=\"tile tile_" + this.size + " grid_item\"><div class='editor' id='editor'><p>Notes</p></div";
-							break;
-						case "dummy":
-							html += "class=\"tile tile_11 dummy\">"
-							break;
-						default:
-							//Standart Widget HTML
-							html += "class=\"tile tile_" + this.size + " grid_item\"";
-							html += "><iframe scrolling='"+ scrolling+"' class=\"iframe\" id=\"iframe\" src=\"" + source + "\"></iframe>";
-					}
-					break;
-				}
-			}
-		}
-		html += "</div>";
-		return html;
-	}
+                    }
+                }
+            }
+            html += "class=\"tile tile_" + this.size + " grid_item\"";
+            html += "><iframe scrolling='"+ scrolling +"' class=\"iframe\" id=\"iframe\" src='" + source + "?json="+JSON.stringify(iframe_json)+"\'></iframe>";
+        }
+        html += "</div>";
+        return html;
+    }
 }
 
 var mode = "show";//or move

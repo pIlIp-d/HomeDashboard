@@ -6,14 +6,17 @@
     $id = 0;
     $name = "";
     $arrows = "0000";
-    if (isset($_GET["id"])) {
-      $id = $_GET["id"];
-    }
-    if (isset($_GET["name"])) {
-      $name = $_GET["name"];
-    }
-    if (isset($_GET["arrows"])) {
-      $arrows = $_GET["arrows"];
+    if (isset($_GET["json"])) {
+        $json = json_decode($_GET["json"]);
+        if (isset($json->arrows)) {
+            $arrows = $json->arrows;
+        }
+        if (isset($json->id)) {
+            $id = $json->id;
+        }
+        if (isset($json->name)) {
+            $name = $json->name;
+        }
     }
   ?>
 <div id="arrows" hidden><?php echo $arrows; ?></div>

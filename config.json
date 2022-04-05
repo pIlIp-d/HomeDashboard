@@ -1,108 +1,58 @@
 {
-  "handler": {
-    "export": {
-      "name": "export",
-      "filename": "export.php"
-    }
-  },
   "widget": [
     {
       "name": "temperature",
-      "display_name": "sensor",
-      "default": {
-        "device_id":"001",
-        "type": "temp",
-        "filename": "temperature.php"
-      }
+      "device_id":"001",
+      "type": "device",
+      "filename": "temperature.php"
     },
     {
       "name": "timer",
       "display_name": "Timer",
-      "default": {
-        "filename": "timer.php",
-        "type": "timer",
-        "sizes": "12,13,14,24,34"
-      },
-      "special": {
-        "filename": "odk_timer_wfo_quadrat.html",
-        "type":"timer",
-        "sizes": "11,44"
-      }
+      "filename": "timer.php",
+      "sizes": ["12","13","14","24","34"]
     },
     {
       "name": "recipes",
       "display_name": "Rezepte",
-      "default": {
-        "filename": "recipes.html",
-        "scrolling": "yes"
-      }
+      "filename": "recipes.html",
+      "scrolling": "yes"
     },
     {
       "name": "notes",
       "attributes": "yes",
       "display_name": "Notizen",
-      "default": {
-        "filename": "",
-        "type": "inline-editor"
-      }
+      "filename": "",
+      "type": "inline-editor"
     },
     {
       "name": "website",
       "display_name": "Website",
-      "default": {
-        "type":"url",
-        "filename": "https://duckduckgo.com/"
-      }
-    },
-    {
-      "name": "dummy",
-      "attributes": "yes",
-      "display_name": "Dummy 1x1",
-      "default": {
-        "filename": "",
-        "sizes": "11"
-      }
-    },
-    {
-      "name": "move",
-      "widget": "no",
-      "display_name": "",
-      "default": {
-        "type": "move",
-        "filename": "move_with_arrows.php"
-      }
+      "type":"url",
+      "filename": "https://www.wetter.de/widget/heute/u0y12g/true/"
     },
     {
       "name": "bakingplan_editor",
       "display_name": "Backplan Bearbeiter",
-      "default": {
-        "filename": "bakingplan_editor.php",
-        "scrolling": "yes"
-      }
+      "filename": "bakingplan_editor.php",
+      "scrolling": "yes"
     },
     {
       "name": "bakingplan",
       "display_name": "Backplan",
-      "default": {
-        "filename": "bakingplan.php",
-        "scrolling": "yes"
-      }
+      "filename": "bakingplan.php",
+      "scrolling": "yes"
     },
     {
       "name": "toggle_button",
       "display_name": "Toggle",
-      "default": {
-        "type": "button",
-        "filename": "toggle_button.php"
-      }
+      "filename": "toggle_button.php"
     },
     {
       "name": "click_button",
       "display_name": "Button",
-      "default": {
-        "type": "button",
-        "filename": "click_button.php"
-      }
+      "filename": "click_button.php",
+      "sizes": ["11","44"]
     }
   ],
   "sizes": ["11","12","13","14","24","34","44","54","64","74"],

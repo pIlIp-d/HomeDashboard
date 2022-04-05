@@ -4,26 +4,6 @@ function add_string_to_array(arr, str){
         arr.push(strarr[s]);
     return arr;
 }
-class Widget{//struct
-	constructor(name,display_name,default_,special=null,sizes,unit){
-		this.name = name;
-		this.display_name = display_name;
-		this.default = default_;
-		this.sizes = sizes.sort();
-		this.unit = unit;
-		if (special != null)
-			this.special = special;
-	}
-}
-class Sensor{//struct
-	constructor(name,display_name,id,type,unit){
-		this.name = name;
-		this.display_name = display_name;
-		this.id = id;
-		this.type = type;
-		this.unit = unit;
-	}
-}
 class Widgets{//all possible properties of widget-types (~ Widget"presets")
 	constructor(){
 		this.sensors = [];
@@ -41,63 +21,51 @@ class Widgets{//all possible properties of widget-types (~ Widget"presets")
 		this.handle_response(response);
 	}
 	handle_response(response){
+        //TODO testing if values arent doubled, wrong etc...
 		//---sensors---
 		for (let i = 0; i < Object.keys(response.devices).length; i++){
 			for (let j = 0; j < response.devices[i].sensors.length; j++){
-				let s = response.devices[i].sensors[j];
-				this.sensors.push(new Sensor(
-					s.sensor_name,
-					s.display_name,
-					s.sensor_id,
-					s.type,
-					s.unit));
-			}
+                let s = response.devices[i].sensors[j];
+				this.sensors.push({
+					name: s.sensor_name,
+					display_name: s.display_name,
+					id: s.sensor_id,
+					type: s.type,
+					unit: s.unit,
+                    device_id: response.devices[i].device_id
+                });
+            }
 		}
 		//---widgets---
 		this.sizes = response.sizes;
 		let html = "";
-		for (let w=0;w<Object.keys(response.widget).length;w++){
-			let special = null;
-			let default_ = response.widget[w].default;
-			if (response.widget[w].display_name === "sensor"){
-				for (let s=0;s<this.sensors.length-1;s++){
-					var widget_sizes = [];
-					if ("sizes" in response.widget[w].default)
-						widget_sizes = add_string_to_array(widget_sizes,response.widget[w].default.sizes);
-					else
-						widget_sizes = this.sizes;
-					if (response.widget[w].display_name != "")
-						html+="<option value='"+ this.sensors[s].name +"'>"+ this.sensors[s].display_name +"</option>";
-					if ("special" in response.widget[w]){
-						special = response.widget[w].special;
-						if ("sizes" in response.widget[w].special)
-							widget_sizes = add_string_to_array(widget_sizes,special.sizes);
-					}
-					this.widgets.push(new Widget(this.sensors[s].name,
-											this.sensors[s].display_name,
-											default_,special,widget_sizes,this.sensors[s].unit
-											));
-				}
+		for (let w = 0; w < Object.keys(response.widget).length; w++){
+			var widget = response.widget[w];
+            if (!("sizes" in widget))
+                widget.sizes = this.sizes;
+            if (widget.type === "device"){
+				for (let s = 0; s < this.sensors.length-1; s++){
+                    if (this.sensors[s].device_id == widget.device_id){
+                        if (this.sensors[s].display_name != "")
+    						html+="<option value='"+ this.sensors[s].name +"'>"+ this.sensors[s].display_name +"</option>";
+    					this.widgets.push({
+                            name: this.sensors[s].name,
+                            display_name: this.sensors[s].display_name,
+                            device_id: widget.device_id,
+    						sizes: widget.sizes,
+                            unit: this.sensors[s].unit,
+                            filename: widget.filename
+    					});
+                    }
+                }
 			}
 			else {
-				var widget_sizes = [];
-				if ("sizes" in response.widget[w].default)
-						widget_sizes = add_string_to_array(widget_sizes,response.widget[w].default.sizes);
-					else
-						widget_sizes = this.sizes;
-				if (response.widget[w].display_name != "")
-					html+="<option value='"+ response.widget[w].name +"'>"+ response.widget[w].display_name +"</option>\n";
-				if ("special" in response.widget[w]){
-					special = response.widget[w].special;
-					if ("sizes" in response.widget[w].special)
-						widget_sizes = add_string_to_array(widget_sizes,special.sizes);
-				}
-				this.widgets.push(new Widget(response.widget[w].name,
-											 response.widget[w].display_name,
-											 default_,special,widget_sizes
-											));
-			}
+				if (widget.display_name != "")
+					html+="<option value='"+ widget.name +"'>"+ widget.display_name +"</option>\n";
+                this.widgets.push(widget);
+            }
 		}
+        console.log(this.widgets);
 		document.getElementById("select_type").innerHTML += html;
 		this.change_html_sizes();
 	}

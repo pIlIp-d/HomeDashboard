@@ -1,3 +1,5 @@
+//TODO restart -> config.json checks db values are fitting?
+
 
 const HOMESERVER_URL = "/HomeDashboard";
 const DB_URL = HOMESERVER_URL + "/odk_db.php";

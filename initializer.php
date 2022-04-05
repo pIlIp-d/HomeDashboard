@@ -98,7 +98,6 @@ function create_table($conn, $table_name){
                 time LONG NOT NULL
             )";
             break;
-
     }
     if(mysqli_query($conn, $sql))
         echo "<br>Table '$table_name' created successfully.";

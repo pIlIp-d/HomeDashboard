@@ -46,7 +46,7 @@ class Dashboard {
 		var json_string = "{\"request_name\":\""+request_name+"\"";
 		switch (request_name){
 			case "set_new_preset":
-				json_string += ",\"preset_name\":\""+ this.preset_ids[value] +"\"";
+				json_string += ",\"preset_name\":\""+ value +"\"";
 				json_string += ",\"grid_object_v\":"+ this.grid_vertical.toString();
 				json_string += ",\"grid_object_h\":"+ this.grid_horizontal.toString();
 				break;
@@ -105,6 +105,7 @@ class Dashboard {
 					if (view === "horizontal")
 						this.grid = this.grid_horizontal;
 					this.grid.update();
+					document.getElementById("select_preset").value = last_preset;
 					console.log(this.grid);
 				break;
 			case "get_all_presets":
@@ -134,6 +135,7 @@ class Dashboard {
 		}
 		html += "<option value='"+i+"' id='new'>save as new preset</option>";
 		document.getElementById("select_preset").innerHTML = html;
+		document.getElementById("select_preset").value = (last_preset < this.preset_ids.length)?last_preset:null;
 	}
 	/**
 	 * 	@function action button handling, in dashboard.php button.onclick()

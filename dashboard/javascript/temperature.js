@@ -282,7 +282,7 @@ function xhttp_send(request_name, value = null){
 			if (simpleErrorCounter++ < 1)
 				alert("No Data for "+ NAME.innerHTML +" Found!\nMaybe the database entry hasn't been made yet.");
 			else
-				console.log(404);
+				console.log(404 );
 			return;
 		}
 		else if (this.readyState != 1 || this.status != 0)//weird response exception, wich the browser can handle fine

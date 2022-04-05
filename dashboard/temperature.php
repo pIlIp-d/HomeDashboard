@@ -17,21 +17,25 @@
 		$show = 0;
 		$id = 0;
 		$unit = "°C";
-		if (isset($_GET["name"])) {
-			$sensor = $_GET["name"];
-		}
-		if (isset($_GET["display_name"])) {
-			$display_name = $_GET["display_name"];
-		}
-		if (isset($_GET["show"])) {
-			$show = $_GET["show"];
-		}
-		if (isset($_GET["id"])) {
-			$id = $_GET["id"];
-		}
-		if (isset($_GET["unit"])) {
-			$unit = $_GET["unit"];
-		}
+
+		if (isset($_GET["json"])) {
+	        $json = json_decode($_GET["json"]);
+			if (isset($json->name)) {
+    			$sensor = $json->name;
+    		}
+    		if (isset($json->display_name)) {
+    			$display_name = $json->display_name;
+    		}
+    		if (isset($json->show)) {
+    			$show = $json->show;
+    		}
+    		if (isset($json->id)) {
+    			$id = $json->id;
+    		}
+    		if (isset($json->unit)) {
+    			$unit = $json->unit;
+    		}
+	    }
 	?>
 	<div id="sensor_id" hidden><?php echo $sensor; ?></div>
 	<div id="display_name" hidden><?php echo $display_name; ?></div>
