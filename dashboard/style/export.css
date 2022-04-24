@@ -1,3 +1,7 @@
+body{
+	width:100%;
+}
+
 .main{
 	position: relative;
 	left: 10px;
@@ -13,17 +17,7 @@ ul{
 .rec_bakingtemperature{
 	font-size: 1.2rem;
 }
-#clock{
-	position:  relative;
-	top: 3px;
-	margin-right: 1rem;
-	height: 1.2rem;
-	width:  1.2rem;
-}
-#bakingtemperature{
-	position:  relative;
-	top: 3px;
-	left: -4px;
-	height: 1.2rem;
-	width:  1.2rem;
+.main-print{
+	width:100%!important;
+	font-size:2vw!important;
 }

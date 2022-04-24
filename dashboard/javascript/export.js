@@ -1,54 +1,13 @@
-var server_url = "/HomeDashboard/";
-var recipe_object = [];
-var recipe_info = [];
-var recipe_ingredients = [];
-var recipe_count;
-var act_recipe = 4;
-//pdf gen
-var imgData;
 
-window.addEventListener('DOMContentLoaded', init());
+window.addEventListener('DOMContentLoaded', init_export());
 
-function init(){
-    xhttp_request("get_list_of_recipes","");
-    console.log(recipe_object);
+function init_export(){
+
+    replaceSVGs();
+    json_create_for_pdf(document.getElementById("php_request").innerHTML);
 }
 
-function get_full_recipe(){
-	act_recipe = document.getElementById("php_message").innerHTML % recipe_count;
-    if (act_recipe < recipe_count) {
-		xhttp_request("get_recipe_data",recipe_object[act_recipe].id);
-		xhttp_request("get_recipe_ingredients",recipe_object[act_recipe].id);
-    }
-}
-
-function act_recipe_to_html(){
-    var html = "";
-    html += "<div id='container'>";
-    html += "<h2 class=\"rec_name\">"+ base64_2_specialchars(recipe_object[act_recipe].name) +"</h1>";
-    html += "<span class=\"rec_bakingtime\">"+ base64_2_specialchars(recipe_info[0].bakingtime) + "  <img id='clock' src=\"/HomeDashboard/images/clock_black.svg\"></span>";
-    html += "<span class=\"rec_bakingtemperature\">"+ base64_2_specialchars(recipe_info[0].bakingtemperature) +"  <img id='bakingtemperature' src=\"/HomeDashboard/images/sym_thermo_black.svg\"></span><br>";
-    html += "<table class=\"ingr_table\"><tr><th>Zutaten</th></tr>";
-    for (i=0;i < recipe_ingredients.length;i++){
-      	html += "<tr><td>"+ base64_2_specialchars(recipe_ingredients[i].amount) +"</td>";
-      	html += "<td>"+base64_2_specialchars(recipe_ingredients[i].name)+"</td></tr>";
-    }
-    html += "</table>";
-    html += "<p class=\"content\">"+ recipe_info[0].preparation +"</p></div>";
-    document.getElementById("main").innerHTML = html;
-	}
-
-function base64_2_specialchars(string){
-	// ersetzt die folgenden in eckige Klammen gehüllten kodierten Sonderzeichen durch den eigentlichen Wert
-	// "(WyJd) , &(WyZd) , +(Wytd) , #(WyNd)
-	string = string.replace(/WyJd/g, "\"");
-	string = string.replace(/WyZd/g, "&");
-	string = string.replace(/Wytd/g, "+");
-	string = string.replace(/WyNd/g, "#");
-	return string;
-}
-
-function xhttp_request(request, id) {
+function xhttp_request_export(request, id) {
     console.log(request +" "+id);
     var url = "";
     url = server_url + "odk_db.php?json={\"request_name\":\"";
@@ -99,32 +58,13 @@ function xhttp_request(request, id) {
 //----- PDF Gen ------------------
 //--------------------------------
 
-//creates canvas/screenshot object
-html2canvas(document.body).then(function(canvas) {
-		imgData = canvas.toDataURL("image/jpeg", 1.0);
-		json_create_for_pdf(document.getElementById("php_request").innerHTML);
-	});
-
-//converts canvas to JPEG to PDF
-function get_pdf(bool){
-	const { jsPDF } = window.jspdf;
-	const pdf_doc = new jsPDF();
-	pdf_doc.addImage(imgData, 'JPEG',0 ,0);
-	if (bool)
-		pdf_doc.save(recipe_object[act_recipe].name);
-	else
-		return pdf_doc.output();
-}
-
-//--------------------------------
-//----- JSON Gen -----------------
-//--------------------------------
-
 function json_create_for_pdf(request){
 	if (request == "download_pdf")
 		get_pdf(true);
-	else if (request == "print_pdf")
-		window.print();
+	else if (request == "print_pdf") {
+        setPrintCSS();
+        window.print();
+    }
 	if (request == "send_mail"){
 		var loop = true;
 		while(loop){
@@ -143,7 +83,7 @@ function json_create_for_pdf(request){
 			}
 		}
 		var json_string = '{"name":"'+
-				recipe_object[act_recipe].name+
+				recipe_object[act_recipe % recipe_count].name+
 				'","request":"'+request+
 				'","bakingtime":"'+
 				recipe_info[0].bakingtime+
@@ -165,4 +105,36 @@ function json_create_for_pdf(request){
 	    xhttp.open( 'post', url, true);
 	    xhttp.send(data);
 	}
+}
+
+function setPrintCSS(){
+    document.getElementById("main").classList.add("main-print");
+}
+
+function replaceSVGs(){
+    document.getElementById("bakingtemperature").remove();
+    document.getElementById("clock").remove();
+    let time_container = document.getElementById("bakingtime_container");
+    time_container.innerHTML = "<span id='clock_text'>Backzeit:</span>" + time_container.innerHTML;
+    let temp_container = document.getElementById("bakingtemparature_container");
+    temp_container.innerHTML = "<span id='temp_text'>Backtemperatur:</span>" + temp_container.innerHTML;
+}
+
+//creates canvas/screenshot object and converts it to pdf
+function get_pdf(bool){
+    console.log(recipe_object);
+    const { jsPDF } = window.jspdf;
+	const pdf_doc = new jsPDF();
+    pdf_doc.html(document.body, {
+        callback: function (pdf_doc) {
+            if (bool)
+                pdf_doc.save(recipe_object[act_recipe % recipe_count].name);
+            else
+                return pdf_doc.output();
+        },
+        unit: 'pt',
+        format: 'letter',
+        orientation: 'portrait',
+        margin: [7,7]
+    });
 }
