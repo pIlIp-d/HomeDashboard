@@ -1,4 +1,3 @@
-//TODO - min max values only in specified range of values, curently doesnt work when changing bp mode
 
 const DEVICE_ID = "odk";
 var SENSOR_ID = "";
@@ -137,6 +136,7 @@ function interval_main_tick(){
 	xhttp_send("get_device_values");
 	temperature_set_color();
 	check_alarm();
+	tminmax_set_options(TMIN, 0, TMAX.value);
 }
 function check_alarm(){
 	set = false;
@@ -193,10 +193,12 @@ function toggle_bp_mode(bool = null){
 	if (bool != null)//set
 		bp_mode = bool^1;//toogle twice -> set to actual bool value
 	//toggle
-	if (bp_mode)
+	if (bp_mode) {
 		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_regular.svg";
-	else
+	}
+	else{
 		document.getElementById("bp_mode").src = HOMESERVER_URL+"images/btn_list_solid.svg";
+	}
 	bp_mode = 1^bp_mode;
 }
 

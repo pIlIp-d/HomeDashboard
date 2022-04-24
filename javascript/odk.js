@@ -37,15 +37,15 @@ function sql_get_count(from, where){
 			}
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"sql_get_count\",\"from\":\"" + from + "\",\"where\":\"" + where + "\"}", false);  
+	xhttp.open("GET", db_url+"?json={\"request_name\":\"sql_get_count\",\"from\":\"" + from + "\",\"where\":\"" + where + "\"}", false);
 	xhttp.send();
 }
 
 /* ----- Allgemein -------------------------------------------------------------------- */
 
 // Menüs einklappen bei "scroll" und "resize"
-window.addEventListener("scroll", me_hide); 
-window.addEventListener("resize", me_hide); 
+window.addEventListener("scroll", me_hide);
+window.addEventListener("resize", me_hide);
 window.addEventListener("scroll", mm_hide)
 window.addEventListener("resize", mm_hide)
 
@@ -54,7 +54,7 @@ window.addEventListener("resize", mm_hide)
 /* ------------------------------------------------------------------------------------ */
 
 class full_dialog{
-	constructor(dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content){		
+	constructor(dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content){
 		this.dialog_name = dialog_name;										// Name des Dialogs
 		this.btn_left_event = btn_left_event;							// Event (Funktion) bei Klick auf linken Button
 		this.btn_left_content = btn_left_content;					// Inhalt für linken Button
@@ -102,7 +102,7 @@ class full_dialog{
 		// Animation ausblenden nach rechts
 		mydialog.dlg.style.animation = "fdlg_hide 0.5s";
 		// Dialog-Objekt löschen wenn Animation beendet ist
-		setTimeout (function() { 
+		setTimeout (function() {
 	    mydialog.dlg.style.display = "none";
 	    }, 500);
 	}
@@ -113,10 +113,10 @@ class full_dialog{
 /* ------------------------------------------------------------------------------------ */
 
 class filter_dialog extends full_dialog{
-	constructor(dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content, show, hide){		
+	constructor(dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content, show, hide){
 		super (dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content, show, hide);
 	}
-	
+
 	save_and_hide(){
 		if (GV_FILTERMODE != "none"){
 			var allItems = document.getElementsByClassName("item");
@@ -153,7 +153,7 @@ class filter_dialog extends full_dialog{
 			dialog_filter.hide();
 		}
 	}
-	
+
 	createHTML(){
 		var html = "";
 		GV_FILTERMODE = "ingredients";
@@ -178,7 +178,7 @@ class filter_dialog extends full_dialog{
 
 	static area_filter_createHTML(filtermode){
 		// Bereich "Filter"
-		const url = db_url+"?json={\"request_name\":\"get_ingredients_or_rezipes\",\"filtermode\":\"" + filtermode + "\"}";
+		const url = db_url+"?json={\"request_name\":\" get_ingredients_or_recipes\",\"filtermode\":\"" + filtermode + "\"}";
 		const xhttp = new XMLHttpRequest();
 		var html = "";
 		xhttp.onreadystatechange = function() {
@@ -188,7 +188,7 @@ class filter_dialog extends full_dialog{
 					alert("DB-Fehler bei Request: " + url);
 				}
 				const json_object = JSON.parse(res);
-				for (i = 0; i < json_object.length; ++i) {				
+				for (i = 0; i < json_object.length; ++i) {
 					html += "<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dialog_filter.toggle_item(" + json_object[i].id + ")\">";
 					html += "	<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>";
 					html += "	<span class=\"flexitem item\" align=\"left\">" + base64_2_specialchars(json_object[i].name) + "</span>";
@@ -197,8 +197,8 @@ class filter_dialog extends full_dialog{
 				document.getElementById("dlg_filter_filter").innerHTML = html;
 			}
 		}
-		xhttp.open("GET", url, false);  
-		xhttp.send();		
+		xhttp.open("GET", url, false);
+		xhttp.send();
 	}
 
 	toggle_filter_mode(filtermode){
@@ -212,12 +212,12 @@ class filter_dialog extends full_dialog{
 		if (item.title == "unselected"){
 			item.style.backgroundColor = "#B0B0B0";
 			item.title = "selected";
-			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;
 		}
 		else{
 			item.style.backgroundColor = "#F0F0F0";
 			item.title = "unselected";
-			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
+			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;
 		}
 	}
 
@@ -231,7 +231,7 @@ class filter_dialog extends full_dialog{
 			for(var i = 0; i < allItems.length; i++) {
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;
 			}
 		return;
 		}
@@ -239,12 +239,12 @@ class filter_dialog extends full_dialog{
 			if (regex.test(allItems[i].innerText)){
 				document.getElementById(allItems[i].id).style.backgroundColor = "#B0B0B0";
 				document.getElementById(allItems[i].id).title = "selected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_selected_svg;				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_selected_svg;
 			}
 			else{
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;
 			}
 		}
 	}
@@ -254,16 +254,16 @@ class filter_dialog extends full_dialog{
 /* ------------------------------------------------------------------------------------ */
 
 class ingredients_dialog extends full_dialog {
-	constructor(dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content, show, hide){		
+	constructor(dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content, show, hide){
 		super (dialog_name, btn_left_event, btn_left_content, btn_right_event, btn_right_content, content, show, hide);
 	}
-	
+
 	save_and_hide(){
 		ACT_REZIPE.read_data_from_db();
 		ACT_REZIPE.write_data_to_GUI()
 		dialog_ingredients.hide();
 	}
-	
+
 	createHTML(){
 		var html = "";
 		const url = db_url+"?json={\"request_name\":\"get_all_ingredients\"}";
@@ -275,7 +275,7 @@ class ingredients_dialog extends full_dialog {
 					alert("DB-Fehler bei Request: " + url);
 				}
 				const json_object = JSON.parse(res);
-				for (i = 0; i < json_object.length; ++i) {						
+				for (i = 0; i < json_object.length; ++i) {
 					// Sonderzeichen im Zutaten-Name dekodieren
 					json_object[i].name = base64_2_specialchars(json_object[i].name);
 					html += "<div class=\"ingredient\" id=\"" + json_object[i].id + "\" title=\"unselected\" style=\"background-color: #F0F0F0;\">"
@@ -288,12 +288,12 @@ class ingredients_dialog extends full_dialog {
 				ingredients_dialog.select_selected_ingredients();
 			}
 		}
-		xhttp.open("GET", url, false);  
+		xhttp.open("GET", url, false);
 		xhttp.send();
 	}
-	
+
 	add_ingredient(){
-		const result = window.prompt("Name der neuen Zutat:");  
+		const result = window.prompt("Name der neuen Zutat:");
 		if (result != ""){
 			const url = db_url+"?json={\"request_name\":\"insert_ingredient\",\"ingr_name\":\"" + result + "\"}";
 			const xhttp = new XMLHttpRequest();
@@ -306,11 +306,11 @@ class ingredients_dialog extends full_dialog {
 				dialog_ingredients.createHTML();
 				}
 			}
-			xhttp.open("GET", url, false);  
+			xhttp.open("GET", url, false);
 			xhttp.send();
 		}
 	}
-	
+
 	static select_selected_ingredients(){
 		if (ACT_REZIPE.ingredients.length > 0){
 			for (var i = 0; i < ACT_REZIPE.ingredients.length; ++i) {
@@ -320,26 +320,26 @@ class ingredients_dialog extends full_dialog {
 			}
 		}
 	}
-	
+
 	toggle_ingredient(id){
 		var ingredient = document.getElementById(id);
 		if (ingredient.title == "unselected"){
 			// Darstellung anpassen
 			ingredient.style.backgroundColor = "#B0B0B0";
 			ingredient.title = "selected";
-			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;	
-			// Zutat zum Rezept-Objekt hinzufügen	
+			document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;
+			// Zutat zum Rezept-Objekt hinzufügen
 			ingredients_dialog.add_ingredient_to_recipe(id);
 		}
 		else{
 			ingredient.style.backgroundColor = "#F0F0F0";
 			ingredient.title = "unselected";
-			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
-			// Zutat aus Rezept-Objekt entfernen	
+			document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;
+			// Zutat aus Rezept-Objekt entfernen
 			ingredients_dialog.remove_ingredient_from_recipe(id);
 		}
 	}
-	
+
 	static add_ingredient_to_recipe(id){
 		// Zutat zum Rezept hinzufügen
 		const url =db_url+"?json={\"request_name\":\"add_ingredient_to_recipe\",\"rec_id\":\"" + ACT_REZIPE.id + "\",\"i_id\":\"" + id + "\"}";
@@ -352,10 +352,10 @@ class ingredients_dialog extends full_dialog {
 				}
 			}
 		}
-		xhttp.open("GET", url, false);  
+		xhttp.open("GET", url, false);
 		xhttp.send();
 	}
-	
+
 	static remove_ingredient_from_recipe(id){
 		// Zutat zum Rezept hinzufügen
 		const url = db_url+"?json={\"request_name\":\"remove_ingredient_from_recipe\",\"rec_id\":\"" + ACT_REZIPE.id + "\",\"i_id\":\"" + id + "\"}";
@@ -368,7 +368,7 @@ class ingredients_dialog extends full_dialog {
 				}
 			}
 		}
-		xhttp.open("GET", url, false);  
+		xhttp.open("GET", url, false);
 		xhttp.send();
 	}
 
@@ -397,7 +397,7 @@ class ingredients_dialog extends full_dialog {
 								dialog_ingredients.createHTML();
 							}
 						}
-						xhttp2.open("GET", url2, false);  
+						xhttp2.open("GET", url2, false);
 						xhttp2.send();
 					}
 				}
@@ -406,7 +406,7 @@ class ingredients_dialog extends full_dialog {
 				}
 			}
 		}
-		xhttp1.open("GET", url1, false);  
+		xhttp1.open("GET", url1, false);
 		xhttp1.send();
 	}
 
@@ -443,11 +443,11 @@ class recipe{
 		ACT_REZIPE.write_data_to_GUI();
 		dialog_recipe_edit.show();
 	}
-	
+
 	createHTML(){
 		return recipe.createHTML();
 	}
-	
+
 	clear(){
 		ACT_REZIPE.id = 0;
 		ACT_REZIPE.name = "";
@@ -455,9 +455,9 @@ class recipe{
 		ACT_REZIPE.temperature = "";
 		ACT_REZIPE.preparation = "";
 		ACT_REZIPE.ingredients = null;
-		ACT_REZIPE.completed = false;	
+		ACT_REZIPE.completed = false;
 	}
-	
+
 	read_data_from_db(){
 		recipe.read_data_from_db();
 	}
@@ -465,18 +465,18 @@ class recipe{
 	write_data_to_db(){
 		recipe.write_data_to_db()
 	}
-	
+
 	read_data_from_GUI(){
 		recipe.read_data_from_GUI();
 	}
-	
+
 	write_data_to_GUI(){
 		recipe.write_data_to_GUI()
 	}
-	
+
 	static read_data_from_db(){
 		// Rezeptdaten in ACT_RECIPE-Array einlesen
-		// bei neuem Rezept: Rezept-Daten in Objekt und HTML zurücksetzen 
+		// bei neuem Rezept: Rezept-Daten in Objekt und HTML zurücksetzen
 		if (ACT_REZIPE.id == 0){
 			document.getElementById("header_dialog_name").innerText = "Rezept neu";
 			ACT_REZIPE.id = 0;
@@ -491,9 +491,9 @@ class recipe{
 			document.getElementById("temperature").value = "";
 			prep_editor.setData("");
 			document.getElementById("ingr_table").innerHTML = "";
-		}		
+		}
 		else{
-			// bei bestehendem Rezept: Rezept-Daten aus DB laden 
+			// bei bestehendem Rezept: Rezept-Daten aus DB laden
 			document.getElementById("header_dialog_name").innerText = "Rezept bearbeiten";
 			const url = db_url+"?json={\"request_name\":\"get_recipe_data\",\"id\":\"" + ACT_REZIPE.id + "\"}";
 			const xhttp = new XMLHttpRequest();
@@ -513,8 +513,8 @@ class recipe{
 					recipe.read_ingredients_from_db();
 				}
 			}
-			xhttp.open("GET", url, false);  
-			xhttp.send();		
+			xhttp.open("GET", url, false);
+			xhttp.send();
 		}
 	}
 
@@ -545,12 +545,12 @@ class recipe{
 				ACT_REZIPE.completed = true;
 			}
 		}
-		xhttp.open("GET", url, false);  
+		xhttp.open("GET", url, false);
 		xhttp.send();
 	}
 
 	static write_data_to_db(){
-		// speichert alle Werte eines Rezeptes in der DB		
+		// speichert alle Werte eines Rezeptes in der DB
 		// Rezept in DB anlegen wenn neues Rezept
 		if (ACT_REZIPE.id == 0){
 			var url = db_url+"?json={\"request_name\":\"add_recipe\"";
@@ -570,8 +570,8 @@ class recipe{
 					recipe.write_ingredients_to_db();
 				}
 			}
-			xhttp.open("GET", url, false);  
-			xhttp.send();		
+			xhttp.open("GET", url, false);
+			xhttp.send();
 		}
 		else{
 			var url = db_url+"?json={\"request_name\":\"update_recipe\"";
@@ -592,8 +592,8 @@ class recipe{
 					recipe.write_ingredients_to_db();
 				}
 			}
-			xhttp.open("GET", url, false);  
-			xhttp.send();		
+			xhttp.open("GET", url, false);
+			xhttp.send();
 		}
 	}
 
@@ -614,12 +614,12 @@ class recipe{
 			// JSON-String mit den Werten zusammenbauen und an DB schicken
 			url = db_url+"?json={\"request_name\":\"update_recipe_ingredient\"";
 			url += ",\"ri_id\":\"" + ACT_REZIPE.ingredients[i].ri_id + "\"";
-			url += ",\"ri_amount\":\"" + specialchars_2_base64(ACT_REZIPE.ingredients[i].amount) + "\"}";	
-			xhttp.open("GET", url, false);  
+			url += ",\"ri_amount\":\"" + specialchars_2_base64(ACT_REZIPE.ingredients[i].amount) + "\"}";
+			xhttp.open("GET", url, false);
 			xhttp.send();
 		}
 	}
-	
+
 	static write_data_to_GUI(){
 		// Rezeptdaten in Dialog anzeigen
 		document.getElementById("recipename").value = ACT_REZIPE.name;
@@ -639,7 +639,7 @@ class recipe{
 			document.getElementById("ingr_table").innerHTML = html;
 		}
 	}
-		
+
 	static read_data_from_GUI(){
 		// Rezeptdaten in Rezept-Objekt speichern
 		ACT_REZIPE.name = document.getElementById("recipename").value;
@@ -654,7 +654,7 @@ class recipe{
 		}
 		ACT_REZIPE.completed = true;
 	}
-		
+
 	static createHTML(){
 		var html = "";
 		html += "<div class=\"dlg_rec\" id=\"rec_c_0\">";
@@ -687,7 +687,7 @@ class recipe{
 		html += " 	<div id=\"prep_editor\"></div>";
 		html += "</div>";
 		return html;
-	}		
+	}
 /*
 	static recipe_new(){
 		// Prüfen ob schon ein neues Rezept existiert
@@ -702,7 +702,7 @@ class recipe{
 					//alert(res1);
 				}
 			}
-			xhttp1.open("GET", "wfo_db.php?json=" + "{\"request_name\":\"sql_execute\",\"sql\":\"" + sql1 + "\"}", false);  
+			xhttp1.open("GET", "wfo_db.php?json=" + "{\"request_name\":\"sql_execute\",\"sql\":\"" + sql1 + "\"}", false);
 			xhttp1.send();
 		}
 		// Rezept-ID des neuen Rezepts ermitteln
@@ -725,10 +725,10 @@ class recipe{
 				alert(this.status);
 			}
 		}
-		xhttp2.open("GET", "wfo_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql2 + "\"}", false);  
-		xhttp2.send();		
-	}		
-*/		
+		xhttp2.open("GET", "wfo_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql2 + "\"}", false);
+		xhttp2.send();
+	}
+*/
 }	//class recipe
 
 function select_text(elem){
@@ -767,8 +767,8 @@ function template_HTTPRequest(){
 				const json_object = JSON.parse(res);
 			}
 		}
-		xhttp.open("GET", url, false);  
-		xhttp.send();		
+		xhttp.open("GET", url, false);
+		xhttp.send();
 }
 
 /* ----- Element-Menü ----------------------------------------------------------------- */
@@ -793,7 +793,7 @@ function me_show(id){
 	//var rec_id = id.replace("rec_btn_", "")
 	var box = document.getElementById("rec_table_" + id);
 	var menu_elem = document.getElementById("me");
-	var box_BCR = box.getBoundingClientRect();	
+	var box_BCR = box.getBoundingClientRect();
 
 	var box_top = box_BCR.top;
 	var box_left = box_BCR.left;
@@ -835,7 +835,7 @@ function menu_main_repaint(menu_items){
 	if (document.getElementById("mm")) {
 		var html = "";
 		html += "<table class=\"mm_table\" id=\"mm_table\">";
-		
+
 		var col_width = 300 / (menu_items.length - 1);
 		html += "<td class=\"mm_arrow\" id=\"mm_arrow\" onclick=\"mm_show_hide()\">&#10094;</td>";
 		for (var i = 1; i < menu_items.length; ++i) {
@@ -879,21 +879,23 @@ function mm_hide(){
 
 /* ----- Dialog full ------------------------------------------------------------------ */
 
-function dlg_full_show(headername) { 
+function dlg_full_show(headername) {
 	dlg_full_create_HTML(headername);
+	let d = document.getElementsByClassName("rec").style.display = "none";
+	console.log(d);
 	switch (headername){
 		case "Filter":
 			dlg_filter_create_HTML();
 			break;
 		case "Backplan auswählen":
 			dlg_select_bakingplan_create_HTML(headername);
-			break;			
+			break;
 		case "Backplan löschen":
 			dlg_select_bakingplan_create_HTML(headername);
-			break;			
+			break;
 		case "Neue Rezepte auswählen":
 			dlg_bakingplan_select_recipe_create_HTML();
-			break;			
+			break;
 		default:
 			alert("Kein Dialog-Name angegeben!");
 			break;
@@ -903,8 +905,9 @@ function dlg_full_show(headername) {
 	dlg_full.animate([{width: "0px"}, {width: "100%"}], {duration: 300, iterations: 1, fill: 'forwards'});
 }
 
-function dlg_full_hide() { 
+function dlg_full_hide() {
 	var dlg_full = document.getElementById("dlg_full");
+	document.getElementsByClassName("#pauseButton").style.display: = "block";
 	dlg_full.animate([{width: "100% "}, {width: "0px"}], {duration: 300, iterations: 1, fill: 'forwards'});
 	// Dialog ausblenden, wenn Animation beendet ist
 	setTimeout(function() {
@@ -945,12 +948,12 @@ function dlg_full_toggle_item(id){
 	if (item.title == "unselected"){
 		item.style.backgroundColor = "#B0B0B0";
 		item.title = "selected";
-		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;
 	}
 	else{
 		item.style.backgroundColor = "#F0F0F0";
 		item.title = "unselected";
-		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;
 	}
 }
 
@@ -958,7 +961,7 @@ function dlg_full_toggle_item(id){
 /* ----- Dialog Backplan auswählen / löschen ------------------------------------------ */
 
 function dlg_select_bakingplan_create_HTML(headername){
-	document.getElementById("btn_h_back").addEventListener("click", dlg_select_bakingplan_close);	 
+	document.getElementById("btn_h_back").addEventListener("click", dlg_select_bakingplan_close);
 	var html = "";
 	var html = "";
 	var xhttp = new XMLHttpRequest();
@@ -970,7 +973,7 @@ function dlg_select_bakingplan_create_HTML(headername){
 			}
 			//alert("SQL: \n" + sql + "\nJSON: \n" + res);
 			var json_object = JSON.parse(res);
-			for (i = 0; i < json_object.length; ++i) {						
+			for (i = 0; i < json_object.length; ++i) {
 				if (json_object[i].type != "active"){
 					html += "					<div class=\"item\" id=\"item_" + json_object[i].id + "\" style=\"background-color: lightgray;\" onclick=\"dlg_select_bakingplan_close([" + json_object[i].id + ", '" + json_object[i].name + "'])\">\n";
 					html += "						<span class=\"flexitem item\"><img class=\"img_btn_small\" id=\"btn_sel_unsel_" + json_object[i].id + "\" src=\""+btn_unselected_svg+"\"></span>\n";
@@ -985,7 +988,7 @@ function dlg_select_bakingplan_create_HTML(headername){
 			document.getElementById("dlg_full_content").innerHTML = html;
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_bakingplans\"}", false);  
+	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_bakingplans\"}", false);
 	xhttp.send();
 }
 
@@ -1001,11 +1004,11 @@ function dlg_select_bakingplan_close(id){
 						var res = this.responseText;
 					}
 				}
-				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);  
-				xhttp.send();	
+				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);
+				xhttp.send();
 				//send to dashboard
 				window.parent.postMessage('null reload', 'http://'+location.host+'/HomeDashboard/dashboard.php');
-				break;			
+				break;
 			case "Backplan löschen":
 				if (id[1] == "[active bakingplan]"){
 					alert("Aktiver Backplan kann nicht gelöscht werden!");
@@ -1019,12 +1022,12 @@ function dlg_select_bakingplan_close(id){
 							var res = this.responseText;
 						}
 					}
-					xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_delete\",\"bp_id\":\"" + id[0] + "\"}", false);  
-					xhttp.send();	
+					xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_delete\",\"bp_id\":\"" + id[0] + "\"}", false);
+					xhttp.send();
 				}
 				//dlg_full_hide();
 				//bakingplan_get_all_recipes();
-				break;			
+				break;
 			default:
 				alert("Kein Dialog-Name angegeben!");
 				break;
@@ -1037,7 +1040,7 @@ function dlg_select_bakingplan_close(id){
 /* ----- Dialog Backplan - neues Rezept ----------------------------------------------- */
 
 function dlg_bakingplan_select_recipe_create_HTML(){
-	document.getElementById("btn_h_back").addEventListener("click", dlg_bakingplan_select_recipe_close);	 
+	document.getElementById("btn_h_back").addEventListener("click", dlg_bakingplan_select_recipe_close);
 	var html = "";
 	// Elemente "dlg_full_content_search" und "dlg_full_content_filter" erstellen
 	html += "			<div class=\"dlg_full_content_search\" id=\"dlg_full_content_search\">\n";
@@ -1066,7 +1069,7 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 				alert("DB-Fehler");
 			}
 			var json_object = JSON.parse(res);
-			for (i = 0; i < json_object.length; ++i) {						
+			for (i = 0; i < json_object.length; ++i) {
 				// Sonderzeichen im Rezept-Name dekodieren
 				json_object[i].name = base64_2_specialchars(json_object[i].name);
 				html += "					<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dlg_full_toggle_item(" + json_object[i].id + ")\">\n";
@@ -1077,11 +1080,11 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 			document.getElementById("dlg_full_content_filter").innerHTML = html;
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_recipes\"}", false);  
+	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_recipes\"}", false);
 	xhttp.send();
 }
 
-function dlg_bakingplan_select_recipe_close(id){//TODO
+function dlg_bakingplan_select_recipe_close(id){
 	var recipe_data = [];
 	var allItems = document.getElementsByClassName("item");
 	var item_is_selected = false;
@@ -1094,7 +1097,7 @@ function dlg_bakingplan_select_recipe_close(id){//TODO
 	dlg_full_hide();
 	if (item_is_selected){
 		var xhttp = new XMLHttpRequest();
-		xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);  
+		xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);
 		xhttp.send();
 	}
 	dlg_full_hide();
@@ -1103,14 +1106,14 @@ function dlg_bakingplan_select_recipe_close(id){//TODO
 
 /* ----- PopUp-Dialog ----------------------------------------------------------------- */
 
-function popup_max_show() { 
+function popup_max_show() {
 	var popup_max = document.getElementById("popup_max");
 	maxheight = document.documentElement.clientHeight - 130;
 	popup_max.style.display = "block";
 	popup_max.animate([{height: "0px"}, {height: "calc(100% - 120px)"}], {duration: 300, iterations: 1, fill: 'forwards'});
 }
 
-function popup_max_hide() { 
+function popup_max_hide() {
 	var popup_max = document.getElementById("popup_max");
 	popup_max.animate([{height: "calc(100% - 120px)"}, {height: "0px"}], {duration: 300, iterations: 1, fill: 'forwards'});
 	// Dialog ausblenden, wenn Animation beendet ist
@@ -1121,7 +1124,7 @@ function popup_max_hide() {
 
 /* ----- alter Code ------------------------------------------------------------------- */
 
-function showcheck(message){			
+function showcheck(message){
 	var check = confirm(message);
 	if (check == true)
 		return true;

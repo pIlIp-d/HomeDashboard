@@ -1,4 +1,4 @@
-//TODO bp timer button -> new normal timer at that position is created
+//TODO bell/alarm_button CSS
 
 const HOMESERVER_URL= "/HomeDashboard/";
 const DB_URL = HOMESERVER_URL + "odk_db.php";

@@ -1,5 +1,4 @@
-//TODO restart -> config.json checks db values are fitting?
-
+//TODO restart -> config.json checks db values are fitting? (plausibility Testing)
 
 const HOMESERVER_URL = "/HomeDashboard";
 const DB_URL = HOMESERVER_URL + "/odk_db.php";
@@ -93,7 +92,7 @@ function click_sidebar(sender){
 //-------- Message Handling ---------------
 //-----------------------------------------
 
-	window.addEventListener('message', e => {//TODO session id for moving
+	window.addEventListener('message', e => {
 	  	if (e.origin == "http://"+location.host){
 			let data_str = e.data.split(" ");
 			switch (data_str[1]){

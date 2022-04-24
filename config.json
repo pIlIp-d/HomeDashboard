@@ -84,7 +84,7 @@
           "sensor_id": "001-3"
         },
         {
-          "sensor_name": "wfo_bottom",
+          "sensor_name": "wfo_right",
           "display_name": "Grill Rechts",
           "type":"temp",
           "unit":"°C",

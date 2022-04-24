@@ -188,7 +188,7 @@ function xhttp_get_all_values(){
 			temperature_refresh(json_response);
 		}
 		else {
-			if (this.status > 399)// TODO: Fehlerfall
+			if (this.status > 399)
 				console.log("error or wrong response code");
 		}
 	}

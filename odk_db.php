@@ -1,4 +1,6 @@
 <?php
+
+//REQUIRES - fully setup of db and cred.json
 // GET-Variable einlesen
 $json_string = $_GET["json"];
 
@@ -11,7 +13,7 @@ function make_request($request_name){
 	$username = $credentials->username;
 	$password =  $credentials->password;
 	$dbname =  $credentials->db_name;
-	//TODO db_initialisation
+
 	$dbcon = db_connect($username, $password, $dbname);
 	request_handling($request_name,$dbcon);
 	db_close($dbcon);
@@ -139,8 +141,8 @@ function request_handling($request_name,$dbcon){
 			$i_id = mysqli_real_escape_string($dbcon, $json_decoded->i_id);
 		 	$sql = "DELETE FROM `recipes_ingredients` WHERE `recipes_ingredients`.`recipes_id` = '$rec_id' AND `recipes_ingredients`.`ingredients_id` = '$i_id'";
 			$result = sql_request($dbcon, $sql);
-				foreach($result as $row)
-					echo "OK";
+			foreach($result as $row)
+				echo "OK";
 			break;
 
 		case "get_recipe_ingredients":
@@ -188,7 +190,7 @@ function request_handling($request_name,$dbcon){
 				echo "OK";
 			break;
 
-	    case "get_ingredients_or_rezipes"://TODO fix typo
+	    case " get_ingredients_or_recipes":
 			$filtermode = mysqli_real_escape_string($dbcon, $json_decoded->filtermode);
 			$sql = "SELECT `id`, `name` FROM `$filtermode` ORDER BY `name`";
 			echo sql_request_encode_json($dbcon, $sql);

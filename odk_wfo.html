@@ -1,7 +1,7 @@
 <!DOCTYPE HTML><html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="stylesheet" type="text/css" href="style/odk_main.css">
 	<link rel="icon" type="image/png" href="/images/Holzbackofen_32x32.png" sizes="32x32">
 	<link rel="icon" type="image/png" href="/images/Holzbackofen_96x96.png" sizes="96x96">
@@ -19,7 +19,7 @@
 		Container oben
 ------------------------------------------------------------------------------------------
 -->
-	<div class="container unselectable"> 
+	<div class="container unselectable">
 		<area_header>
 			oben
 		</area_header>
@@ -54,7 +54,7 @@
 ------------------------------------------------------------------------------------------
 -->
 	<br>
-	<div class="container unselectable"> 
+	<div class="container unselectable">
 		<area_header>
 			unten
 		</area_header>
@@ -83,14 +83,14 @@
 			<sup class="unit">&deg;C</sup>
 		</area_maxtemp>
 	</div>
-	
+
 <!--
 ------------------------------------------------------------------------------------------
 		Container Timer
 ------------------------------------------------------------------------------------------
 -->
 	<br>
-	<div class="container unselectable"> 
+	<div class="container unselectable">
 		<area_header>
 			Timer
 		</area_header>
@@ -118,7 +118,7 @@
 ------------------------------------------------------------------------------------------
 -->
 	<br>
-	<div class="container unselectable" id="bp_container"> 
+	<div class="container unselectable" id="bp_container">
 		<area_bp_content>
 			<div class="recipe_list" id="recipe_list">
 				<table class="bp_table" id="bp_table">
@@ -167,7 +167,7 @@
 	<br>
 	<input type="checkbox" id="meat_checkbox" value="show meat">
 	<area_header>show meat</area_header>
-	<div class="container unselectable" id="meat_container"> 
+	<div class="container unselectable" id="meat_container">
 		<area_header>
 			meat
 		</area_header>
@@ -290,7 +290,7 @@ var MEAT_ACTIVE = false;
 	document.addEventListener('DOMContentLoaded', init);
 	function init(){
 		// DB-Verbindung prüfen / Backplan-Funktionen abschalten
-		check_DB();	
+		check_DB();
 		if (BP_ACTIVE){
 			bakingplan_get_recipes();
 		}
@@ -328,8 +328,8 @@ var MEAT_ACTIVE = false;
 					STOP_BUTTON_REQUEST = -1;
 				}
 			}
-		} 
-		
+		}
+
 	}
 
 	function interval_bell_tick(){
@@ -357,7 +357,7 @@ var MEAT_ACTIVE = false;
 
 		anim_elem.style.display = "block";
 		anim_elem.style.animation = "trans 2.0s";
-		setTimeout (function() { 
+		setTimeout (function() {
 	    anim_elem.style.display = "none";}, 2000);
 	}
 
@@ -381,7 +381,7 @@ var MEAT_ACTIVE = false;
 				document.getElementById("bp_container").style.display = "none";
 			}
 		}
-		xhttp.open("GET", DBSERVER_URL + "odk_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);  
+		xhttp.open("GET", DBSERVER_URL + "odk_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);
 		xhttp.send();
 	}
 
@@ -527,7 +527,7 @@ var MEAT_ACTIVE = false;
 			document.getElementById("r_temp_2").style.color = "black";
 			if (color == "gray"){
 				RECIPE_BACK.disabled = false;
-			} 
+			}
 		}
 		else{
 			document.getElementById("r_name_2").style.color = "gray";
@@ -548,7 +548,7 @@ var MEAT_ACTIVE = false;
 		sql += " FROM recipes AS r, bakingplans_recipes AS bpr, bakingplans AS bp";
 		sql += " WHERE r.id = bpr.recipes_id AND bp.id = bpr.bakingplans_id AND bp.id = '" + BP_ID + "'";
 		sql += " ORDER BY bpr.order_no";
-		//alert(sql);	
+		//alert(sql);
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -559,7 +559,7 @@ var MEAT_ACTIVE = false;
 				//alert("SQL: \n" + sql + "\nJSON: \n" + res);
 				var json_object = JSON.parse(res);
 				BP_RECIPE_LIST = [];
-				for (i = 0; i < json_object.length; ++i) {		  		
+				for (i = 0; i < json_object.length; ++i) {
 					recipe_list_item = [json_object[i].r_name, json_object[i].r_bakingtime, json_object[i].r_bakingtemperature];
 					BP_RECIPE_LIST[i] = recipe_list_item;
 				}
@@ -571,7 +571,7 @@ var MEAT_ACTIVE = false;
 				bakingplan_fill_table();
 			}
 		}
-		xhttp.open("GET", DBSERVER_URL + "odk_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);  
+		xhttp.open("GET", DBSERVER_URL + "odk_db.php?json=" + "{\"request_name\":\"sql2json_new\",\"sql\":\"" + sql + "\"}", false);
 		xhttp.send();
 	}
 
@@ -609,7 +609,7 @@ var MEAT_ACTIVE = false;
 	}
 	function previous_recipe(){
 		alert("not programmed yet");
-		xhttp_send("send_message","","Back Button - Pressed","");	
+		xhttp_send("send_message","","Back Button - Pressed","");
 	}
 
 //----------------------------------------------------------------------------------------
@@ -620,14 +620,14 @@ var MEAT_ACTIVE = false;
 		switch(DEVICE_STATUS.innerText){
 			case "[Willkommen]":
 			case "[Viewer]":
-				var res = confirm("Status \"[Master]\" übernehmen?"); 
+				var res = confirm("Status \"[Master]\" übernehmen?");
 				if (res == true) {
 					set_GUImode("[Master]");
 					xhttp_send("set_minmaxvalues", "locked", "", false);
 					}
 				break;
 			case "[Master]":
-				var res = confirm("Status \"[Master]\" beenden?"); 
+				var res = confirm("Status \"[Master]\" beenden?");
 				if (res == true) {
 					set_GUImode("[Willkommen]");
 					xhttp_send("set_minmaxvalues", "unlocked", "", false);
@@ -647,7 +647,7 @@ var MEAT_ACTIVE = false;
 			MEAT_ACTIVE = true;
 			console.log("OFF");
 		}
-		
+
 	}
 
 	function set_GUImode(guimode){
@@ -673,7 +673,7 @@ var MEAT_ACTIVE = false;
 					RECIPE_BACK.addEventListener("click", previous_recipe);
 				}
 				bakingplan_set_color("lightgray");
-			
+
 			}
 		}
 		if (guimode == "[Master]"){
@@ -687,7 +687,7 @@ var MEAT_ACTIVE = false;
 			TMAX_BOTTOM.disabled = false;
 			TMIN_MEAT.disabled = false;
 			TMAX_MEAT.disabled = false;
-			TIMER_HOUR.disabled = false;	
+			TIMER_HOUR.disabled = false;
 			TIMER_MINUTE.disabled = false;
 			TIMER_SECOND.disabled = false;
 			// im Backplan-Modus Container "Backplan" aktivieren
@@ -760,7 +760,7 @@ var MEAT_ACTIVE = false;
 
 	function cookie_delete(n){
 		document.cookie = n + "=; expires=Thu, 01-Jan-70 00:00:01 GMT;";
-	} 
+	}
 
 //----------------------------------------------------------------------------------------
 // Timer
@@ -780,7 +780,7 @@ var MEAT_ACTIVE = false;
 				TIMER_HOUR.options[TIMER_HOUR.options.length] = new Option(i_string);
 			}
 			TIMER_MINUTE.options[TIMER_MINUTE.options.length] = new Option(i_string);
-			TIMER_SECOND.options[TIMER_SECOND.options.length] = new Option(i_string);	
+			TIMER_SECOND.options[TIMER_SECOND.options.length] = new Option(i_string);
 		}
 		TIMER_HOUR.value = "00";
 		TIMER_MINUTE.value = "00";
@@ -800,7 +800,7 @@ var MEAT_ACTIVE = false;
 		START_HOUR = TIMER_HOUR.value;
 		START_MINUTE = TIMER_MINUTE.value;
 		START_SECOND = TIMER_SECOND.value;
-		// Timer-Ende per http-Request auf Server schreiben	
+		// Timer-Ende per http-Request auf Server schreiben
 		xhttp_send("set_timer_wfo", "locked", srv_timerstop, false)
 		// GUI-Modus auf "[Master]" setzen
 		set_GUImode("[Master]");
@@ -814,7 +814,7 @@ var MEAT_ACTIVE = false;
 		TIMER_HOUR.value = START_HOUR;
 		TIMER_MINUTE.value = START_MINUTE;
 		TIMER_SECOND.value = START_SECOND;
-		// Timer-Ende per http-Request auf Server löschen	
+		// Timer-Ende per http-Request auf Server löschen
 		xhttp_send("del_timer_wfo", "unlocked", "", false)
 		TIMER_CLOCK.src = "images/clock_black.svg";
 		TIMER_START.disabled = false;
@@ -930,7 +930,7 @@ var MEAT_ACTIVE = false;
 			document.getElementById("thermo_1").src = "images/sym_thermo_red.svg";
 			document.getElementById("unit_1").style.color = "red";
 		}
-		
+
 		var tempbottom = parseInt(TEMP_BOTTOM.innerHTML);
 		var tminbottom = parseInt(TMIN_BOTTOM.value);
 		var tmaxbottom = parseInt(TMAX_BOTTOM.value);
@@ -984,7 +984,7 @@ var MEAT_ACTIVE = false;
 		else{
 			this.src = HOMESERVER_URL + "images/bell-solid.svg";
 			AUDIO.muted = true;
-			AUDIO.play();		
+			AUDIO.play();
 			setTimeout(function() {
 				AUDIO.muted = false;
 			}, 3000);
@@ -1007,14 +1007,14 @@ var MEAT_ACTIVE = false;
 		if ((TIMER_CLOCK.src == HOMESERVER_URL + "images/clock_red.svg") && (BELL_CLOCK.src == HOMESERVER_URL + "images/bell-solid.svg")){
 			ALARM_ON = true;
 		}
-		
+
 		// Glockeninterval an, wenn Glockeninterval ist aus und Alarmbegingung ist erfüllt
 		if ((!ALARM_ACTIVE) && (ALARM_ON)){
 			INTERVALL_BELL = setInterval(interval_bell_tick, INTERVALL_BELL_TICKER);
 			ALARM_ACTIVE = true;
 		}
 		// Glockeninterval aus, wenn Glockeninterval ist an und Alarmbegingung ist nicht erfüllt
-		
+
 		if ((ALARM_ACTIVE) && (!ALARM_ON)){
 			clearInterval(INTERVALL_BELL);
 			ALARM_ACTIVE = false;
@@ -1030,7 +1030,7 @@ var MEAT_ACTIVE = false;
 	  var response = "";
 	  // JSON-String erzeugen
 	  var json_string = "{"
-		json_string += "\"device_id\":\"" + DEVICE_ID + "\",";	
+		json_string += "\"device_id\":\"" + DEVICE_ID + "\",";
 		json_string += "\"device_name\":\"" + DEVICE_NAME + "\",";
 		json_string += "\"event\":\"" + event + "\"";
 		switch(event){//for "del_timer_wfo" event name is enough
@@ -1060,8 +1060,8 @@ var MEAT_ACTIVE = false;
 		    return response;
 	    }
 	  };
-	  
-	  xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + json_string, send_async);  
+
+	  xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + json_string, send_async);
 	  xhttp.send();
 	}
 
@@ -1076,17 +1076,17 @@ var MEAT_ACTIVE = false;
 	    }
 	    else {
 	    	if (this.status > 399){
-	    		// TODO: Fehlerfall
+	    		console.log(399);
 	    	}
 	    }
 	  }
 
-	  xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + create_get_allvalues("30"), false);  
+	  xhttp.open("GET", HOMESERVER_URL + "json_handler.php?json=" + create_get_allvalues("30"), false);
 	  xhttp.send();
 	}
 	function create_get_allvalues(timeout){
 		var json_string = "{"
-		json_string += "\"device_id\":\"" + DEVICE_ID + "\",";	
+		json_string += "\"device_id\":\"" + DEVICE_ID + "\",";
 		json_string += "\"device_name\":\"" + DEVICE_NAME + "\",";
 		json_string += "\"event\":\"get_allvalues\",";
 		json_string += "\"timeout\":\"" + timeout + "\"";
@@ -1129,7 +1129,7 @@ var MEAT_ACTIVE = false;
 		timenow = parseInt(timenow.getTime());
 		var diff = Math.round((timestop - timenow) / 1000);
 
-		// wenn verbleibende Zeit > 0	
+		// wenn verbleibende Zeit > 0
 		if (diff > 0){
 			// Timer-Uhr anpassen
 			var hour = parseInt((diff / 3600) % 24);
@@ -1161,7 +1161,7 @@ var MEAT_ACTIVE = false;
 		}
 		else{
 			if (json_obj.timer_stop_wfo != ""){
-				// Timer-Uhr auf "00:00:00" setzen	
+				// Timer-Uhr auf "00:00:00" setzen
 				TIMER_HOUR.value = "00";
 				TIMER_MINUTE.value = "00";
 				TIMER_SECOND.value = "00";

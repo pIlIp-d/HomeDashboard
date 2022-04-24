@@ -74,6 +74,7 @@ class Dashboard {
 	response_handler(request_name, json_response){
 		switch(request_name){
 			case "get_preset":
+					console.log(json_response);
 					//set the response values in active dashboard
 					var response = JSON.parse(json_response);
 					console.log(response);
@@ -122,11 +123,20 @@ class Dashboard {
 	}
     /**
      * @function createHTML creates HTML-options for preset select in settings menu
+	 * 			if response is empty there is only an settings button to start with
      */
 	createHTML(json_response){
+
+
 		var response = JSON.parse(json_response);
-		//TODO if length == 0 -> init empty
 		var html = "<option value='null' id='null'>- select preset -</option>";
+
+		//create default empty widet if no widget exists
+		if (Object.entries(response).length == 0){
+			this.grid_horizontal.push(new GridObject("settings","11","0","0",this.widgets));
+			this.grid_vertical.push(new GridObject("settings","11","0","0",this.widgets));
+			this.create_request("set_new_preset","empty");
+		}
 		for (var i = 0; i < response.length; i++){
 			if (response[i] != "" && response[i] != null){
 				this.preset_names[i] = response[i].name;

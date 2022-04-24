@@ -391,19 +391,10 @@ class Grid extends Array{
 	render(){
 		GridObject.timer_count = 0;//reset timer_count
 		document.getElementById("container").innerHTML = "";
-		let html = "", note = false;
+		let html = "";
 		for (var g = 0; g < this.length; g++){//create html of widgets
 			html += this[g].createHTML();
-			if (this[g].type === "notes")
-				note = true;
 		}
 		document.getElementById("container").innerHTML = html;
-		if (note && mode != "move"){//Note widget activate
-			InlineEditor							//TODO Notes as working grid element, currently are not interacting with grid
-				.create( document.querySelector('#editor')) //TODO notizen in cookie oder ähnliches
-				.catch( error => {
-				console.error( 'There was a problem initializing the editor.', error );
-			});
-		}
 	}
 }

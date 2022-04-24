@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="apple-mobile-web-app-capable" content="yes">
 
 	<link rel="stylesheet" type="text/css" href="../style/odk.css">
 </head>
@@ -55,7 +55,7 @@
 <script src="../javascript/base64.js"></script>
 
 <body>
-	<!-- 
+	<!--
 		einlesen der übergebenen Rezept-ID per PHP in unsichtbares DIV-Element
 		- kann später per JS ausgelesen werden
 		- Rezept-ID = 0 bedeutet "neues Rezept"
@@ -79,7 +79,7 @@
 	<main id="main" class="unselectable"></main>
 </body>
 <script type="text/javascript">
-	
+
 const server = location.host;
 var server_root_url = "/HomeDashboard/";
 var db_url = server_root_url+"odk_db.php";
@@ -126,18 +126,18 @@ var gv_rec_id;
 			["Kopieren", "MENU_ELEMENTS.clicked('copy')", "red"],
 			["Ausschneiden", "MENU_ELEMENTS.clicked('cut')", "green"],
 			["Löschen", "MENU_ELEMENTS.clicked('delete')", "maroon"],
-			["Duplizieren", "MENU_ELEMENTS.clicked('duplicate')", "blue"]		
+			["Duplizieren", "MENU_ELEMENTS.clicked('duplicate')", "blue"]
 		],"me");
 	}
 
-window.addEventListener("scroll", hide_menus); 
+window.addEventListener("scroll", hide_menus);
 window.addEventListener("resize", hide_menus);
 function hide_menus(){
 	MENU_MAIN.hide();
 	MENU_ELEMENTS.hide();
 }
-	
-/* 
+
+/*
 -------------------------------------- HTTP-Requests -------------------------------------
 */
 	function bakingplan_rename(){
@@ -145,7 +145,7 @@ function hide_menus(){
 		name_old = name_old.replace("Backplan \"", "");
 		name_old = name_old.substr(0, name_old.length - 1);
 		var name_new = window.prompt("Neuer Name:", name_old);
-		
+
 		if ((name_new != "") && (name_new != null)){
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
@@ -159,7 +159,7 @@ function hide_menus(){
 					}
 				}
 			}
-			xhttp.open("GET", db_url +"?json={\"request_name\":\"rename_bakingplan\",\"bp_id\":\"" + gv_active_bakingplan_id + "\",\"bp_name\":\"" + specialchars_2_base64(name_new) + "\"}", false);  
+			xhttp.open("GET", db_url +"?json={\"request_name\":\"rename_bakingplan\",\"bp_id\":\"" + gv_active_bakingplan_id + "\",\"bp_name\":\"" + specialchars_2_base64(name_new) + "\"}", false);
 			xhttp.send();
 		}
 	}
@@ -167,7 +167,7 @@ function hide_menus(){
 	function bakingplan_new(bp_name){
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {/*do nothing*/}
-		xhttp.open("GET", db_url +"?json={\"request_name\":\"insert_bakingplan\",\"bp_name\":\"" + specialchars_2_base64(bp_name) + "\"}", false);  
+		xhttp.open("GET", db_url +"?json={\"request_name\":\"insert_bakingplan\",\"bp_name\":\"" + specialchars_2_base64(bp_name) + "\"}", false);
 		xhttp.send();
 	}
 
@@ -188,10 +188,10 @@ function hide_menus(){
 				}
 			}
 		}
-		xhttp.open("GET", db_url + "?json={\"request_name\":\"bakingplan_get_rec_id\",\"bpr_id\":\"" + bpr_id + "\"}", false);  
-		xhttp.send();	
+		xhttp.open("GET", db_url + "?json={\"request_name\":\"bakingplan_get_rec_id\",\"bpr_id\":\"" + bpr_id + "\"}", false);
+		xhttp.send();
 	}
-//TODO undefined value somewhere in request: set order no
+
 	function hide_shaking_dummies(){
 		allitems = document.getElementsByClassName("shaking_dummy");
 		for (var i=0; i<allitems.length; i++) {
@@ -199,7 +199,7 @@ function hide_menus(){
 		}
 	}
 
-	function bakingplan_paste(bpr_id){//TODO pasting doesnt work 
+	function bakingplan_paste(bpr_id){
 		hide_shaking_dummies();
 		// "order_no" des selektierten Dummies ermitteln
 		var xhttp1 = new XMLHttpRequest();
@@ -211,13 +211,13 @@ function hide_menus(){
 				}
 				else {
 					var response_order_no = JSON.parse(res1);
-					for (i = 0; i < response_order_no.length; i++) {	
+					for (i = 0; i < response_order_no.length; i++) {
 						var order_no = parseInt(response_order_no[i].order_no) + 5;
 						// Neuen Eintrag in DB-Tabelle "bakingplans_recipes" erzeugen
 
 						var xhttp2 = new XMLHttpRequest();
 						xhttp2.onreadystatechange = function() {/*do nothing*/}
-						xhttp2.open("GET", db_url +"?json={\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\"" + GV_CLIPBOARD + "\",\"bp_id\":\"" + gv_active_bakingplan_id + "\",\"order_no\":\"" + order_no + "\"}", false);  
+						xhttp2.open("GET", db_url +"?json={\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\"" + GV_CLIPBOARD + "\",\"bp_id\":\"" + gv_active_bakingplan_id + "\",\"order_no\":\"" + order_no + "\"}", false);
 						xhttp2.send();
 						if (CUTTED){
 							CUTTED = false;
@@ -227,14 +227,14 @@ function hide_menus(){
 				}
 			}
 		}
-		xhttp1.open("GET", db_url +"?json={\"request_name\":\"bakingplan_get_order_no\",\"bpr_id\":\"" + bpr_id + "\"}", false);  
-		xhttp1.send();	
+		xhttp1.open("GET", db_url +"?json={\"request_name\":\"bakingplan_get_order_no\",\"bpr_id\":\"" + bpr_id + "\"}", false);
+		xhttp1.send();
 		GV_CLIPBOARD = "";
 		// Anzeige auffrischen
 		bakingplan_get_all_recipes();
 	}
 
-	function bakingplan_duplicate_recipe(bpr_id, rec_id){//TODO duplicate by copy paste not remove
+	function bakingplan_duplicate_recipe(bpr_id, rec_id){
 		var xhttp1 = new XMLHttpRequest();
 		xhttp1.onreadystatechange = function() {
     		if (this.readyState == 4 && this.status == 200){
@@ -244,28 +244,28 @@ function hide_menus(){
 				}
 				else {
 					var response_order_no = JSON.parse(res1);
-			  		for (i in response_order_no) {	
+			  		for (i in response_order_no) {
 						var order_no = parseInt(response_order_no[i].order_no) + 5;
-						// Neuen Eintrag in DB-Tabelle "bakingplans_recipes" erzeugen					
+						// Neuen Eintrag in DB-Tabelle "bakingplans_recipes" erzeugen
 						var xhttp2 = new XMLHttpRequest();
 						xhttp2.onreadystatechange = function() {/*do nothing*/}
-						xhttp2.open("GET", db_url +"?json={\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\""+ rec_id +"\",\"bp_id\":\""+ gv_active_bakingplan_id +"\",\"order_no\":\""+ order_no +"\"}", false);  
+						xhttp2.open("GET", db_url +"?json={\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\""+ rec_id +"\",\"bp_id\":\""+ gv_active_bakingplan_id +"\",\"order_no\":\""+ order_no +"\"}", false);
 						xhttp2.send();
 					}
 				}
 			}
 		}
 		// "order_no" des zu klonenden Elementes ermitteln
-		xhttp1.open("GET", db_url + "?json={\"request_name\":\"bakingplan_get_order_no\",\"bpr_id\":\"" + bpr_id + "\"}", false);  
+		xhttp1.open("GET", db_url + "?json={\"request_name\":\"bakingplan_get_order_no\",\"bpr_id\":\"" + bpr_id + "\"}", false);
   		xhttp1.send();
 		// Anzeige auffrischen
 		bakingplan_get_all_recipes();
 	}
-	
+
 	function bakingplan_remove_recipe(bpr_id){
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {/*do nothing*/}
-		xhttp.open("GET", db_url +"?json={\"request_name\":\"bakingplan_remove_recipe\",\"bpr_id\":\"" + bpr_id + "\"}", false);  
+		xhttp.open("GET", db_url +"?json={\"request_name\":\"bakingplan_remove_recipe\",\"bpr_id\":\"" + bpr_id + "\"}", false);
   		xhttp.send();
 	}
 
@@ -287,36 +287,35 @@ function hide_menus(){
 						xhttp1.onreadystatechange = function() {
 							if (this.readyState == 4 && this.status == 200){
 								var res1 = this.responseText;
-								
+
 								if (res1.substr(0, 8) == "DB_ERROR"){
 									alert("DB_ERROR");
 								}
 								else {
 									var all_bakingplan_recipes = JSON.parse(res1);
 									var html = "";
-									for (i in all_bakingplan_recipes) {	  		
+									for (i in all_bakingplan_recipes) {
 										html += recipe_createHTML(all_bakingplan_recipes[i].bpr_id,
 													 			all_bakingplan_recipes[i].r_id,
 																all_bakingplan_recipes[i].r_name,
 																all_bakingplan_recipes[i].r_bakingtime,
 																all_bakingplan_recipes[i].r_bakingtemperature);
 									}
-									document.getElementById("main").innerHTML = html;	
+									document.getElementById("main").innerHTML = html;
 
-									//TODO redo ?? komplett falsche stelle zum order no speichern ??			
 									// Reihenfolge in DB speichern (Feld "order_no")
 									var allItems = document.getElementsByClassName("rec");
-									
+
 									for(i = 0; i < allItems.length; i++) {
 										var xhttp2 = new XMLHttpRequest();
 										xhttp2.onreadystatechange = function() {/*do nothing*/}
-										xhttp2.open("GET", db_url +"?json={\"request_name\":\"bakingplan_set_order_no\",\"order_no\":\""+ (i * 10) +"\",\"bpr_id\":\""+ allItems[i].id +"\"}", false);  
+										xhttp2.open("GET", db_url +"?json={\"request_name\":\"bakingplan_set_order_no\",\"order_no\":\""+ (i * 10) +"\",\"bpr_id\":\""+ allItems[i].id +"\"}", false);
 										xhttp2.send();
 									}
 								}
 							}
 						}
-						xhttp1.open("GET", db_url+"?json={\"request_name\":\"bakingplan_get_all_recipes\"}", false);  
+						xhttp1.open("GET", db_url+"?json={\"request_name\":\"bakingplan_get_all_recipes\"}", false);
 						xhttp1.send();
 					}
 				}
@@ -325,9 +324,9 @@ function hide_menus(){
   		xhttp0.send();
 	}
 
-	function recipe_createHTML(bpr_id, r_id, r_name, r_bakingtime, r_bakingtemperature){//TODO recipe einfügen
+	function recipe_createHTML(bpr_id, r_id, r_name, r_bakingtime, r_bakingtemperature){//TODO recipe import not as string but as object
 		var html = ""
-		// HTML-String erzeugen					
+		// HTML-String erzeugen
 		html += "<div class=\"rec\" id=\"" + bpr_id + "\" title=\"" + r_id + "\">";
 		html += "	<table class=\"rec_table\" id=\"rec_table_" + bpr_id + "\"><tr>";
 		html += "		<td class=\"rec_entity\" style=\"width: 30px;\"></td>";
@@ -349,9 +348,7 @@ function hide_menus(){
 	}
 	function show_recipe_full(id){
 		var div = document.getElementById("recipe_div_"+id);
-		
 	}
-	
 	function mm_show_hide(){
 		if(MENU_MAIN.is_open)
 			MENU_MAIN.hide();
@@ -364,13 +361,11 @@ function hide_menus(){
 		else
 			MENU_ELEMENTS.show();
 	}
-
 	function call_me_show(id_array){
 		gv_rec_id = id_array[0];
 		gv_bpr_id = id_array[1];
 		MENU_ELEMENTS.show(id_array[1]);
 	}
-
 class Menu{
 	constructor(menu_items, name){
 		this.name = name;
@@ -464,7 +459,7 @@ class Menu{
 					for (i = 0; i < allitems.length; i++)
 						allitems[i].style.display = "block";
 					// Rezept-ID des zu kopierenden Elementes im Clipboard speichern
-					bakingplan_clipboard_write_rec_id(gv_bpr_id);		
+					bakingplan_clipboard_write_rec_id(gv_bpr_id);
 					break;
 				case "cut":
 					this.clicked("copy");
@@ -475,7 +470,7 @@ class Menu{
 						bakingplan_remove_recipe(gv_bpr_id);
 					bakingplan_get_all_recipes();
 					break;
-				case "duplicate":	
+				case "duplicate":
 					bakingplan_duplicate_recipe(gv_bpr_id, gv_rec_id);
 					break;
 			}
@@ -484,45 +479,49 @@ class Menu{
 		else if (this.name === "mm"){
 			switch(action){
 				case "new":
-					var result = window.prompt("Name des neuen Backplans:");  
+					var result = window.prompt("Name des neuen Backplans:");
 					if (result != "")
 						bakingplan_new(result);
 				  break;
 				case "add":
 					dlg_full_create_HTML("Neue Rezepte auswählen");
-					dlg_full_show("Neue Rezepte auswählen");		
+					dlg_full_show("Neue Rezepte auswählen");
 				  break;
 				case "del":
 					dlg_full_create_HTML("Backplan löschen");
 					dlg_full_show("Backplan löschen");
 				  break;
-				case "rename":	
+				case "rename":
 					bakingplan_rename();
 				  break;
 			}
 		}
 
 	}
-	
+
 }
 
 /* ----- Dialog full ------------------------------------------------------------------ */
 
 function dlg_full_show(headername) {
+	let re = document.getElementsByClassName("rec");
+	for (let rec in re)
+		re[rec].hidden = "true";
 	dlg_full_create_HTML(headername);
+
 	switch (headername){
 		case "Filter":
 			dlg_filter_create_HTML();
 			break;
 		case "Backplan auswählen":
 			dlg_select_bakingplan_create_HTML(headername);
-			break;			
+			break;
 		case "Backplan löschen":
 			dlg_select_bakingplan_create_HTML(headername);
-			break;			
+			break;
 		case "Neue Rezepte auswählen":
 			dlg_bakingplan_select_recipe_create_HTML();
-			break;			
+			break;
 		default:
 			alert("Kein Dialog-Name angegeben!");
 			break;
@@ -532,8 +531,11 @@ function dlg_full_show(headername) {
 	dlg_full.animate([{width: "0px"}, {width: "100%"}], {duration: 300, iterations: 1, fill: 'forwards'});
 }
 
-function dlg_full_hide() { 
+function dlg_full_hide() {
 	var dlg_full = document.getElementById("dlg_full");
+	let rec_list = document.getElementsByClassName("rec");
+	for (let rec in rec_list)
+		rec_list[rec].hidden = "false";
 	dlg_full.animate([{width: "100% "}, {width: "0px"}], {duration: 300, iterations: 1, fill: 'forwards'});
 	// Dialog ausblenden, wenn Animation beendet ist
 	setTimeout(function() {
@@ -568,12 +570,12 @@ function dlg_full_toggle_item(id){
 	if (item.title == "unselected"){
 		item.style.backgroundColor = "#B0B0B0";
 		item.title = "selected";
-		document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_selected_svg;
 	}
 	else {
 		item.style.backgroundColor = "#F0F0F0";
 		item.title = "unselected";
-		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;				
+		document.getElementById("btn_sel_unsel_" + id).src = btn_unselected_svg;
 	}
 }
 
@@ -609,7 +611,7 @@ function dlg_select_bakingplan_create_HTML(headername){
 			}
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_bakingplans\"}", false);  
+	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_bakingplans\"}", false);
 	xhttp.send();
 }
 
@@ -621,11 +623,11 @@ function dlg_select_bakingplan_close(id){
 				// alle Backpläne zurücksetzen (nicht aktiv)
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {/*do nothing*/}
-				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\""+ id[0] +"\"}", false);  
-				xhttp.send();	
+				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\""+ id[0] +"\"}", false);
+				xhttp.send();
 				//send to dashboard
 				location.reload(true);
-				break;			
+				break;
 			case "Backplan löschen":
 				if (id[1] == "[active bakingplan]"){
 					alert("Aktiver Backplan kann nicht gelöscht werden!");
@@ -635,10 +637,10 @@ function dlg_select_bakingplan_close(id){
 					// ausgewählten Backplan löschen
 					var xhttp = new XMLHttpRequest();
 					xhttp.onreadystatechange = function() {/*do nothing*/}
-					xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_delete\",\"bp_id\":\"" + id[0] + "\"}", false);  
-					xhttp.send();	
+					xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_delete\",\"bp_id\":\"" + id[0] + "\"}", false);
+					xhttp.send();
 				}
-				break;			
+				break;
 			default:
 				alert("Kein Dialog-Name angegeben!");
 				break;
@@ -680,7 +682,7 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 			}
 			else {
 				var json_object = JSON.parse(res);
-				for (i = 0; i < json_object.length; ++i) {						
+				for (i = 0; i < json_object.length; ++i) {
 					// Sonderzeichen im Rezept-Name dekodieren
 					json_object[i].name = base64_2_specialchars(json_object[i].name);
 					html += "<div class=\"item item_main\" id=\"item_" + json_object[i].id + "\" title=\"unselected\" onclick=\"dlg_full_toggle_item(" + json_object[i].id + ")\">\n";
@@ -692,7 +694,7 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 			}
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_recipes\"}", false);  
+	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_recipes\"}", false);
 	xhttp.send();
 }
 
@@ -711,7 +713,7 @@ function dlg_bakingplan_select_recipe_close(){
 		for (i = 0; i < recipe_data.length; i++){
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function(){/*do nothing*/}
-			xhttp.open("GET", db_url +"?json={\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\"" + recipe_data[i].rec_id + "\",\"bp_id\":\"" + recipe_data[i].bp_id + "\",\"order_no\":\"" + recipe_data[i].order_no + "\"}", false);    
+			xhttp.open("GET", db_url +"?json={\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\"" + recipe_data[i].rec_id + "\",\"bp_id\":\"" + recipe_data[i].bp_id + "\",\"order_no\":\"" + recipe_data[i].order_no + "\"}", false);
 			xhttp.send();
 		}
 	}
@@ -721,14 +723,14 @@ function dlg_bakingplan_select_recipe_close(){
 
 /* ----- PopUp-Dialog ----------------------------------------------------------------- */
 
-function popup_max_show() { 
+function popup_max_show() {
 	var popup_max = document.getElementById("popup_max");
 	maxheight = document.documentElement.clientHeight - 130;
 	popup_max.style.display = "block";
 	popup_max.animate([{height: "0px"}, {height: "calc(100% - 120px)"}], {duration: 300, iterations: 1, fill: 'forwards'});
 }
 
-function popup_max_hide() { 
+function popup_max_hide() {
 	var popup_max = document.getElementById("popup_max");
 	popup_max.animate([{height: "calc(100% - 120px)"}, {height: "0px"}], {duration: 300, iterations: 1, fill: 'forwards'});
 	// Dialog ausblenden, wenn Animation beendet ist
@@ -736,7 +738,6 @@ function popup_max_hide() {
 		popup_max.style.display = "none";
 	}, 300);
 }
-
 
 	function checkinput(value){
 		//alert(value);
@@ -746,7 +747,7 @@ function popup_max_hide() {
 			for(var i = 0; i < allItems.length; i++) {
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;
 			}
 			return;
 		}
@@ -754,12 +755,12 @@ function popup_max_hide() {
 			if (regex.test(allItems[i].innerText)){
 				document.getElementById(allItems[i].id).style.backgroundColor = "#B0B0B0";
 				document.getElementById(allItems[i].id).title = "selected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_selected_svg;				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_selected_svg;
 			}
 			else{
 				document.getElementById(allItems[i].id).style.backgroundColor = "#F0F0F0";
 				document.getElementById(allItems[i].id).title = "unselected";
-				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;				
+				document.getElementById(allItems[i].id.replace("item_", "btn_sel_unsel_")).src = btn_unselected_svg;
 			}
 		}
 	}
@@ -768,4 +769,3 @@ function popup_max_hide() {
 </script>
 
 </html>
-

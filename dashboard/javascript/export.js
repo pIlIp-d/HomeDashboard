@@ -2,7 +2,6 @@
 window.addEventListener('DOMContentLoaded', init_export());
 
 function init_export(){
-
     replaceSVGs();
     json_create_for_pdf(document.getElementById("php_request").innerHTML);
 }

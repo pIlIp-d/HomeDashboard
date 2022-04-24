@@ -3,9 +3,6 @@
 <!-- nice cc0 image site www.svgrepo.com-->
 
 	<meta charset="utf-8">
-
-	<!--LICENSE in LICENCE.md of CKEditor-editor-inline-->
-	<script src="libs/ckeditor5-editor-inline/inline-editor.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="icon" type="image/png" href="images/Holzbackofen_32x32.png" sizes="32x32">
@@ -72,5 +69,3 @@ Slide-over / Settings
 <script src="javascript/dashboard/script.js"></script>
 
 </html>
-
-<!-- TODO only full http requests when server says something has changed -->
