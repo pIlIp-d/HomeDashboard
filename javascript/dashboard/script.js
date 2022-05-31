@@ -1,7 +1,5 @@
 //TODO restart -> config.json checks db values are fitting? (plausibility Testing)
 
-const HOMESERVER_URL = "/HomeDashboard";
-const DB_URL = HOMESERVER_URL + "/odk_db.php";
 const INTERVALL_MAIN_TICKER = 1000;
 var INTERVALL_MAIN = setInterval(interval_main_tick, INTERVALL_MAIN_TICKER);
 var REFRESHED = false;

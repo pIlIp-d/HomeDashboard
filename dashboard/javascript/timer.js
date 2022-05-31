@@ -1,7 +1,5 @@
 //TODO bell/alarm_button CSS
 
-const HOMESERVER_URL= "/HomeDashboard/";
-const DB_URL = HOMESERVER_URL + "odk_db.php";
 const DEVICE_ID = "001";
 const DEVICE_NAME = "Backofen";
 
@@ -22,7 +20,7 @@ var alarm_mode = false;
 * @param value used for single values in some requests
 */
 function http_request(request_name, value = null){
-		var json_string = "{\"request_name\":\""+request_name+"\"";
+		let json_string = "{\"request_name\":\""+request_name+"\"";
 		json_string += ",\"preset_id\":\""+PRESET_ID+"\"";
 		switch (request_name){
 			case "del_timer":
@@ -46,7 +44,7 @@ function http_request(request_name, value = null){
 		var json_response;
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function(){
-			if (this.readyState == 4 && this.status == 200)
+			if (this.readyState === 4 && this.status === 200)
 				json_response = this.responseText;
 		}
 		xhttp.open("GET", DB_URL + "?json="+json_string,false);
@@ -63,12 +61,12 @@ function handleHTTPresponse(request_name,json_response){
 
 	switch (request_name){
 		case "set_timer":
-			if (json_response != "OK")
+			if (json_response !== "OK")
 				alert("Fehler beim Timer speichern!");
 			break;
 
 		case "del_timer":
-			if (json_response != "OK")
+			if (json_response !== "OK")
 				alert("Fehler beim Timer löschen!")
 			break;
 

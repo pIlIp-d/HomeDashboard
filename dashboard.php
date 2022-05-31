@@ -1,7 +1,6 @@
 <!DOCTYPE HTML><html>
 <head>
 <!-- nice cc0 image site www.svgrepo.com-->
-
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -9,7 +8,7 @@
 	<link rel="icon" type="image/png" href="images/Holzbackofen_96x96.png" sizes="96x96">
 	<link rel="apple-touch-icon" sizes="180x180" href="images/Holzbackofen_180x180.png">
 	<link rel="stylesheet" type="text/css" href="style/dashboard.css">
-
+    <script src="javascript/config.js"></script>
 </head>
 
 <body class="unselectable" id="body" onscroll="body_onscroll()">
@@ -23,12 +22,12 @@
 
 <!--------------------------------------
 iframe content
------------------------------------------>
+--------------------------------------->
 	<div class="container unselectable" id="container"></div>
 
 <!-----------------------------------
 Slide-over / Settings
---------------------------------------->
+------------------------------------->
 
 	<div class="settings-menu unselectable" id="settings-menu" >
 		<span class="settings-menu-content" id="head-container">

@@ -40,6 +40,8 @@ class Dashboard {
 		}
 		xhttp.open("GET", DB_URL + "?json=" + this.create_request(request_name,value), false);
 		xhttp.send();
+		console.log(request_name);
+		console.log(json_response);
 		this.response_handler(request_name, json_response);
 	}
 	create_request(request_name,value){
@@ -126,8 +128,6 @@ class Dashboard {
 	 * 			if response is empty there is only an settings button to start with
      */
 	createHTML(json_response){
-
-
 		var response = JSON.parse(json_response);
 		var html = "<option value='null' id='null'>- select preset -</option>";
 

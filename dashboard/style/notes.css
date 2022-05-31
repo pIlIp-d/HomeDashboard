@@ -1,0 +1,39 @@
+
+#head{
+    display: flex;
+    grid-gap: 5px;
+}
+
+#bp_mode{
+    display: compact;
+    float:right;
+    height: 13vh;
+}
+
+.text{
+    width:95vw;
+    max-width: 98%;
+    height: 77vh;
+    margin-bottom: 5px;
+    margin-right:5px;
+    overflow-y: scroll;
+}
+
+#text_area::-webkit-scrollbar {
+    display: none;
+}
+
+#note_select{
+    height: 13vh;
+    max-width: 70vw;
+}
+
+#bp_text{
+    display: none;
+}
+#text_area{
+    border-width: thin;
+    border-style: solid;
+    resize: none;
+    display: block;
+}

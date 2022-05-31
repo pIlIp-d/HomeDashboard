@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="style/temperature.css">
 	<script src="javascript/temperature_view.js"></script>
+    <script src="../javascript/config.js"></script>
 </head>
 
 <body>

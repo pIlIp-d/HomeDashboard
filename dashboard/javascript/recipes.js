@@ -1,4 +1,3 @@
-var server_url = "http://"+location.host+"/HomeDashboard/";
 
 var recipe_object = [];
 var recipe_info = [];
@@ -80,7 +79,7 @@ function get_full_recipe(){
 function xhttp_request(request, id) {
   console.log(request +" "+id);
   var url = "";
-  url = server_url + "odk_db.php?json={\"request_name\":\"";
+  url = DB_URL + "?json={\"request_name\":\"";
   //if (request == "get_list_of_recipes")
   //  url += "bakingplan_basic_get_all_recipes\"}";
   if (request == "get_list_of_recipes")

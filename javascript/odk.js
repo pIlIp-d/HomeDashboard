@@ -1,6 +1,3 @@
-const server = location.host;
-var server_root_url = "/HomeDashboard/";
-var db_url = server_root_url+"odk_db.php";
 var GV_URL = "";
 var GV_FILTERMODE = "none";
 var GV_CLIPBOARD;
@@ -37,7 +34,7 @@ function sql_get_count(from, where){
 			}
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"sql_get_count\",\"from\":\"" + from + "\",\"where\":\"" + where + "\"}", false);
+	xhttp.open("GET", DB_URL+"?json={\"request_name\":\"sql_get_count\",\"from\":\"" + from + "\",\"where\":\"" + where + "\"}", false);
 	xhttp.send();
 }
 
@@ -142,11 +139,11 @@ class filter_dialog extends full_dialog{
 			//alert(json);
 			// url für Rezepte erstellen
 			if (item_is_selected){
-				GV_URL = db_url+"?json=" + json;
+				GV_URL = DB_URL+"?json=" + json;
 				GV_FILTERMODE = "ingredients";
 			}
 			else{
-				GV_URL = db_url+"?json={\"request_name\":\"get_list_of_recipes\",\"id_list\":\"\",\"count\":\"\",\"filtermode\":\"none\"}";
+				GV_URL = DB_URL+"?json={\"request_name\":\"get_list_of_recipes\",\"id_list\":\"\",\"count\":\"\",\"filtermode\":\"none\"}";
 				GV_FILTERMODE = "none";
 			}
 			reclist_get_all_recipes();
@@ -176,9 +173,9 @@ class filter_dialog extends full_dialog{
 		document.getElementById("dlg_filter_search").innerHTML = html;
 	}
 
-	static area_filter_createHTML(filtermode){
+	static area_filter_createHTML(filtermode){//TODO remove method or rename it (+db_handler)
 		// Bereich "Filter"
-		const url = db_url+"?json={\"request_name\":\" get_ingredients_or_recipes\",\"filtermode\":\"" + filtermode + "\"}";
+		const url = DB_URL+"?json={\"request_name\":\" get_ingredients_or_recipes\",\"filtermode\":\"" + filtermode + "\"}";
 		const xhttp = new XMLHttpRequest();
 		var html = "";
 		xhttp.onreadystatechange = function() {
@@ -266,7 +263,7 @@ class ingredients_dialog extends full_dialog {
 
 	createHTML(){
 		var html = "";
-		const url = db_url+"?json={\"request_name\":\"get_all_ingredients\"}";
+		const url = DB_URL+"?json={\"request_name\":\"get_all_ingredients\"}";
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -295,7 +292,7 @@ class ingredients_dialog extends full_dialog {
 	add_ingredient(){
 		const result = window.prompt("Name der neuen Zutat:");
 		if (result != ""){
-			const url = db_url+"?json={\"request_name\":\"insert_ingredient\",\"ingr_name\":\"" + result + "\"}";
+			const url = DB_URL+"?json={\"request_name\":\"insert_ingredient\",\"ingr_name\":\"" + result + "\"}";
 			const xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200){
@@ -342,7 +339,7 @@ class ingredients_dialog extends full_dialog {
 
 	static add_ingredient_to_recipe(id){
 		// Zutat zum Rezept hinzufügen
-		const url =db_url+"?json={\"request_name\":\"add_ingredient_to_recipe\",\"rec_id\":\"" + ACT_REZIPE.id + "\",\"i_id\":\"" + id + "\"}";
+		const url =DB_URL+"?json={\"request_name\":\"add_ingredient_to_recipe\",\"rec_id\":\"" + ACT_REZIPE.id + "\",\"i_id\":\"" + id + "\"}";
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -358,7 +355,7 @@ class ingredients_dialog extends full_dialog {
 
 	static remove_ingredient_from_recipe(id){
 		// Zutat zum Rezept hinzufügen
-		const url = db_url+"?json={\"request_name\":\"remove_ingredient_from_recipe\",\"rec_id\":\"" + ACT_REZIPE.id + "\",\"i_id\":\"" + id + "\"}";
+		const url = DB_URL+"?json={\"request_name\":\"remove_ingredient_from_recipe\",\"rec_id\":\"" + ACT_REZIPE.id + "\",\"i_id\":\"" + id + "\"}";
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -374,7 +371,7 @@ class ingredients_dialog extends full_dialog {
 
 	delete_ingredient(id){
 		// Prüfen ob Zutat in Rezepten verwendet wird
-		const url1 = db_url+"?json={\"request_name\":\"get_count_of_ingredient_recipes\",\"i_id\":\"" + id + "\"}";
+		const url1 = DB_URL+"?json={\"request_name\":\"get_count_of_ingredient_recipes\",\"i_id\":\"" + id + "\"}";
 		const xhttp1 = new XMLHttpRequest();
 		xhttp1.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -386,7 +383,7 @@ class ingredients_dialog extends full_dialog {
 				if (res1 == 0){
 					if (confirm("Zutat #" + id + " wirklich löschen?") == true){
 						// Zutat löschen
-						const url2 = db_url+"?json={\"request_name\":\"delete_ingredient\",\"i_id\":\"" + id + "\"}";
+						const url2 = DB_URL+"?json={\"request_name\":\"delete_ingredient\",\"i_id\":\"" + id + "\"}";
 						const xhttp2 = new XMLHttpRequest();
 						xhttp2.onreadystatechange = function() {
 							if (this.readyState == 4 && this.status == 200){
@@ -495,7 +492,7 @@ class recipe{
 		else{
 			// bei bestehendem Rezept: Rezept-Daten aus DB laden
 			document.getElementById("header_dialog_name").innerText = "Rezept bearbeiten";
-			const url = db_url+"?json={\"request_name\":\"get_recipe_data\",\"id\":\"" + ACT_REZIPE.id + "\"}";
+			const url = DB_URL+"?json={\"request_name\":\"get_recipe_data\",\"id\":\"" + ACT_REZIPE.id + "\"}";
 			const xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200){
@@ -520,7 +517,7 @@ class recipe{
 
 	static read_ingredients_from_db(){
 		// Zutaten zum Rezept in ACT_RECIPE-Array einlesen
-		const url = db_url+"?json={\"request_name\":\"get_recipe_ingredients\",\"id\":\"" + ACT_REZIPE.id + "\"}";
+		const url = DB_URL+"?json={\"request_name\":\"get_recipe_ingredients\",\"id\":\"" + ACT_REZIPE.id + "\"}";
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -553,7 +550,7 @@ class recipe{
 		// speichert alle Werte eines Rezeptes in der DB
 		// Rezept in DB anlegen wenn neues Rezept
 		if (ACT_REZIPE.id == 0){
-			var url = db_url+"?json={\"request_name\":\"add_recipe\"";
+			var url = DB_URL+"?json={\"request_name\":\"add_recipe\"";
 			url += ",\"rec_name\":\"" + specialchars_2_base64(ACT_REZIPE.name) + "\"";
 			url += ",\"rec_bakingtime\":\"" + specialchars_2_base64(ACT_REZIPE.time) + "\"";
 			url += ",\"rec_bakingtemperature\":\"" + specialchars_2_base64(ACT_REZIPE.temperature) + "\"";
@@ -574,7 +571,7 @@ class recipe{
 			xhttp.send();
 		}
 		else{
-			var url = db_url+"?json={\"request_name\":\"update_recipe\"";
+			var url = DB_URL+"?json={\"request_name\":\"update_recipe\"";
 			url += ",\"rec_id\":\"" + specialchars_2_base64(ACT_REZIPE.id) + "\"";
 			url += ",\"rec_name\":\"" + specialchars_2_base64(ACT_REZIPE.name) + "\"";
 			url += ",\"rec_bakingtime\":\"" + specialchars_2_base64(ACT_REZIPE.time) + "\"";
@@ -612,7 +609,7 @@ class recipe{
 				}
 			}
 			// JSON-String mit den Werten zusammenbauen und an DB schicken
-			url = db_url+"?json={\"request_name\":\"update_recipe_ingredient\"";
+			url = DB_URL+"?json={\"request_name\":\"update_recipe_ingredient\"";
 			url += ",\"ri_id\":\"" + ACT_REZIPE.ingredients[i].ri_id + "\"";
 			url += ",\"ri_amount\":\"" + specialchars_2_base64(ACT_REZIPE.ingredients[i].amount) + "\"}";
 			xhttp.open("GET", url, false);
@@ -756,7 +753,7 @@ function validate_number(evt) {
 /* ----- Templates -------------------------------------------------------------------- */
 
 function template_HTTPRequest(){
-		const url = db_url+"?json={\"request_name\":\"get_recipe_data\",\"id\":\"" + ACT_REZIPE.id + "\"}";
+		const url = DB_URL+"?json={\"request_name\":\"get_recipe_data\",\"id\":\"" + ACT_REZIPE.id + "\"}";
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200){
@@ -907,7 +904,7 @@ function dlg_full_show(headername) {
 
 function dlg_full_hide() {
 	var dlg_full = document.getElementById("dlg_full");
-	document.getElementsByClassName("#pauseButton").style.display: = "block";
+	document.getElementsByClassName("#pauseButton").style.display = "block";
 	dlg_full.animate([{width: "100% "}, {width: "0px"}], {duration: 300, iterations: 1, fill: 'forwards'});
 	// Dialog ausblenden, wenn Animation beendet ist
 	setTimeout(function() {
@@ -988,7 +985,7 @@ function dlg_select_bakingplan_create_HTML(headername){
 			document.getElementById("dlg_full_content").innerHTML = html;
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_bakingplans\"}", false);
+	xhttp.open("GET", DB_URL+"?json={\"request_name\":\"get_all_bakingplans\"}", false);
 	xhttp.send();
 }
 
@@ -1004,7 +1001,7 @@ function dlg_select_bakingplan_close(id){
 						var res = this.responseText;
 					}
 				}
-				xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);
+				xhttp.open("GET", DB_URL+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);
 				xhttp.send();
 				//send to dashboard
 				window.parent.postMessage('null reload', 'http://'+location.host+'/HomeDashboard/dashboard.php');
@@ -1022,7 +1019,7 @@ function dlg_select_bakingplan_close(id){
 							var res = this.responseText;
 						}
 					}
-					xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_delete\",\"bp_id\":\"" + id[0] + "\"}", false);
+					xhttp.open("GET", DB_URL+"?json={\"request_name\":\"bakingplan_delete\",\"bp_id\":\"" + id[0] + "\"}", false);
 					xhttp.send();
 				}
 				//dlg_full_hide();
@@ -1080,7 +1077,7 @@ function dlg_bakingplan_select_recipe_filter_createHTML(){
 			document.getElementById("dlg_full_content_filter").innerHTML = html;
 		}
 	}
-	xhttp.open("GET", db_url+"?json={\"request_name\":\"get_all_recipes\"}", false);
+	xhttp.open("GET", DB_URL+"?json={\"request_name\":\"get_all_recipes\"}", false);
 	xhttp.send();
 }
 
@@ -1097,7 +1094,7 @@ function dlg_bakingplan_select_recipe_close(id){
 	dlg_full_hide();
 	if (item_is_selected){
 		var xhttp = new XMLHttpRequest();
-		xhttp.open("GET", db_url+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);
+		xhttp.open("GET", DB_URL+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);
 		xhttp.send();
 	}
 	dlg_full_hide();

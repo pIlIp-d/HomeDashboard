@@ -53,7 +53,12 @@
       "display_name": "Button",
       "filename": "click_button.php",
       "sizes": ["11","44"]
-    }
+  },
+  {
+      "name":"notes",
+      "display_name":"Notizen",
+      "filename":"notes.php"
+  }
   ],
   "sizes": ["11","12","13","14","24","34","44","54","64","74"],
   "devices": [

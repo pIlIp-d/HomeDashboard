@@ -62,7 +62,9 @@ Add a sensor into `"device"..."sensors":[]`
       "sensor_id": "001-1"
     }
   ```
+
 ## Adding Widget
+
 ----------------
 
 ### File for IFrame
@@ -126,6 +128,7 @@ special behaviour of Dashboard to for example pass specific values to iFrame can
     + `"unit"`  
 
 ## Ready to use Widget Types
+
 ----------------------------
 ### Devices
 Works for Temperature Humditiy or similar Sensors
@@ -184,7 +187,7 @@ Works for Temperature Humditiy or similar Sensors
   "display_name": "Backplan Bearbeiter",
   "filename": "bakingplan_editor.php",
   "scrolling": "yes"
-},  
+},
 {
   "name": "bakingplan",
   "display_name": "Backplan",
@@ -287,6 +290,47 @@ Sql database credentials and message credentials for PushOver API
 * `type` VARCHAR(10) DEFAULT NULL
 
 ## Database API
-`odk_db.php` file handles all requests and interacts with the database.
 
-TODO
+`db_handler.php` file handles all requests and interacts with the database.
+
+Send your GET request to get values from Database.  
+Read documentation inside the db_handler.php file.
+
+overall send a parameter called json that has a json string as value
+
+------
+*json=*
+```json
+{
+  "request_name":"name_of_request",
+  "other_request_specific_parameters": "and_values"
+}
+```
+
+-----
+### Important requests for your widget
+
+#### active recipe
+* `get_active_recipe` -> currently active recipe and its values
+*
+
+
+### DB Handler / API
+
+| Categories  | Method | Parameters            | Example |
+|:------------|:------:|-----------------------|---------|
+| Recipes     |  GET   | rec_name              |         |
+|             |        | rec_bakingtime        |         |
+|             |        | rec_bakingtemperature |         |
+|             |        | rec_preparation       |         |
+|             |        |                       |         |
+
+
+
+
+## Test Execution
+* change paths  
+`C:\xampp\php\php.exe C:\xampp\htdocs\HomeDashboard\phpunit.phar --no-configuration --filter DeviceTest --test-suffix DeviceTest.php C:\xampp\htdocs\HomeDashboard\tests --teamcity --cache-result-file=C:\xampp\htdocs\HomeDashboard\.phpunit.result.cache`
+
+
+

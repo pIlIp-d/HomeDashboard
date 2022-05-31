@@ -189,7 +189,7 @@ Settings Menu
 			}
 			.tile_13 {
 				height:  var(--height2);
-				gid-row:  span 1;
+				grid-row:  span 1;
 				grid-column: span 3;
 			}
 			.tile_14 {

@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
   <link rel="stylesheet" href="style/move_with_arrows.css">
+  <script src="../javascript/config.js"></script>
 <body>
 <?php
     $id = 0;

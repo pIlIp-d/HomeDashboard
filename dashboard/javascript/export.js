@@ -7,9 +7,8 @@ function init_export(){
 }
 
 function xhttp_request_export(request, id) {
-    console.log(request +" "+id);
     var url = "";
-    url = server_url + "odk_db.php?json={\"request_name\":\"";
+    url = DB_URL + "?json={\"request_name\":\"";
     if (request == "get_list_of_recipes")
       	url += "get_list_of_recipes\",\"id_list\":\"\",\"count\":\"\",\"filtermode\":\"none\"}";
     else if (request == "get_recipe_data" || request == "get_recipe_ingredients")
@@ -58,20 +57,20 @@ function xhttp_request_export(request, id) {
 //--------------------------------
 
 function json_create_for_pdf(request){
-	if (request == "download_pdf")
+	if (request === "download_pdf")
 		get_pdf(true);
-	else if (request == "print_pdf") {
+	else if (request === "print_pdf") {
         setPrintCSS();
         window.print();
     }
-	if (request == "send_mail"){
+	if (request === "send_mail"){
 		var loop = true;
 		while(loop){
 			var mail = prompt("An welche Email soll das Rezept gesendet werden?","example@mail.com");
-			if (mail != undefined && mail != null && mail != ""){
+			if (mail !== undefined && mail !== null && mail !== ""){
 				 var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 				// = /\S+@\S+\.\S+/;
-	        	if (regex.test(mail) && mail != "example@mail.com")
+	        	if (regex.test(mail) && mail !== "example@mail.com")
 	        		loop = false;
 				else
 					alert("Keine valide Mail Adresse!");

@@ -2,8 +2,6 @@
 const DEVICE_ID = "odk";
 var SENSOR_ID = "";
 
-const HOMESERVER_URL = "/HomeDashboard/";
-const DB_URL = HOMESERVER_URL + "odk_db.php";
 const INTERVALL_MAIN_TICKER = 1000;
 const TIMEOUT = 30;
 

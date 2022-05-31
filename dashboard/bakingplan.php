@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="../javascript/config.js"></script>
 </head>
 <style type="text/css">
 	*{
@@ -138,10 +139,6 @@
 </body>
 <script type="text/javascript">
 
-const server = location.host;
-var server_root_url = "/HomeDashboard/";
-var db_url = server_root_url+"odk_db.php";
-
 var bakingplans = [];
 
 var active_bp;
@@ -166,8 +163,14 @@ function create_html(){
 	BP_SELECT.value = active_bp.id;
 	//bakingplan recipes html
 	var html = "";
-	for (let i = 0; i < bakingplan_recipes.length; i++)
-		html += get_recipe_html(i, bakingplan_recipes[i].r_name, bakingplan_recipes[i].r_bakingtemperature, bakingplan_recipes[i].r_bakingtime, (active_recipe.id == i));
+    console.log(bakingplan_recipes);
+    let firstactive = false;
+	for (let i = 0; i < bakingplan_recipes.length; i++) {
+        let active = !firstactive && active_recipe.id == bakingplan_recipes[i].r_id;//only let the first be active
+        if (active) firstactive = true;
+
+        html += get_recipe_html(i, bakingplan_recipes[i].r_name, bakingplan_recipes[i].r_bakingtemperature, bakingplan_recipes[i].r_bakingtime, (active));
+    }
 	document.getElementById("bakingplan_table").innerHTML = html;
 }
 
@@ -182,7 +185,7 @@ function xhttp_send(request, value = null){
 				handle_response(request, response);
 		}
 	}
-	xhttp.open("GET", db_url + "?json={"+ createRequest(request, value) +"}", false);
+	xhttp.open("GET", DB_URL + "?json={"+ createRequest(request, value) +"}", false);
 	xhttp.send();
 }
 

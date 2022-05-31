@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<script src="javascript/timer.js"></script>
 	<link rel="stylesheet" type="text/css" href="style/odk_timer_wfo.css">
+    <script src="../javascript/config.js"></script>
 </head>
 <body>
 	<?php
@@ -70,6 +71,6 @@ function interval_main_tick(){
 	if (timer_exists || bp_mode)
 		check_clock();
 }
-//more js in javascript/timer.js
+
 </script>
 </html>

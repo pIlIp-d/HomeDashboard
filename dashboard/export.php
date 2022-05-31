@@ -3,9 +3,9 @@
 	<head>
 		<meta charset="utf-8">
  		<link rel="stylesheet" href="style/export.css">
-	</head>
-	<style type="text/css">
-
+        <script src="../javascript/config.js"></script>
+    </head>
+	<style>
 		html,body, #main {
 			width: 100%;
 			height: 100%;
