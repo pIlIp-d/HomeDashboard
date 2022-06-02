@@ -39,7 +39,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo $dbcon->lastInsertId();
             break;
 
-        //TODO delete-> remove
         case "remove_recipe":
             $stmt = $dbcon->prepare("DELETE FROM `recipes` WHERE `recipes`.`id` = :id");
             $stmt->bindParam("id", $json_decoded->rec_id);
@@ -88,7 +87,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             break;
 
             //TODO not used??
-        //TODO rename get_filtered_of_recipes->get_filtered_list_of_recipes
         case "get_filtered_list_of_recipes":
             /**
              * @param $json_decoded- >filtermode
@@ -209,7 +207,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
         //--------------------------------------------------------------------------
         //--------- INGREDIENTS ----------------------------------------------------
         //--------------------------------------------------------------------------
-        //TODO insert_ingredient -> add_ingredient
         case "add_ingredient":
             $stmt = $dbcon->prepare("INSERT INTO ingredients (`id`, `name`) VALUES (NULL, :ingr_name)");
             $stmt->bindParam(":ingr_name", $json_decoded->ingr_name);
@@ -223,7 +220,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo json_encode($stmt->fetchAll());
             break;
 
-        //TODO rename remove, maybe delete from all recipes
         case "remove_ingredient":
             $stmt = $dbcon->prepare("DELETE FROM `ingredients` WHERE `id` = :i_id");
             $stmt->bindParam(":i_id", $json_decoded->i_id);
@@ -241,7 +237,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
         //--------------------------------------------------------------------------
         //--------- BAKINGPLAN -----------------------------------------------------
         //--------------------------------------------------------------------------
-        //TODO rename
         case "add_bakingplan":
             $stmt = $dbcon->prepare("INSERT INTO `bakingplans` (`id`, `name`, `type`) VALUES (NULL, :bp_name, '')");
             $stmt->bindParam(":bp_name", $json_decoded->bp_name);
@@ -271,7 +266,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo json_encode($stmt->fetch());
             break;
 
-        //TODO rename bakingplan_get_rec_id -> get_bakingplan_rec_id
         case "get_bakingplan_rec_id":
             //TODO test
             $stmt = $dbcon->prepare("SELECT `recipes_id` AS `r_id` FROM `bakingplans_recipes` WHERE `bakingplans_recipes`.`id` = :bpr_id");
@@ -280,7 +274,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo json_encode($stmt->fetchAll());
             break;
 
-        //TODO rename bakingplan_get_order_no -> get_bakingplan_recipe_order_no
         case "get_bakingplan_recipe_order_no":
             $stmt = $dbcon->prepare("SELECT `order_no` FROM `bakingplans_recipes` WHERE `bakingplans_recipes`.`id` = :bpr_id;");
             $stmt->bindParam(":bpr_id", $json_decoded->bpr_id);
@@ -288,7 +281,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo json_encode($stmt->fetch());
             break;
 
-        //TODO bakingplan_paste_rec -> paste_bakingplan_rec
         case "paste_bakingplan_rec":
             $stmt = $dbcon->prepare("INSERT INTO `bakingplans_recipes` (`id`, `recipes_id`, `bakingplans_id`, `order_no`) VALUES (NULL, :rec_id, :bp_id, :order_no);");
             $stmt->bindParam(":rec_id", $json_decoded->rec_id);
@@ -298,7 +290,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo $dbcon->lastInsertId();
             break;
 
-        //TODO bakingplan_remove_rec -> remove_bakingplan_recipe
         case "remove_bakingplan_recipe":
             $stmt = $dbcon->prepare("DELETE FROM `bakingplans_recipes` WHERE `bakingplans_recipes`.`id` = :bpr_id;");
             $stmt->bindParam(":bpr_id", $json_decoded->bpr_id);
@@ -306,7 +297,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo "OK";
             break;
 
-        //TODO bakingplan_get_all_recipes -> get_all_bakingplan_recipes
         case "get_all_bakingplan_recipes":
             $stmt = $dbcon->prepare(<<<Query
 				SELECT r.id AS r_id, r.name AS r_name, r.bakingtime AS r_bakingtime, r.bakingtemperature AS r_bakingtemperature,bpr.order_no AS bpr_orderno, bpr.id AS bpr_id, bp.name AS bp_name
@@ -339,7 +329,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo json_encode($stmt->fetch());
             break;
 
-        //TODO rename everywhere 'bakingplan_activate'->set_active_bakingplan
         case "set_active_bakingplan":
             // alle Backpläne ausser dem aktiven Backplan zurücksetzen
             $stmt = $dbcon->prepare("UPDATE `bakingplans` SET `type` = '' WHERE NOT `bakingplans`.`id` = :bp_id");
@@ -356,7 +345,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
         //--------------------------------------------------------------------------
         //--------- PRESETS --------------------------------------------------------
         //--------------------------------------------------------------------------
-        //TODO set_new_preset -> add_preset
         case "add_preset":
             $grid_object_v = json_encode($json_decoded->grid_object_v);
             $grid_object_h = json_encode($json_decoded->grid_object_h);
@@ -412,7 +400,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo "OK";
             break;
 
-        //TODO delete_preset -> remove_preset
         case "remove_preset":
             $stmt = $dbcon->prepare("DELETE FROM presets WHERE id = :preset_id;");
             $stmt->bindParam(":preset_id", $json_decoded->preset_id);
@@ -429,7 +416,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
         //--------------------------------------------------------------------------
         //TODO rename temp_act uniformly
 
-        //TODO insert_device -> add_device
         case "add_device":
             $stmt = $dbcon->prepare("INSERT INTO devices (`id`, `name`) VALUES (NULL, :device_name)");
             $stmt->bindParam(":device_name", $json_decoded->device_name);
@@ -437,7 +423,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo $dbcon->lastInsertId();
             break;
 
-        //TODO delete_device -> remove_device
         case "remove_device":
             $stmt = $dbcon->prepare("DELETE FROM devices WHERE devices.id = :device_id;");
             $stmt->bindParam(":device_id", $json_decoded->device_id);
@@ -559,7 +544,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo "OK";
             break;
 
-        //TODO del_timer -> remove_timer
         case "remove_timer":
             $stmt = $dbcon->prepare("UPDATE timers SET time = :timecode WHERE timers.preset_id = :preset_id AND timers.timer_id = :timer_id;");
             $time_code = time();
