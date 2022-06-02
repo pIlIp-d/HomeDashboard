@@ -383,7 +383,7 @@ class ingredients_dialog extends full_dialog {
 				if (res1 == 0){
 					if (confirm("Zutat #" + id + " wirklich löschen?") == true){
 						// Zutat löschen
-						const url2 = DB_URL+"?json={\"request_name\":\"delete_ingredient\",\"i_id\":\"" + id + "\"}";
+						const url2 = DB_URL+"?json={\"request_name\":\"remove_ingredient\",\"i_id\":\"" + id + "\"}";
 						const xhttp2 = new XMLHttpRequest();
 						xhttp2.onreadystatechange = function() {
 							if (this.readyState == 4 && this.status == 200){
@@ -1001,7 +1001,7 @@ function dlg_select_bakingplan_close(id){
 						var res = this.responseText;
 					}
 				}
-				xhttp.open("GET", DB_URL+"?json={\"request_name\":\"bakingplan_activate\",\"bp_id\":\"" + id[0] + "\"}", false);
+				xhttp.open("GET", DB_URL+"?json={\"request_name\":\"set_active_bakingplan\",\"bp_id\":\"" + id[0] + "\"}", false);
 				xhttp.send();
 				//send to dashboard
 				window.parent.postMessage('null reload', 'http://'+location.host+'/HomeDashboard/dashboard.php');
@@ -1094,7 +1094,7 @@ function dlg_bakingplan_select_recipe_close(id){
 	dlg_full_hide();
 	if (item_is_selected){
 		var xhttp = new XMLHttpRequest();
-		xhttp.open("GET", DB_URL+"?json={\"request_name\":\"bakingplan_paste_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);
+		xhttp.open("GET", DB_URL+"?json={\"request_name\":\"paste_bakingplan_rec\",\"recipe_data\":" + JSON.stringify(recipe_data) + "}", false);
 		xhttp.send();
 	}
 	dlg_full_hide();

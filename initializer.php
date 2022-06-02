@@ -50,26 +50,26 @@ class Initializer{
 
     private function create_examples(): void
     {
-        $json_strings = array("{\"request_name\":\"insert_bakingplan\",\"bp_name\":\"Beispiel Backplan\"}", "{\"request_name\":\"bakingplan_activate\",\"bp_id\":\"1\"}",
-            "{\"request_name\":\"insert_bakingplan\",\"bp_name\":\"Beispiel Backplan 2\"}",
+        $json_strings = array("{\"request_name\":\"add_bakingplan\",\"bp_name\":\"Beispiel Backplan\"}", "{\"request_name\":\"set_active_bakingplan\",\"bp_id\":\"1\"}",
+            "{\"request_name\":\"add_bakingplan\",\"bp_name\":\"Beispiel Backplan 2\"}",
             "{\"request_name\":\"add_recipe\",\"rec_name\":\"Beispiel Rezept\",\"rec_bakingtime\":\"15\",\"rec_bakingtemperature\":\"200\",\"rec_preparation\":\"Backen, Backen, Backen.\"}", "{\"request_name\":\"set_active_recipe\",\"recipe_id\":\"1\"}",
             "{\"request_name\":\"add_recipe\",\"rec_name\":\"Beispiel Rezept 2\",\"rec_bakingtime\":\"15\",\"rec_bakingtemperature\":\"200\",\"rec_preparation\":\"Backen, Backen, Backen.\"}",
-            "{\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\"1\",\"bp_id\":\"1\",\"order_no\":\"0\"}",
-            "{\"request_name\":\"bakingplan_paste_rec\",\"rec_id\":\"2\",\"bp_id\":\"1\",\"order_no\":\"10\"}",
-            "{\"request_name\":\"insert_ingredient\",\"ingr_name\":\"Beispiel Zutat\"}",
-            "{\"request_name\":\"insert_ingredient\",\"ingr_name\":\"Beispiel Zutat 2\"}",
+            "{\"request_name\":\"paste_bakingplan_rec\",\"rec_id\":\"1\",\"bp_id\":\"1\",\"order_no\":\"0\"}",
+            "{\"request_name\":\"paste_bakingplan_rec\",\"rec_id\":\"2\",\"bp_id\":\"1\",\"order_no\":\"10\"}",
+            "{\"request_name\":\"add_ingredient\",\"ingr_name\":\"Beispiel Zutat\"}",
+            "{\"request_name\":\"add_ingredient\",\"ingr_name\":\"Beispiel Zutat 2\"}",
             "{\"request_name\":\"add_ingredient_to_recipe\",\"rec_id\":\"1\",\"i_id\":\"2\"}",
             "{\"request_name\":\"add_ingredient_to_recipe\",\"rec_id\":\"1\",\"i_id\":\"1\"}",
             "{\"request_name\":\"add_ingredient_to_recipe\",\"rec_id\":\"2\",\"i_id\":\"2\"}",
-            "{\"request_name\":\"set_new_preset\",\"preset_name\":\"empty\",
+            "{\"request_name\":\"add_preset\",\"preset_name\":\"empty\",
                                 \"grid_object_v\":[{\"type\":\"settings\",\"size\":\"11\",\"pos\":0,\"start\":0,\"stop\":0,\"display\":0}],
                                 \"grid_object_h\":[{\"type\":\"settings\",\"size\":\"11\",\"pos\":0,\"start\":0,\"stop\":0,\"display\":0}]
                             }",
-            "{\"request_name\":\"insert_device\",\"device_name\":\"wfo_top\"}",
-            "{\"request_name\":\"insert_device\",\"device_name\":\"wfo_bottom\"}",
-            "{\"request_name\":\"insert_device\",\"device_name\":\"grill_left\"}",
-            "{\"request_name\":\"insert_device\",\"device_name\":\"grill_right\"}",
-            "{\"request_name\":\"insert_device\",\"device_name\":\"meat\"}"
+            "{\"request_name\":\"add_device\",\"device_name\":\"wfo_top\"}",
+            "{\"request_name\":\"add_device\",\"device_name\":\"wfo_bottom\"}",
+            "{\"request_name\":\"add_device\",\"device_name\":\"grill_left\"}",
+            "{\"request_name\":\"add_device\",\"device_name\":\"grill_right\"}",
+            "{\"request_name\":\"add_device\",\"device_name\":\"meat\"}"
 
         );
         ob_start();//echo/output buffer -> buffers echos of db_handler.php

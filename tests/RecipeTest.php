@@ -109,7 +109,7 @@ class RecipeTest extends CustomTestCase
         $recId1 = $this->addDefaultRecipe();
 
         $recipeData2 = array(
-            'request_name' => 'insert_recipe',
+            'request_name' => 'add_recipe',
             'rec_name' => 'newRecipeName',
             'rec_bakingtime' => '150',
             'rec_bakingtemperature' => '200',

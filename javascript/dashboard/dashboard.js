@@ -135,7 +135,7 @@ class Dashboard {
 		if (Object.entries(response).length == 0){
 			this.grid_horizontal.push(new GridObject("settings","11","0","0",this.widgets));
 			this.grid_vertical.push(new GridObject("settings","11","0","0",this.widgets));
-			this.create_request("set_new_preset","empty");
+			this.create_request("add_preset","empty");
 		}
 		for (var i = 0; i < response.length; i++){
 			if (response[i] != "" && response[i] != null){
@@ -159,7 +159,7 @@ class Dashboard {
 			case "new":
 				let value = prompt("Bitte einen Namen für das Preset eingeben!");
 				if (value != null && value != "" && !Object.values(this.preset_names).includes(value))
-					this.request("set_new_preset",value);
+					this.request("add_preset",value);
 				else {
 					delete this.preset_names[value];
 					alert("Das hat nicht funktioniert!")
@@ -167,7 +167,7 @@ class Dashboard {
 				break;
 			case "delete":
 				if (last_preset != null && last_preset != 0 && confirm("Möchtest du wirklich das Preset '"+this.preset_names[last_preset]+"' löschen?")){
-					this.request("delete_preset",last_preset);
+					this.request("remove_preset",last_preset);
 					last_preset = 0;
 					document.getElementById("select_preset").value = "null";
 				}

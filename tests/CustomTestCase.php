@@ -11,7 +11,7 @@ class CustomTestCase extends TestCase
     protected static string $credFile;
 
     protected static array $defaultRecipeData = array(
-        'request_name' => 'insert_recipe',
+        'request_name' => 'add_recipe',
         'rec_name' => 'testRecipe',
         'rec_bakingtime' => '100',
         'rec_bakingtemperature' => '160',

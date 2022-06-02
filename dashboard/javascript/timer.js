@@ -144,7 +144,7 @@ function reset_timer(){
 *						false 	-> saves and starts timer but don't makes request to create a new one
 *								   is used to start timers, wich are already running when reloading
 */function btn_start(make_new_timer = true){
-		if (make_new_timer && parseInt(TIMER_HOUR.value) == 0 && parseInt(TIMER_MINUTE.value) == 0 && parseInt(TIMER_SECOND.value) == 0){
+		if (make_new_timer && parseInt(TIMER_HOUR.value) === 0 && parseInt(TIMER_MINUTE.value) === 0 && parseInt(TIMER_SECOND.value) === 0){
 			alert("Bitte erst Timer setzen!");
 			return;
 		}
@@ -174,7 +174,7 @@ function reset_timer(){
 		TIMER_START.style.display = "block";
 		TIMER_STOP.style.display = "none";
 		timer_exists = false;
-		http_request("del_timer");
+		http_request("remove_timer");
 	}
 
 function toggle_bp_mode(bool = null){

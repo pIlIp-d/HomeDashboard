@@ -5,7 +5,7 @@ include_once("CustomTestCase.php");
 class BakingplanTest extends CustomTestCase
 {
     protected static array $defaultBakingplan = array(
-        "request_name" => "insert_bakingplan",
+        "request_name" => "add_bakingplan",
         "bp_name" => "testBakingplan"
     );
 

@@ -67,7 +67,7 @@
 		border-collapse: collapse;
 		border-radius: 5px;
 		background-color: #f3f3f3;
-		position: absolutue;
+		position: absolute;
 		justify-content: center;
 		display:block;
 		height: 3rem;
@@ -152,7 +152,7 @@ function init(){
 	xhttp_send("get_all_bakingplans");
 	xhttp_send("get_active_bakingplan");
 	xhttp_send("get_active_recipe");
-	xhttp_send("bakingplan_get_all_recipes");
+	xhttp_send("get_all_bakingplan_recipes");
 	create_html();
 }
 function create_html(){
@@ -166,7 +166,7 @@ function create_html(){
     console.log(bakingplan_recipes);
     let firstactive = false;
 	for (let i = 0; i < bakingplan_recipes.length; i++) {
-        let active = !firstactive && active_recipe.id == bakingplan_recipes[i].r_id;//only let the first be active
+        let active = !firstactive && active_recipe.id === bakingplan_recipes[i].r_id;//only let the first be active
         if (active) firstactive = true;
 
         html += get_recipe_html(i, bakingplan_recipes[i].r_name, bakingplan_recipes[i].r_bakingtemperature, bakingplan_recipes[i].r_bakingtime, (active));
@@ -177,12 +177,9 @@ function create_html(){
 function xhttp_send(request, value = null){
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function(){
-		if (this.readyState == 4 && this.status == 200){
+		if (this.readyState === 4 && this.status === 200){
 			let response = this.responseText;
-			if (response.substr(0, 8) == "DB_ERROR")
-				alert("DB_ERROR");
-			else
-				handle_response(request, response);
+            handle_response(request, response);
 		}
 	}
 	xhttp.open("GET", DB_URL + "?json={"+ createRequest(request, value) +"}", false);
@@ -218,8 +215,10 @@ function activate_bp_recipe(id){
 }
 
 function handle_response(request, response){
-	if (response != "OK")
-		var json_response = JSON.parse(response);
+	try {
+        var json_response = JSON.parse(response);
+    }
+    catch{/*IGNORE*/}
 	switch(request){
 		case "get_active_bakingplan":
 			active_bp = json_response[0];
@@ -228,7 +227,9 @@ function handle_response(request, response){
 			active_recipe = json_response[0];
 			console.log(active_recipe);
 			break;
-		case "bakingplan_get_all_recipes":
+		case "get_all_bakingplan_recipes":
+            console.log("_________________");
+            console.log(json_response);
 			bakingplan_recipes = json_response;
 			break;
 		case "set_active_recipe":
@@ -260,10 +261,12 @@ function get_recipe_html(id, name, temp, time, active = false){
 
 //listener for bp_select change
 document.querySelector('#bp_name').addEventListener("change", function() {
-	xhttp_send("bakingplan_activate",BP_SELECT.value);
+	xhttp_send("set_active_bakingplan",BP_SELECT.value);
 	init();
 });
 
+//TODO move bug
+// 4x2 over 2, 1, 1
 
 </script>
 

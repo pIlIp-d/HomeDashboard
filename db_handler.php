@@ -28,8 +28,8 @@ function request_handling($request_name, $dbcon, $json_decoded)
          //------------------------------------------------------------------------------
         //--------- RECIPE -------------------------------------------------------------
         //------------------------------------------------------------------------------
-        //TODO full rename add -> insert
-        case "insert_recipe":
+
+        case "add_recipe":
             $stmt = $dbcon->prepare("INSERT INTO `recipes` (`id`, `name`, `bakingtime`, `bakingtemperature`, `preparation`) VALUES (NULL, :name, :bakingtime, :bakingtemperature, :preparation)");
             $stmt->bindParam(":name", $json_decoded->rec_name);
             $stmt->bindParam(":bakingtime", $json_decoded->rec_bakingtime);
@@ -87,6 +87,7 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo json_encode($stmt->fetch());
             break;
 
+            //TODO not used??
         //TODO rename get_filtered_of_recipes->get_filtered_list_of_recipes
         case "get_filtered_list_of_recipes":
             /**
@@ -240,7 +241,8 @@ function request_handling($request_name, $dbcon, $json_decoded)
         //--------------------------------------------------------------------------
         //--------- BAKINGPLAN -----------------------------------------------------
         //--------------------------------------------------------------------------
-        case "insert_bakingplan":
+        //TODO rename
+        case "add_bakingplan":
             $stmt = $dbcon->prepare("INSERT INTO `bakingplans` (`id`, `name`, `type`) VALUES (NULL, :bp_name, '')");
             $stmt->bindParam(":bp_name", $json_decoded->bp_name);
             $stmt->execute();
@@ -296,7 +298,7 @@ function request_handling($request_name, $dbcon, $json_decoded)
             echo $dbcon->lastInsertId();
             break;
 
-        //TODO paste_bakingplan_rec -> remove_bakingplan_recipe
+        //TODO bakingplan_remove_rec -> remove_bakingplan_recipe
         case "remove_bakingplan_recipe":
             $stmt = $dbcon->prepare("DELETE FROM `bakingplans_recipes` WHERE `bakingplans_recipes`.`id` = :bpr_id;");
             $stmt->bindParam(":bpr_id", $json_decoded->bpr_id);
