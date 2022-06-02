@@ -4,81 +4,11 @@ include_once("CustomTestCase.php");
 
 class RecipeIngredientsTest extends CustomTestCase
 {
-    protected static array $defaultIngredient = array(
-        'request_name' => 'insert_ingredient',
-        'ingr_name' => 'testIngredient'
-    );
-
-    protected function addDefaultIngredient(): int
-    {
-        return $this->simpleRequest(self::$defaultIngredient);
-    }
-
-    protected function addIngredient(array $recipeData): int
-    {
-        return $this->simpleRequest($recipeData);
-    }
-
-    function removeIngredient(int $ingredientID){
-        $send_data = http_build_query(array("json" => "{\"request_name\":\"remove_ingredient\",\"i_id\":\"$ingredientID\"}"));
-        if ( "OK" != $this->getResponse($send_data)){
-            $this->fail("Removing Ingredient $ingredientID failed.");
-        }
-    }
-
-    function removeIngredients(array $ingredientIDs){
-        $str = "{";
-        foreach($ingredientIDs as $key => $id)
-        {
-            if ($key === 0)
-                $str .= $id;
-            else
-                $str .= ", ".$id;
-        }
-        $str = "}";
-        $send_data = http_build_query(array("json" => "{\"request_name\":\"remove_ingredient\",\"rec_id\":$str}"));
-        if ( "OK" != $this->getResponse($send_data)){
-            $this->fail("Removing Ingredients failed.");
-        }
-    }
-
-    protected function getIngredientsData(int $ingredientId): string
-    {
-        $recipeData = array(
-            'request_name' => 'get_recipe_data',
-            'id' => $ingredientId
-        );
-        $send_data = http_build_query(array("json" => json_encode($recipeData)));
-        return $this->getResponse($send_data);
-    }
 
     /**
      * @test
      */
-    public function validInsertIngredientTest(): void
-    {
-        $ingrId = $this->addIngredient(self::$defaultIngredient);
-        $this->assertIsNumeric($ingrId);
-
-        $this->removeIngredient($ingrId);
-    }
-
-    /**
-     * @test
-     */
-    public function validRemoveIngredientsTest(): void
-    {
-        $ingrId = $this->addDefaultIngredient();
-
-        $this->removeIngredient($ingrId);
-        $recipeData = $this->getIngredientsData($ingrId);
-        $this->assertEquals("false", $recipeData);
-    }
-
-    /**
-     * @test
-     */
-    public function addIngredientsToRecipe(): void
+    public function addIngredientsToRecipeTest(): void
     {
         $recId = $this->addDefaultRecipe();
         $ingrId = $this->addDefaultIngredient();
@@ -98,7 +28,7 @@ class RecipeIngredientsTest extends CustomTestCase
     /**
      * @test
      */
-    public function updateIngredientsToRecipe(): void
+    public function updateIngredientsToRecipeTest(): void
     {
         $recId = $this->addDefaultRecipe();
         $ingrId = $this->addDefaultIngredient();
@@ -163,6 +93,91 @@ class RecipeIngredientsTest extends CustomTestCase
         $this->assertEquals("OK", $deleteResponse);
         $this->assertEquals("[]", $response);
     }
+
+    /**
+     * @test
+     */
+    public function getRecipeIngredientTest(): void
+    {
+        $recId = $this->addDefaultRecipe();
+        $ingrId = $this->addDefaultIngredient();
+        $recipeIngredientId = $this->simpleRequest(array(
+            'request_name' => 'add_ingredient_to_recipe',
+            'rec_id' => $recId,
+            'i_id' => $ingrId,
+        ));
+
+        $jsonResponse = $this->simpleRequest(array(
+            'request_name' => 'get_recipe_ingredient',
+            'ri_id' => $recipeIngredientId
+        ));
+        $response = json_decode($jsonResponse);
+
+        $this->removeIngredient($ingrId);
+        $this->removeRecipe($recId);
+        $this->assertTrue($this->isValidJSON($jsonResponse));
+
+        $this->assertTrue(isset($response->id));
+        $this->assertEquals($recipeIngredientId, $response->id);
+        $this->assertTrue(isset($response->recipes_id));
+        $this->assertEquals($recId, $response->recipes_id);
+        $this->assertTrue(isset($response->ingredients_id));
+        $this->assertEquals($ingrId, $response->ingredients_id);
+    }
+
+    /**
+     * @test
+     */
+    public function getRecipeIngredientsTest(): void
+    {
+        $recId = $this->addDefaultRecipe();
+        $ingrId1 = $this->addDefaultIngredient();
+        $ingrId2 = $this->addDefaultIngredient();
+        $recipeIngredientId1 = $this->simpleRequest(array(
+            'request_name' => 'add_ingredient_to_recipe',
+            'rec_id' => $recId,
+            'i_id' => $ingrId1,
+        ));
+        $recipeIngredientId2 = $this->simpleRequest(array(
+            'request_name' => 'add_ingredient_to_recipe',
+            'rec_id' => $recId,
+            'i_id' => $ingrId2,
+        ));
+
+        $jsonResponse = $this->simpleRequest(array(
+            'request_name' => 'get_recipe_ingredients',
+            'rec_id' => $recId,
+        ));
+        $response = json_decode($jsonResponse);
+
+        $this->removeIngredient($ingrId1);
+        $this->removeIngredient($ingrId2);
+        $this->removeRecipe($recId);
+        $this->assertTrue($this->isValidJSON($jsonResponse));
+
+        $this->assertCount(2, $response);
+
+        $this->assertTrue(isset($response[0]->name));
+        $this->assertEquals(self::$defaultIngredient["ingr_name"], $response[0]->name);
+        $this->assertTrue(isset($response[1]->name));
+        $this->assertEquals(self::$defaultIngredient["ingr_name"], $response[1]->name);
+
+        $this->assertTrue(isset($response[0]->ri_id));
+        $this->assertEquals($recipeIngredientId1, $response[0]->ri_id);
+        $this->assertTrue(isset($response[1]->ri_id));
+        $this->assertEquals($recipeIngredientId2, $response[1]->ri_id);
+
+        $this->assertTrue(isset($response[0]->i_id));
+        $this->assertEquals($ingrId1, $response[0]->i_id);
+        $this->assertTrue(isset($response[1]->i_id));
+        $this->assertEquals($ingrId2, $response[1]->i_id);
+
+        $this->assertTrue(isset($response[0]->amount));
+        $this->assertEquals("", $response[0]->amount);
+        $this->assertTrue(isset($response[1]->amount));
+        $this->assertEquals("", $response[1]->amount);
+    }
+
 
     /**
      * @test
@@ -285,57 +300,5 @@ class RecipeIngredientsTest extends CustomTestCase
         $this->assertEquals("false", $response3);
     }
 
-    /**
-     * @test
-     */
-    public function getAllIngredientsTest(): void
-    {
-        $ingrId1 = $this->addDefaultIngredient();
-        $customIngredientData = array(
-            'request_name' => 'insert_ingredient',
-            'ingr_name' => 'anotherIngredient'
-        );
-        $ingrId2 = $this->addIngredient($customIngredientData);
-
-        $jsonResponse = $this->simpleRequest(array(
-                'request_name' => 'get_all_ingredients'
-        ));
-        $response = json_decode($jsonResponse);
-
-        $this->assertCount(2, $response);
-
-        $this->assertTrue(isset($response[0]->name));
-        $this->assertEquals(self::$defaultIngredient["ingr_name"], $response[0]->name);
-
-        $this->assertTrue(isset($response[0]->id));
-        $this->assertEquals($ingrId1, $response[0]->id);
-
-        $this->assertTrue(isset($response[1]->name));
-        $this->assertEquals($customIngredientData["ingr_name"], $response[1]->name);
-
-        $this->assertTrue(isset($response[1]->id));
-        $this->assertEquals($ingrId2, $response[1]->id);
-    }
-
-    /**
-     * @test
-     */
-    public function deleteIngredientTest(): void
-    {
-        $ingrId = $this->addDefaultIngredient();
-        $response = $this->simpleRequest(array('request_name' => 'remove_ingredient', "i_id"=>$ingrId));
-        $this->assertEquals("OK", $response);
-
-        $response = $this->simpleRequest(array('request_name' => 'get_ingredient', "i_id"=>$ingrId));
-        $this->assertEquals("false", $response);
-    }
-
-    /**
-     * @test
-     */
-    public function getIngredientsByName(): void
-    {
-        $this->fail("Not implemented, yet.");//TODO
-    }
 
 }

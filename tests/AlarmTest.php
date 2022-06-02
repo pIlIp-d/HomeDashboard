@@ -1,6 +1,14 @@
 <?php
+include_once("CustomTestCase.php");
 
-class AlarmTest
+class AlarmTest extends CustomTestCase
 {
-    //TODO or leave it out
+    /**
+     * @test
+     */
+    public function alarmTestTest(): void
+    {
+        //maybe only test manually (push notifications)
+        $this->fail("not implemented yet.");
+    }
 }

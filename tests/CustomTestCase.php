@@ -18,9 +18,11 @@ class CustomTestCase extends TestCase
         'rec_preparation' => 'This is the Preparation Text'
     );
 
-    function removeRecipe(int $recipeID){
+    function removeRecipe(int $recipeID)
+    {
         $send_data = http_build_query(array("json" => "{\"request_name\":\"remove_recipe\",\"rec_id\":\"$recipeID\"}"));
-        if ( "OK" != $this->getResponse($send_data)){
+        if ("OK" != $this->getResponse($send_data))
+        {
             $this->fail("Removing Recipe $recipeID failed.");
         }
     }
@@ -45,6 +47,59 @@ class CustomTestCase extends TestCase
         return $this->getResponse($send_data);
     }
 
+    protected static array $defaultIngredient = array(
+        'request_name' => 'add_ingredient',
+        'ingr_name' => 'testIngredient'
+    );
+
+    protected function addDefaultIngredient(): int
+    {
+        return $this->simpleRequest(self::$defaultIngredient);
+    }
+
+    protected function addIngredient(array $recipeData): int
+    {
+        return $this->simpleRequest($recipeData);
+    }
+
+    function removeIngredient(int $ingredientID)
+    {
+        $send_data = http_build_query(array("json" => "{\"request_name\":\"remove_ingredient\",\"i_id\":\"$ingredientID\"}"));
+        if ("OK" != $this->getResponse($send_data))
+        {
+            $this->fail("Removing Ingredient $ingredientID failed.");
+        }
+    }
+
+    function removeIngredients(array $ingredientIDs)
+    {
+        $str = "{";
+        foreach ($ingredientIDs as $key => $id)
+        {
+            if ($key === 0)
+                $str .= $id;
+            else
+                $str .= ", " . $id;
+        }
+        $str = "}";
+        $send_data = http_build_query(array("json" => "{\"request_name\":\"remove_ingredient\",\"rec_id\":$str}"));
+        if ("OK" != $this->getResponse($send_data))
+        {
+            $this->fail("Removing Ingredients failed.");
+        }
+    }
+
+    protected function getIngredientsData(int $ingredientId): string
+    {
+        $recipeData = array(
+            'request_name' => 'get_recipe_data',
+            'id' => $ingredientId
+        );
+        $send_data = http_build_query(array("json" => json_encode($recipeData)));
+        return $this->getResponse($send_data);
+    }
+
+
     public static function setUpBeforeClass(): void
     {
         self::$credFile = realpath(__DIR__ . "\..\cred.json");
@@ -59,12 +114,14 @@ class CustomTestCase extends TestCase
         new Initializer(array("username" => "root", "password" => ""), false);
         ob_clean();
     }
+
     public function setUp(): void
     {
         $read_db_name = json_decode(file_get_contents(self::$credFile))->db_cred->db_name;
         if (self::$testDB !== $read_db_name)
             $this->fail("Testing DB needs to be the active DB.");
     }
+
     protected function getResponse($data): string
     {
         $ch = curl_init();
@@ -75,6 +132,7 @@ class CustomTestCase extends TestCase
         curl_close($ch);
         return $server_output;
     }
+
     protected function isValidJSON($jsonString): bool
     {
         if (!empty($jsonString))
