@@ -25,7 +25,7 @@ function request_handling($request_name, $dbcon, $json_decoded)
 
     switch ($request_name)
     {
-        //------------------------------------------------------------------------------
+         //------------------------------------------------------------------------------
         //--------- RECIPE -------------------------------------------------------------
         //------------------------------------------------------------------------------
         //TODO full rename add -> insert
@@ -208,7 +208,8 @@ function request_handling($request_name, $dbcon, $json_decoded)
         //--------------------------------------------------------------------------
         //--------- INGREDIENTS ----------------------------------------------------
         //--------------------------------------------------------------------------
-        case "insert_ingredient":
+        //TODO insert_ingredient -> add_ingredient
+        case "add_ingredient":
             $stmt = $dbcon->prepare("INSERT INTO ingredients (`id`, `name`) VALUES (NULL, :ingr_name)");
             $stmt->bindParam(":ingr_name", $json_decoded->ingr_name);
             $stmt->execute();
@@ -234,15 +235,6 @@ function request_handling($request_name, $dbcon, $json_decoded)
             $stmt->bindParam(":i_id", $json_decoded->i_id);
             $stmt->execute();
             echo json_encode($stmt->fetch());
-            break;
-
-        //TODO replace with proper functionality
-        case "get_ingredients_or_recipes":
-            $filterMode = htmlspecialchars($json_decoded->filtermode);
-            $stmt = $dbcon->prepare("SELECT `id`, `name` FROM `$filterMode` ORDER BY `name`");
-            $stmt->bindParam(":i_id", $json_decoded->i_id);
-            $stmt->execute();
-            echo json_encode($stmt->fetchAll());
             break;
 
         //--------------------------------------------------------------------------
