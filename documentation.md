@@ -2,6 +2,39 @@
 
 Documentation for Architecture, source code and overall devs who want to develop ontop of this project.
 
+# Installation
+
+* clone the repo  
+* change credentials in cred.json and docker-compose.yml
+```
+MYSQL_ROOT_PASSWORD: db_admin_pass
+MYSQL_DATABASE: HomeDashboardDB
+MYSQL_USER: sql
+MYSQL_PASSWORD: your_password
+```
+```
+{
+  "db_cred": {
+    "username": "sql",
+    "password": "your_password",
+    "db_name": "HomeDashboardDB",
+    "db_host": "db"
+  },
+  "message_cred": {
+    "user": "",
+    "api_key": ""
+  }
+}
+```
+
+### Start docker containers
+* `cd project_directory`
+* `sudo docker-compose up &`
+
+### Stop docker containers
+* `sudo docker-compose down`
+
+
 ## **dashboard.php**
 
 GET parameters  
@@ -223,7 +256,8 @@ Sql database credentials and message credentials for PushOver API
   "db_cred": {
     "username": "sql",
     "password": "your_password",
-    "db_name": "database_name"
+    "db_name": "database_name",
+    "db_host": "localhost:6000"
   },
   "message_cred": {
     "user": "",
