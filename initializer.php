@@ -180,8 +180,5 @@ class Initializer{
 ini_set('display_errors', '1');
 
 if (count(get_included_files()) == 1){
-
-    //# enabe mod_rewrite to use htaccess if needed later
-    //exec("chmod +x /var/www/html/HomeDashboard/init.sh && /bin/bash  /var/www/html/HomeDashboard/init.sh");
     new Initializer(array("username"=>"root","password"=>"db_admin_pass"), true);
 }
