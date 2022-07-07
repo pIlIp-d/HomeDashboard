@@ -34,8 +34,12 @@ MYSQL_PASSWORD: your_password
 ### Stop docker containers
 * `sudo docker-compose down`
 
+## Backing Up
 
-## **dashboard.php**
+Only the `mysql` folder needs to be backed up.  
+To reinstall a state just place the mysql folder in the ProjectFolder and start docker-composer.
+
+## dashboard.php
 
 GET parameters  
 
