@@ -180,5 +180,23 @@ class Initializer{
 ini_set('display_errors', '1');
 
 if (count(get_included_files()) == 1){
-    new Initializer(array("username"=>"root","password"=>"db_admin_pass"), true);
+    if (isset($_POST["submit"])) {
+        new Initializer(array("username" => $_POST["username"], "password" => $_POST["password"]), true);
+    }
+    else{
+        echo <<< FORM
+            <!DOCTYPE html>
+            <html>
+                <h1>Create DB tables with admin rights</h1>
+                <form action="./initializer.php" method="POST">
+                    <label for="username">SQL-Admin Username</label><br>
+                    <input type="text" name="username" value="root">
+                    <br>
+                    <label for="password">SQL-Admin Password</label><br>
+                    <input type="text" name="password"><br>
+                    <input type="submit" name="submit" value="Create Tables">
+                </form>
+            </html>
+        FORM;
+    }
 }
