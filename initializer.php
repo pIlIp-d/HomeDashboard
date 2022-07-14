@@ -179,15 +179,13 @@ class Initializer{
 
 ini_set('display_errors', '1');
 
-if (count(get_included_files()) == 1){
-    if (isset($_POST["submit"])) {
-        new Initializer(array("username" => $_POST["username"], "password" => $_POST["password"]), true);
-    }
-    else{
-        echo <<< FORM
+function showForm($errorMessage = ""): void
+{
+    echo <<< FORM
             <!DOCTYPE html>
             <html>
                 <h1>Create DB tables with admin rights</h1>
+                <div style="color:red;">$errorMessage</div>
                 <form action="./initializer.php" method="POST">
                     <label for="username">SQL-Admin Username</label><br>
                     <input type="text" name="username" value="root">
@@ -198,5 +196,19 @@ if (count(get_included_files()) == 1){
                 </form>
             </html>
         FORM;
+
+}
+
+if (count(get_included_files()) == 1){
+    if (isset($_POST["submit"])) {
+        try {
+            new Initializer(array("username" => $_POST["username"], "password" => $_POST["password"]), true);
+        }
+        catch (PDOException){
+            showForm("Wrong Admin/root-credentials or drivers not working. Try again");
+        }
+    }
+    else{
+        showForm();
     }
 }
