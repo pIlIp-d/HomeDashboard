@@ -5,13 +5,16 @@ Documentation for Architecture, source code and overall devs who want to develop
 # Installation
 
 * clone the repo  
-* change credentials in cred.json and docker-compose.yml
+* change credentials in
+
+docker-compose.yml
 ```
 MYSQL_ROOT_PASSWORD: db_admin_pass
 MYSQL_DATABASE: HomeDashboardDB
 MYSQL_USER: sql
 MYSQL_PASSWORD: your_password
 ```
+and in cred.json
 ```
 {
   "db_cred": {
@@ -38,6 +41,9 @@ MYSQL_PASSWORD: your_password
 
 Only the `mysql` folder needs to be backed up.  
 To reinstall a state just place the mysql folder in the ProjectFolder and start docker-composer.
+
+-----
+# Usage
 
 ## dashboard.php
 
@@ -219,7 +225,7 @@ Works for Temperature Humditiy or similar Sensors
 ### Bakingplans
 
 ```json
-{
+[{
   "name": "bakingplan_editor",
   "display_name": "Backplan Bearbeiter",
   "filename": "bakingplan_editor.php",
@@ -230,7 +236,7 @@ Works for Temperature Humditiy or similar Sensors
   "display_name": "Backplan",
   "filename": "bakingplan.php",
   "scrolling": "yes"
-}
+}]
 ```
 [Dependency Database Tables]("#Tables")
 
@@ -361,7 +367,6 @@ overall send a parameter called json that has a json string as value
 |             |        | rec_bakingtime        |         |
 |             |        | rec_bakingtemperature |         |
 |             |        | rec_preparation       |         |
-|             |        |                       |         |
 
 
 
