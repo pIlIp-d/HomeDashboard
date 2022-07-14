@@ -14,7 +14,7 @@ MYSQL_DATABASE: HomeDashboardDB
 MYSQL_USER: sql
 MYSQL_PASSWORD: your_password
 ```
-and in cred.json
+and create a cred.json filled with db_credentials and message_credentials for pushover
 ```
 {
   "db_cred": {
@@ -30,17 +30,28 @@ and in cred.json
 }
 ```
 
-### Start docker containers
+### First start of docker containers
 * `cd project_directory`
-* `sudo docker-compose up &`
+* `sudo docker-compose up`
+* manually install mysql driver(only at first installation)
+  * `sudo docker exec -it webserver-home-dashboard docker-php-ext-install mysqli pdo pdo_mysql`
+  * restart docker-container `sudo docker-compose down && sudo docker-compose up`
+* starts a webserver that can be accessed at localhost:80/HomeDashboard
+* to create default tables, open `localhost:80/HomeDashboard/initializer.php` in a browser and enter the admin credentials once (found in docker-compose and default username is root)
+
+### Simple starting of docker containers
+* `cd project_directory`
+* `sudo docker-compose up`
 
 ### Stop docker containers
+* `cd project_directory`
 * `sudo docker-compose down`
 
 ## Backing Up
 
 Only the `mysql` folder needs to be backed up.  
 To reinstall a state just place the mysql folder in the ProjectFolder and start docker-composer.
+
 
 -----
 # Usage
@@ -372,6 +383,7 @@ overall send a parameter called json that has a json string as value
 
 
 ## Test Execution
+<!-- TODO a script to execute it automatically-->
 * change paths  
 `C:\xampp\php\php.exe C:\xampp\htdocs\HomeDashboard\phpunit.phar --no-configuration --filter DeviceTest --test-suffix DeviceTest.php C:\xampp\htdocs\HomeDashboard\tests --teamcity --cache-result-file=C:\xampp\htdocs\HomeDashboard\.phpunit.result.cache`
 
