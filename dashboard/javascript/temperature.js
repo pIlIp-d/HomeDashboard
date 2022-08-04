@@ -139,7 +139,6 @@ function interval_main_tick(){
 function check_alarm(){
 	set = false;
 	if (alarm_mode && alarm_value != 0){
-		console.log("chekcing");
 		var temp = TACT.innerHTML;
 		if (!isNaN(temp)){
 			if (alarm_value > 0){//top threshold
@@ -246,11 +245,12 @@ function tminmax_changed(id){
 }
 
 /**
-* http request sending and -> to response handling
-* @param request_name used on serverside to create response
-*/
+ * http request sending and -> to response handling
+ * @param request_name used on serverside to create response
+ * @param value
+ */
 function xhttp_send(request_name, value = null){
-	var json_string = "{"
+	let json_string = "{"
 	json_string += "\"request_name\":\"" + request_name + "\",";
 	json_string += "\"device_name\":\"" + SENSOR_ID + "\"";
 	switch(request_name){
@@ -307,7 +307,7 @@ function response_handler(request_name, response){
 }
 
 function temperature_refresh(json_obj){
-	var json_obj = JSON.parse(json_obj);
+	json_obj = JSON.parse(json_obj);
 	// aktuelle Temperatur und Min-Max-Werte anzeigen
 	TACT.innerHTML = json_obj.temp_act;
 	if (!bp_mode){
@@ -322,7 +322,7 @@ function temperature_refresh(json_obj){
 * @param json_response json recipe
 */
 function set_Active_Recipe(json_response){
-	let response = JSON.parse(json_response)[0];
+	let response = JSON.parse(json_response);
 	if (recipe_id != response.id){//recipe changed
 		toggle_bp_mode(true);
 		recipe_changed = true;
@@ -334,6 +334,8 @@ function set_Active_Recipe(json_response){
 	tminmax_set_options(TMIN, 0, temp_max);
 	TMIN.value = temp_min;
 	TMAX.value = temp_max;
+	tminmax_changed("tmin_select");
+	tminmax_changed("tmax_select");
 }
 
 function draw_temp_graph(){
