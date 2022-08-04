@@ -8,7 +8,7 @@ global $json_decoded;
 $json_decoded = json_decode($json_string);
 make_request($json_decoded->request_name, $json_decoded);
 
-function make_request($request_name, $json_decoded)
+function make_request($request_name, $json_decoded): void
 {
     $credentials = json_decode(file_get_contents("cred.json"))->db_cred;
     $username = $credentials->username;
@@ -20,7 +20,7 @@ function make_request($request_name, $json_decoded)
     request_handling($request_name, $dbcon, $json_decoded);
 }
 
-function request_handling($request_name, $dbcon, $json_decoded)
+function request_handling($request_name, $dbcon, $json_decoded): void
 {
 
     switch ($request_name)
