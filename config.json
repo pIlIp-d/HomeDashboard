@@ -4,7 +4,8 @@
       "name": "temperature",
       "device_id":"001",
       "type": "device",
-      "filename": "temperature.php"
+      "filename": "temperature.php",
+      "sizes": ["11","12","24","34","44","54","64","74"]
     },
     {
       "name": "timer",
@@ -89,7 +90,7 @@
           "sensor_id": "001-3"
         },
         {
-          "sensor_name": "wfo_right",
+          "sensor_name": "grill_right",
           "display_name": "Grill Rechts",
           "type":"temp",
           "unit":"°C",
