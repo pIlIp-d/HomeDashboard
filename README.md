@@ -13,8 +13,12 @@ admin/root rights on the server, docker and docker-compose
 
 ## Functionality
 
-Widget System
-=============
+### Browser support
+* developed for safari
+* developed using Chrome
+* not working well with Firefox
+
+### Widget System
 
 The currently available widgets are conifgured in `/conifg.json`.
 You can add your own and the dashboard can load it as an IFrame.

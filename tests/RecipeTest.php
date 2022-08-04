@@ -57,7 +57,7 @@ class RecipeTest extends CustomTestCase
         $this->assertEquals(self::$defaultRecipeData["rec_bakingtemperature"], $recipeData->bakingtemperature);
 
         $this->assertTrue(isset($recipeData->preparation));
-        $this->assertEquals(self::$defaultRecipeData["rec_preparation"], $recipeData->preparation);
+        $this->assertEquals(self::$defaultRecipeData["rec_preparation"], base64_decode($recipeData->preparation));
     }
 
     /**
@@ -98,7 +98,7 @@ class RecipeTest extends CustomTestCase
         $this->assertEquals($updatedRecipeData["rec_bakingtemperature"], $recipeData->bakingtemperature);
 
         $this->assertTrue(isset($recipeData->preparation));
-        $this->assertEquals($updatedRecipeData["rec_preparation"], $recipeData->preparation);
+        $this->assertEquals($updatedRecipeData["rec_preparation"], base64_decode($recipeData->preparation));
     }
 
     /**

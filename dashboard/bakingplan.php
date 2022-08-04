@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="apple-mobile-web-app-capable" content="yes">
     <script src="../javascript/config.js"></script>
 </head>
-<style type="text/css">
+<style>
 	*{
 		margin:0;
 		padding:0;
@@ -18,7 +18,7 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-		font-family: Arial;
+        font-family: Arial, serif;
 		width:100%;
 		height:100%;
 		display: block;
@@ -34,7 +34,7 @@
 		color: #000000;
 		cursor: pointer;
 		text-align: center;
-		font-family: Arial;
+        font-family: Arial, serif;
 		font-size: 1.0rem;
 		height: 1.5rem;
 		width: 100%;
@@ -67,7 +67,7 @@
 		border-collapse: collapse;
 		border-radius: 5px;
 		background-color: #f3f3f3;
-		position: absolute;
+		position: relative;
 		justify-content: center;
 		display:block;
 		height: 3rem;
@@ -114,6 +114,13 @@
 		height: 15px;
 	}
 
+    #bp_name_label{
+        position: fixed;
+        color: black;
+        top 10px;
+        left 10px;
+    }
+
 </style>
 <script src="../libs/jquery-3.6.0.min.js"></script>
 <script src="../javascript/base64.js"></script>
@@ -132,10 +139,10 @@
 
 	?>
 	<div id="preset_id" hidden><?php echo $preset_id; ?></div>
-	<main id="main" class="unselectable">
-		<select class="text_div select" id="bp_name"></select>
+	<div id="main" class="unselectable">
+        <label for="bp_name" id="bp_name_label"></label><select class="text_div select" id="bp_name"></select>
 		<div id='bakingplan_table'></div>
-	</main>
+	</div>
 </body>
 <script type="text/javascript">
 
@@ -261,7 +268,8 @@ function get_recipe_html(id, name, temp, time, active = false){
 
 //listener for bp_select change
 document.querySelector('#bp_name').addEventListener("change", function() {
-	xhttp_send("set_active_bakingplan",BP_SELECT.value);
+    document.getElementById("bp_name_label").innerHTML = BP_SELECT.value;
+    xhttp_send("set_active_bakingplan",BP_SELECT.value);
 	init();
 });
 
