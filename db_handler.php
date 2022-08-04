@@ -414,8 +414,10 @@ function request_handling($request_name, $dbcon, $json_decoded): void
             $stmt = $dbcon->prepare("UPDATE `presets` SET name = :preset_name, grid_object_v = :grid_object_v,  grid_object_h = :grid_object_h WHERE presets.id = :preset_id;");
             $stmt->bindParam(":preset_id", $json_decoded->preset_id);
             $stmt->bindParam(":preset_name", $json_decoded->preset_name);
-            $stmt->bindParam(":grid_object_v", $json_decoded->grid_object_v);
-            $stmt->bindParam(":grid_object_h", $json_decoded->grid_object_h);
+            $encodedGridObjectV = json_encode($json_decoded->grid_object_v);
+            $stmt->bindParam(":grid_object_v", $encodedGridObjectV);
+            $encodedGridObjectH = json_encode($json_decoded->grid_object_h);
+            $stmt->bindParam(":grid_object_h", $encodedGridObjectH);
             $stmt->execute();
             echo "OK";
             break;
@@ -429,7 +431,6 @@ function request_handling($request_name, $dbcon, $json_decoded): void
             $stmt->execute();
             echo "OK";
             break;
-
 
         //--------------------------------------------------------------------------
         //--------- DEVICES --------------------------------------------------------
