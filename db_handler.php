@@ -20,6 +20,12 @@ function make_request($request_name, $json_decoded): void
     request_handling($request_name, $dbcon, $json_decoded);
 }
 
+function isValidBase64(string $str): bool
+{
+    $checkValueShouldBeEmpty = base64_decode($str, true);
+    return !$checkValueShouldBeEmpty;
+}
+
 function request_handling($request_name, $dbcon, $json_decoded): void
 {
 
@@ -34,7 +40,14 @@ function request_handling($request_name, $dbcon, $json_decoded): void
             $stmt->bindParam(":name", $json_decoded->rec_name);
             $stmt->bindParam(":bakingtime", $json_decoded->rec_bakingtime);
             $stmt->bindParam(":bakingtemperature", $json_decoded->rec_bakingtemperature);
-            $stmt->bindParam(":preparation", $json_decoded->rec_preparation);
+            $preparation = $json_decoded->rec_preparation;
+            if (isValidBase64($preparation))
+                $stmt->bindParam(":preparation", $preparation);
+            else{
+                $b64preparation = base64_encode($preparation);
+                $stmt->bindParam(":preparation", $b64preparation);
+            }
+
             $stmt->execute();
             echo $dbcon->lastInsertId();
             break;
@@ -52,7 +65,14 @@ function request_handling($request_name, $dbcon, $json_decoded): void
             $stmt->bindParam(":name", $json_decoded->rec_name);
             $stmt->bindParam(":bakingtime", $json_decoded->rec_bakingtime);
             $stmt->bindParam(":bakingtemperature", $json_decoded->rec_bakingtemperature);
-            $stmt->bindParam(":preparation", $json_decoded->rec_preparation);
+            $preparation = $json_decoded->rec_preparation;
+            if (isValidBase64($preparation))
+                $stmt->bindParam(":preparation", $preparation);
+            else{
+                $b64preparation = base64_encode($preparation);
+                $stmt->bindParam(":preparation", $b64preparation);
+            }
+
             $stmt->execute();
             echo "OK";
             break;
