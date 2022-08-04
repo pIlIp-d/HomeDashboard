@@ -2,7 +2,50 @@
 
 Documentation for Architecture, source code and overall devs who want to develop ontop of this project.
 
-## **dashboard.php**
+# Installation
+
+* clone the repo  
+* change credentials in
+
+docker-compose.yml
+```
+MYSQL_ROOT_PASSWORD: db_admin_pass
+MYSQL_DATABASE: HomeDashboardDB
+MYSQL_USER: sql
+MYSQL_PASSWORD: your_password
+```
+and in cred.json
+```
+{
+  "db_cred": {
+    "username": "sql",
+    "password": "your_password",
+    "db_name": "HomeDashboardDB",
+    "db_host": "db"
+  },
+  "message_cred": {
+    "user": "",
+    "api_key": ""
+  }
+}
+```
+
+### Start docker containers
+* `cd project_directory`
+* `sudo docker-compose up &`
+
+### Stop docker containers
+* `sudo docker-compose down`
+
+## Backing Up
+
+Only the `mysql` folder needs to be backed up.  
+To reinstall a state just place the mysql folder in the ProjectFolder and start docker-composer.
+
+-----
+# Usage
+
+## dashboard.php
 
 GET parameters  
 
@@ -182,7 +225,7 @@ Works for Temperature Humditiy or similar Sensors
 ### Bakingplans
 
 ```json
-{
+[{
   "name": "bakingplan_editor",
   "display_name": "Backplan Bearbeiter",
   "filename": "bakingplan_editor.php",
@@ -193,7 +236,7 @@ Works for Temperature Humditiy or similar Sensors
   "display_name": "Backplan",
   "filename": "bakingplan.php",
   "scrolling": "yes"
-}
+}]
 ```
 [Dependency Database Tables]("#Tables")
 
@@ -223,7 +266,8 @@ Sql database credentials and message credentials for PushOver API
   "db_cred": {
     "username": "sql",
     "password": "your_password",
-    "db_name": "database_name"
+    "db_name": "database_name",
+    "db_host": "localhost:6000"
   },
   "message_cred": {
     "user": "",
@@ -323,7 +367,6 @@ overall send a parameter called json that has a json string as value
 |             |        | rec_bakingtime        |         |
 |             |        | rec_bakingtemperature |         |
 |             |        | rec_preparation       |         |
-|             |        |                       |         |
 
 
 

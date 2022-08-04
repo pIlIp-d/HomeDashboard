@@ -1,12 +1,15 @@
 <?php
 
-//REQUIRES - fully setup of db and cred.json
-// GET-Variable einlesen
-$json_string = $_GET["json"];
 
-global $json_decoded;
-$json_decoded = json_decode($json_string);
-make_request($json_decoded->request_name, $json_decoded);
+if (count(get_included_files()) == 1) {
+    //REQUIRES - fully setup of db and cred.json
+    // GET-Variable einlesen
+    $json_string = $_GET["json"];
+
+    global $json_decoded;
+    $json_decoded = json_decode($json_string);
+    make_request($json_decoded->request_name, $json_decoded);
+}
 
 function make_request($request_name, $json_decoded): void
 {

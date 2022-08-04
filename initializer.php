@@ -13,13 +13,7 @@ class Initializer{
         $this->credentials = $this->getCredentials();
         $conn = $this->connect_database(
             $this->credentials->db_cred->db_host,
-            $highPrivUser["username"],
-            $highPrivUser["password"]
-        );
-        $conn = $this->create_database(
-            $conn,
             $this->credentials->db_cred->db_name,
-            $this->credentials->db_cred->db_host,
             $highPrivUser["username"],
             $highPrivUser["password"]
         );
@@ -29,7 +23,6 @@ class Initializer{
         $this->clear_tables($conn, $tables);
         if ($createExamples)
             $this->create_examples();
-        $conn->close();
     }
     private function getCredentials(): stdClass
     {
@@ -46,8 +39,6 @@ class Initializer{
         }
         return json_decode(file_get_contents($credPath));
     }
-
-
     private function create_examples(): void
     {
         $json_strings = array("{\"request_name\":\"add_bakingplan\",\"bp_name\":\"Beispiel Backplan\"}", "{\"request_name\":\"set_active_bakingplan\",\"bp_id\":\"1\"}",
@@ -73,47 +64,30 @@ class Initializer{
 
         );
         ob_start();//echo/output buffer -> buffers echos of db_handler.php
+        include_once "db_handler.php";
         foreach ($json_strings as $key => $json)
         {
-
-            $send_data = http_build_query(array("json" => json_encode($json)));
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://localhost/HomeDashboard/db_handler.php" . $send_data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $server_output = curl_exec($ch);
-            curl_close($ch);
+            $json_decoded = json_decode($json);
+            make_request($json_decoded->request_name, $json_decoded);
         }
+        echo "<br>";
         echo str_replace(ob_get_clean(), "OK", "");
         echo "<br>created example data";
     }
-    private function create_database(mysqli $conn, string $dbname, string $servername, string $user, string $password): mysqli
+
+    private function connect_database(string $servername, string $dbname, string $username, string $password): PDO
     {
-        $sql = "CREATE DATABASE $dbname";
-        if ($conn->query($sql) === TRUE)//=== to exclude error when no bool is returned
-            echo "<br>Database '$dbname' created successfully";
-        else
-            echo "<br>Error creating database: <br>" . $conn->error;
-        return new mysqli($servername, $user, $password, $dbname);
+        return new PDO("mysql:host=".getenv("MYSQL_HOST").";dbname=$dbname;port=3306", $username, $password);
     }
 
-    private function connect_database(string $servername, string $user, string $password): mysqli
-    {
-        $conn = new mysqli($servername, $user, $password);
-        if ($conn->connect_error)//check connection
-            die("Connection failed: " . $conn->connect_error);
-        return $conn;
-    }
-
-    private function create_tables(mysqli $conn, array $table_list): void
+    private function create_tables(PDO $conn, array $table_list): void
     {
         foreach ($table_list as $key => $table)
             $this->create_table($conn, $table);
     }
 
-    private function create_table(mysqli $conn, string $table_name): void
+    private function create_table(PDO $conn, string $table_name): void
     {
-        echo $table_name;
         $sql = "";
         switch ($table_name)
         {
@@ -145,7 +119,7 @@ class Initializer{
                 preparation TEXT NOT NULL,
                 bakingtime INT NOT NULL,
                 bakingtemperature INT NOT NULL,
-                active BIT NOT NULL
+                active BIT NOT NULL DEFAULT 0
             )";
                 break;
             case "recipes_ingredients":
@@ -168,11 +142,11 @@ class Initializer{
                 $sql = "CREATE TABLE devices(
                 id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(50) NOT NULL,
-                temp_act INT NOT NULL,
-                temp_min INT NOT NULL,
-                temp_max INT NOT NULL,
-                timecode long NOT NULL,
-                timestring VARCHAR(20) NOT NULL
+                temp_act INT NOT NULL DEFAULT 0,
+                temp_min INT NOT NULL DEFAULT 0,
+                temp_max INT NOT NULL DEFAULT 0,
+                timecode long NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                timestring VARCHAR(20) NOT NULL DEFAULT CURRENT_TIMESTAMP
             )";
                 break;
             case "timers":
@@ -184,22 +158,27 @@ class Initializer{
             )";
                 break;
         }
-        if (mysqli_query($conn, $sql))
-            echo "<br>Table '$table_name' created successfully.";
-        else
-        {
-            if (mysqli_error($conn) == "OK")
-                echo "<br>" . $table_name . "was created successfully.";
-            else
-                echo "<br>" . mysqli_error($conn);
+        $stmt = $conn->prepare($sql);
+            try {
+                $stmt->execute();
+                echo "<br> created: ".$table_name;
+            }catch(PDOException $e){
+                echo "Something went wrong. check if the base tables already exist.<br>";
+                echo $e->getMessage();
+            }
         }
-    }
 
-    private function clear_tables(mysqli $conn, array $tables): void
+    private function clear_tables(PDO $conn, array $tables): void
     {
         foreach ($tables as $table){
-            $sql = "TRUNCATE TABLE $table";
-            $conn->query($sql);
+            $stmt = $conn->prepare("TRUNCATE TABLE $table;");
+            $stmt->execute();
         }
     }
+}
+
+ini_set('display_errors', '1');
+
+if (count(get_included_files()) == 1){
+    new Initializer(array("username"=>"root","password"=>"db_admin_pass"), true);
 }
