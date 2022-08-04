@@ -291,7 +291,8 @@ function xhttp_send(request_name, value = null){
 	xhttp.open("GET", DB_URL + "?json=" + json_string, false);
 	xhttp.send();
 	response_handler(request_name, response);
-
+	if (request_name === "send_alarm")
+		window.alert(value);
 }
 
 function response_handler(request_name, response){
