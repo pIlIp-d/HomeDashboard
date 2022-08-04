@@ -2,14 +2,10 @@
 
 ini_set("display_erros", 1);
 
-//TODO UI
-
-//TODO cleanup / drop / truncate all tables if exist, for testing properly
-
 class Initializer{
     private stdClass $credentials;
 
-    public function __construct(array $highPrivUser, bool $createExamples = true){
+    public function __construct(array $highPrivUser, bool $createExamples = true, bool $deleteCurrentEntries = false){
         $this->credentials = $this->getCredentials();
         $conn = $this->connect_database(
             $this->credentials->db_cred->db_host,
@@ -20,7 +16,8 @@ class Initializer{
 
         $tables = array("bakingplans", "bakingplans_recipes", "ingredients", "recipes", "recipes_ingredients", "presets", "devices", "timers");
         $this->create_tables($conn, $tables);
-        $this->clear_tables($conn, $tables);
+        if ($deleteCurrentEntries)
+            $this->clear_tables($conn, $tables);
         if ($createExamples)
             $this->create_examples();
     }
@@ -192,6 +189,10 @@ function showForm($errorMessage = ""): void
                     <br>
                     <label for="password">SQL-Admin Password</label><br>
                     <input type="text" name="password"><br>
+                    <label for="delete_entries">Delete all current entries.</label>
+                    <input type="checkbox" name="delete_entries" value="true"><br>
+                    <label for="create_entries">Create Example entries</label>
+                    <input type="checkbox" name="create_entries" value="true"><br><br>
                     <input type="submit" name="submit" value="Create Tables">
                 </form>
             </html>
@@ -202,7 +203,7 @@ function showForm($errorMessage = ""): void
 if (count(get_included_files()) == 1){
     if (isset($_POST["submit"])) {
         try {
-            new Initializer(array("username" => $_POST["username"], "password" => $_POST["password"]), true);
+            new Initializer(array("username" => $_POST["username"], "password" => $_POST["password"]), $_POST["create_entries"] ?? false, $_POST["delete_entries"] ?? false);
         }
         catch (PDOException){
             showForm("Wrong Admin/root-credentials or drivers not working. Try again");
