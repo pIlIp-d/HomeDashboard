@@ -4,6 +4,8 @@ include_once(__DIR__ . "/../initializer.php");
 
 use PHPUnit\Framework\TestCase;
 
+# TODO remove credFile and find a better solution via environment variables
+
 class CustomTestCase extends TestCase
 {
     protected static string $testDB = "testDB";
