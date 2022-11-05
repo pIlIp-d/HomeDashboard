@@ -382,4 +382,6 @@ overall send a parameter called json that has a json string as value
 ## Test Execution
 I used PhpStorm to execute execute phpunit.phar tests.  
 Maybe I work on a version, that you can execute by running a script later.
+
+(phpunit.phar was placed into ./site/tests and run through phpStorm with php container as interpreter)
 <!-- TODO a script to execute it automatically-->
