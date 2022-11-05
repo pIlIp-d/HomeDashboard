@@ -11,18 +11,18 @@ if (count(get_included_files()) == 1) {
     make_request($json_decoded->request_name, $json_decoded);
 }
 
-function connect_database(string $username, string $password): PDO
+function connect_database(string $username, string $password, string $dbname, string $host = "mariadbLocal"): PDO
 {
     return new PDO(
-        "mysql:host=mariadbLocal:" . getenv("DB_PORT")
-        . ";dbname=" . getenv("MYSQL_DATABASE"),
+        "mysql:host=".$host.":" . getenv("DB_PORT")
+        . ";dbname=" . $dbname,
         $username, $password
     );
 }
 
 function make_request($request_name, $json_decoded): void
 {
-    $dbcon = connect_database(getenv("MYSQL_USER"), getenv("MYSQL_PASSWORD"));
+    $dbcon = connect_database(getenv("MYSQL_USER"), getenv("MYSQL_PASSWORD"), getenv("MYSQL_DATABASE"));
     request_handling($request_name, $dbcon, $json_decoded);
 }
 
@@ -34,7 +34,6 @@ function isValidBase64(string $str): bool
 
 function request_handling($request_name, $dbcon, $json_decoded): void
 {
-
     switch ($request_name) {
         //------------------------------------------------------------------------------
         //--------- RECIPE -------------------------------------------------------------

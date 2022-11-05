@@ -2,18 +2,21 @@
 
 ini_set("display_erros", 1);
 
-class Initializer{
-
-    public function __construct(array $highPrivUser, bool $createExamples = true, bool $deleteCurrentEntries = false){
+class Initializer
+{
+    public function __construct(array $highPrivUser, string $dbname, bool $createExamples = true, bool $deleteCurrentEntries = false)
+    {
         include_once "db_handler.php";
         $conn = connect_database(
             $highPrivUser["username"],
-            $highPrivUser["password"]
+            $highPrivUser["password"],
+            $dbname
         );
         $tables = array("bakingplans", "bakingplans_recipes", "ingredients", "recipes", "recipes_ingredients", "presets", "devices", "timers");
-
+        $this->create_tables($conn, $tables);
         if ($deleteCurrentEntries)
             $this->clear_tables($conn, $tables);
+
         if ($createExamples)
             $this->create_examples();
     }
@@ -43,8 +46,7 @@ class Initializer{
 
         );
         ob_start();//echo/output buffer -> buffers echos of db_handler.php
-        foreach ($json_strings as $key => $json)
-        {
+        foreach ($json_strings as $key => $json) {
             $json_decoded = json_decode($json);
             make_request($json_decoded->request_name, $json_decoded);
         }
@@ -62,8 +64,7 @@ class Initializer{
     private function create_table(PDO $conn, string $table_name): void
     {
         $sql = "";
-        switch ($table_name)
-        {
+        switch ($table_name) {
             case "bakingplans":
                 $sql = "CREATE TABLE bakingplans(
                 id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -132,18 +133,18 @@ class Initializer{
                 break;
         }
         $stmt = $conn->prepare($sql);
-            try {
-                $stmt->execute();
-                echo "<br> created: ".$table_name;
-            }catch(PDOException $e){
-                echo "Something went wrong. check if the base tables already exist.<br>";
-                echo $e->getMessage();
-            }
+        try {
+            $stmt->execute();
+            echo "<br> created: " . $table_name;
+        } catch (PDOException $e) {
+            echo "Something went wrong. check if the base tables already exist.<br>";
+            echo $e->getMessage();
         }
+    }
 
     private function clear_tables(PDO $conn, array $tables): void
     {
-        foreach ($tables as $table){
+        foreach ($tables as $table) {
             $stmt = $conn->prepare("TRUNCATE TABLE $table;");
             $stmt->execute();
             echo "deleted $table.<br>";
@@ -177,17 +178,20 @@ function showForm($errorMessage = ""): void
         FORM;
 }
 
-if (count(get_included_files()) == 1){
+if (count(get_included_files()) == 1) {
     if (isset($_POST["submit"])) {
         try {
-            new Initializer(array("username" => $_POST["username"], "password" => $_POST["password"]), $_POST["create_entries"] ?? false, $_POST["delete_entries"] ?? false);
-        }
-        catch (PDOException $e){
+            new Initializer(
+                array("username" => $_POST["username"], "password" => $_POST["password"]),
+                getenv("MYSQL_DATABASE"),
+                $_POST["create_entries"] ?? false,
+                $_POST["delete_entries"] ?? false
+            );
+        } catch (PDOException $e) {
             echo $e;
             showForm("Wrong Admin/root-credentials or drivers not working/ PDOException. Try again");
         }
-    }
-    else{
+    } else {
         showForm();
     }
 }
