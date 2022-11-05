@@ -126,8 +126,8 @@ class PresetTest extends CustomTestCase
         $response = json_decode($jsonResponse);
         $this->assertEquals($presetId, $response->id);
         $this->assertEquals($presetData["preset_name"], $response->name);
-        $this->assertEquals($presetData["grid_object_v"], json_encode($response->grid_object_v));
-        $this->assertEquals($presetData["grid_object_h"], json_encode($response->grid_object_h));
+        $this->assertEquals($presetData["grid_object_v"], $response->grid_object_v);
+        $this->assertEquals($presetData["grid_object_h"], $response->grid_object_h);
     }
 
 }
