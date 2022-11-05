@@ -4,52 +4,51 @@ Documentation for Architecture, source code and overall devs who want to develop
 
 # Installation
 
-* clone the repo  
-* change credentials in
+1. clone the repo  
+2. change credentials in `.env` file
 
-docker-compose.yml
+```env
+# mysql credentials
+MYSQL_ROOT_PASSWORD=root_password
+MYSQL_USER=db_user
+MYSQL_PASSWORD=db_user_pass
+
+# pushover config
+PUSHOVER_USER=your_user_token
+PUSHOVER_API_KEY=your_api_token
 ```
-MYSQL_ROOT_PASSWORD: db_admin_pass
-MYSQL_DATABASE: HomeDashboardDB
-MYSQL_USER: sql
-MYSQL_PASSWORD: your_password
-```
-and create a cred.json filled with db_credentials and message_credentials for pushover
-```
-{
-  "db_cred": {
-    "username": "sql",
-    "password": "your_password",
-    "db_name": "HomeDashboardDB",
-    "db_host": "db"
-  },
-  "message_cred": {
-    "user": "",
-    "api_key": ""
-  }
-}
+and change the webserver port inside `.env` if you want 
+```env
+# webserver - nginx port
+NGINX_PORT=8080
 ```
 
-### First start of docker containers
-* `cd project_directory`
-* `sudo docker-compose up`
-* manually install mysql driver(only at first installation)
-  * `sudo docker exec -it webserver-home-dashboard docker-php-ext-install mysqli pdo pdo_mysql`
-  * restart docker-container `sudo docker-compose down && sudo docker-compose up`
-* starts a webserver that can be accessed at localhost:80/HomeDashboard
-* to create default tables, open `localhost:80/HomeDashboard/initializer.php` in a browser and enter the admin credentials once (found in docker-compose and default username is root)
+## Start of the container
+1. `cd project_directory`
+2. start a webserver that can be accessed at localhost:${NGINX_PORT}/HomeDashboard `docker-compose up` or as daemon with `docker-compose up -d`
+3. create default tables, by opening `localhost:${NGINX_PORT}/HomeDashboard/initializer.php` in a browser
+and enter the admin credentials once from `.env`
 
 ### Simple starting of docker containers
 * `cd project_directory`
-* `sudo docker-compose up`
+* `docker-compose up -d`
 
 ### Stop docker containers
 * `cd project_directory`
+* `sudo docker-compose stop`
+
+### Uninstall docker containers
+* `cd project_directory`
 * `sudo docker-compose down`
+
+## Note
+the changes in mysql/mariadb container only apply on the creation of the container.  
+User don't change after restart of the container. -> you need to remove the folder,  
+if you want new user credentials or change them manually inside the container.  
 
 ## Backing Up
 
-Only the `mysql` folder needs to be backed up.  
+Only the `mysql` folder and the config.json file need to be backed up.  
 To reinstall a state just place the mysql folder in the ProjectFolder and start docker-composer.
 
 
@@ -380,12 +379,7 @@ overall send a parameter called json that has a json string as value
 |             |        | rec_preparation       |         |
 
 
-
-
 ## Test Execution
+I used PhpStorm to execute execute phpunit.phar tests.  
+Maybe I work on a version, that you can execute by running a script later.
 <!-- TODO a script to execute it automatically-->
-* change paths  
-`C:\xampp\php\php.exe C:\xampp\htdocs\HomeDashboard\phpunit.phar --no-configuration --filter DeviceTest --test-suffix DeviceTest.php C:\xampp\htdocs\HomeDashboard\tests --teamcity --cache-result-file=C:\xampp\htdocs\HomeDashboard\.phpunit.result.cache`
-
-
-

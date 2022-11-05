@@ -28,7 +28,7 @@ services:
     image: nginx:latest
     container_name: nginx_latest
     ports:
-      - "8080:80"
+      - "${NGINX_PORT}:80"
     volumes:
       - ./site:/var/www/html
       - ./dockerFiles/default.conf:/etc/nginx/conf.d/default.conf
