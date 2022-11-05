@@ -5,16 +5,20 @@ Thanks to Michael Oesterreich for letting me contribute to his project.
 He started the project and implemented the MySQL, the first php json handler, the recipe, bakingplan and odk_wfo.php.
 The Dashboard was his idea and he figured out how to use the CSS grid. The sensor and microcontroller program was coded by him as well.
 
+**See more in** [documentation.md]("./documentation.md")
 
 ### Required
 
-Webserver, MySQL, python3(for Mail export)
-I used XAMPP.
+admin/root rights on the server, docker and docker-compose
 
 ## Functionality
 
-Widget System
-=============
+### Browser support
+* developed for safari
+* developed using Chrome
+* not working well with Firefox
+
+### Widget System
 
 The currently available widgets are conifgured in `/conifg.json`.
 You can add your own and the dashboard can load it as an IFrame.

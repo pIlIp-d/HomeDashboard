@@ -1,0 +1,23 @@
+body{
+	width:100%;
+}
+
+.main{
+	position: relative;
+	left: 10px;
+	transform: 100%;
+	font-family: Arial;
+}
+.rec_bakingtime{
+	font-size: 1.2rem;
+}
+ul{
+	width: 425px;
+}
+.rec_bakingtemperature{
+	font-size: 1.2rem;
+}
+.main-print{
+	width:100%!important;
+	font-size:2vw!important;
+}

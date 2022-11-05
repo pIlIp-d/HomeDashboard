@@ -1,0 +1,71 @@
+version: '3.8'
+
+networks:
+  LEMP:
+
+services:
+  php:
+    container_name: php
+    build:
+      context: ./dockerFiles
+      dockerfile: webserver.Dockerfile
+    volumes:
+      - ./site:/var/www/html
+    ports:
+      - "9000:9000"
+    environment:
+      - DB_PORT=${MYSQL_TCP_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    depends_on:
+      - mariadbLocal
+    networks:
+      - LEMP
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_latest
+    ports:
+      - "${NGINX_PORT}:80"
+    volumes:
+      - ./site:/var/www/html
+      - ./dockerFiles/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mariadbLocal
+    networks:
+      - LEMP
+
+  mariadbLocal:
+    image: mariadb:latest
+    container_name: mariadbLocal
+    restart: on-failure
+    environment:
+      - MYSQL_PWD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    ports:
+      - "${MYSQL_TCP_PORT}:3306"
+    volumes:
+      - ${MYSQL_FOLDER}:/var/lib/mysql
+    networks:
+      - LEMP
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    depends_on:
+      - mariadbLocal
+    restart: on-failure
+    environment:
+      PMA_HOST: mariadbLocal
+      PMA_ARBITRARY: 1
+      PMA_PORT: ${MYSQL_TCP_PORT}
+    ports:
+      - "9550:80"
+    networks:
+      - LEMP

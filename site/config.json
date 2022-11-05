@@ -1,0 +1,144 @@
+{
+  "widget": [
+    {
+      "name": "temperature",
+      "device_id":"001",
+      "type": "device",
+      "filename": "temperature.php",
+      "sizes": ["11","12","24","34","44","54","64","74"]
+    },
+    {
+      "name": "timer",
+      "display_name": "Timer",
+      "filename": "timer.php",
+      "sizes": ["12","13","14","24","34"]
+    },
+    {
+      "name": "recipes",
+      "display_name": "Rezepte",
+      "filename": "recipes.html",
+      "scrolling": "yes"
+    },
+    {
+      "name": "notes",
+      "attributes": "yes",
+      "display_name": "Notizen",
+      "filename": "",
+      "type": "inline-editor"
+    },
+    {
+      "name": "website",
+      "display_name": "Website",
+      "type":"url",
+      "filename": "https://www.wetter.de/widget/heute/u0y12g/true/"
+    },
+    {
+      "name": "bakingplan_editor",
+      "display_name": "Backplan Bearbeiter",
+      "filename": "bakingplan_editor.php",
+      "scrolling": "yes"
+    },
+    {
+      "name": "bakingplan",
+      "display_name": "Backplan",
+      "filename": "bakingplan.php",
+      "scrolling": "yes"
+    },
+    {
+      "name": "toggle_button",
+      "display_name": "Toggle",
+      "filename": "toggle_button.php"
+    },
+    {
+      "name": "click_button",
+      "display_name": "Button",
+      "filename": "click_button.php",
+      "sizes": ["11","44"]
+  },
+  {
+      "name":"notes",
+      "display_name":"Notizen",
+      "filename":"notes.php"
+  }
+  ],
+  "sizes": ["11","12","13","14","24","34","44","54","64","74"],
+  "devices": [
+    {
+      "device_name": "odk",
+      "display_name": "Outdoor Kitchen",
+      "device_id": "001",
+      "sensors": [
+        {
+          "sensor_name": "wfo_top",
+          "display_name": "Backofen Oben",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "001-1"
+        },
+        {
+          "sensor_name": "wfo_bottom",
+          "display_name": "Backofen Unten",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "001-2"
+        },
+        {
+          "sensor_name": "grill_left",
+          "display_name": "Grill links",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "001-3"
+        },
+        {
+          "sensor_name": "grill_right",
+          "display_name": "Grill Rechts",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "001-4"
+        },
+        {
+          "sensor_name": "meat",
+          "display_name": "Fleisch",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "001-5"
+        }
+      ]
+    },
+    {
+      "device_name": "pond",
+      "display_name": "Cleos Reich",
+      "device_id": "002",
+      "sensors": [
+        {
+          "sensor_name": "temp_water",
+          "display_name": "Wassertemperatur",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "002-1"
+        },
+        {
+          "sensor_name": "temp_air",
+          "display_name": "Lufttemperatur",
+          "type":"temp",
+          "unit":"°C",
+          "sensor_id": "002-2"
+        },
+        {
+          "sensor_name": "humidity",
+          "display_name": "Luftfeuchtigkeit",
+          "type":"humidity",
+          "unit":"%",
+          "sensor_id": "002-3"
+        },
+        {
+          "sensor_name": "pressure",
+          "display_name": "Luftdruck",
+          "unit":"??",
+          "type":"pressure",
+          "sensor_id": "002-4"
+        }
+      ]
+    }
+  ]
+}

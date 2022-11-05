@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="style/recipes.css">
+  <script src="../javascript/config.js"></script>
+</head>
+<body>
+  <!-- buttons -->
+  <div class="nav" id="nav">
+    <img src="/HomeDashboard/images/arrow_up.svg" id="last_rec" onclick="last_recipe();">
+    <img src="/HomeDashboard/images/arrow_up.svg" id="next_rec" onclick="next_recipe();">
+    <a href="/HomeDashboard/odk_recipies.php">
+    <img src="/HomeDashboard/images/sym_pencil.svg" id="config"></a>
+  </div>
+  <!-- content -->
+  <div class="main" id="main"></div>
+  <div id="hidden_canvas"></div>
+  <!--share-->
+  <div class="share-container">
+    <img src="/HomeDashboard/images/share_bold.svg" id="share_button" onclick="share_menu();">
+    <div id="share_table">
+      <span class="table_item" id="share_1" onclick='exportpdf("download_pdf");'>Download PDF</span>
+      <span class="table_item" id="share_2" onclick='exportpdf("print_pdf");'>Print PDF</span>
+      <span class="table_item" id="share_3" onclick='exportpdf("send_mail");'>Send via Mail</span>
+    </div>
+  </div>
+</body>
+<script src="../javascript/base64.js"></script>
+<script src="javascript/recipes.js"></script>
+</html>
