@@ -167,7 +167,7 @@ function showForm($errorMessage = ""): void
                     <input type="text" name="username" value="root">
                     <br>
                     <label for="password">SQL-Admin Password</label><br>
-                    <input type="text" name="password"><br>
+                    <input type="password" name="password"><br>
                     <label for="delete_entries">Delete all current entries.</label>
                     <input type="checkbox" name="delete_entries" value="true"><br>
                     <label for="create_entries">Create Example entries</label>
