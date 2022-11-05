@@ -1,8 +1,0 @@
-DirectorySlash On
-Options +Indexes
-<IfModule mod_rewrite.c>
-
-    RewriteEngine On
-    RewriteRule .*mysql 500
-
-</IfModule>
