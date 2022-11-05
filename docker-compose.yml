@@ -51,7 +51,7 @@ services:
     ports:
       - "${MYSQL_TCP_PORT}:3306"
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ${MYSQL_FOLDER}:/var/lib/mysql
     networks:
       - LEMP
 
