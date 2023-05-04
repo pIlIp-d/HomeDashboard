@@ -18,7 +18,7 @@
     <!-- iframe content -->
 	<div class="container" id="container"></div>
     <!-- Slide-over / Settings -->
-	<div class="settings-menu open" id="settings-menu">
+	<div class="settings-menu" id="settings-menu">
         <div class="button-group">
             <input type="button" class="button material-element material-button material-left" id="button_back" onclick="click_sidebar('button');" value=" Back ">
             <input type="button" class="button material-element material-button material-center" id="add_button" onclick="DASHBOARD.grid.add_element()" value=" Add ">
