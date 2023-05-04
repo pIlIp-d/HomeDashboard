@@ -29,7 +29,7 @@ function clicked(){
 	document.getElementById("button").src = "../images/btn_unselected.svg";
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function(){};
-	xhttp.open("GET", location.host +"/HomeDashboard/php_handler/"+ document.getElementById("name").innerHTML +"_handler.php?value='click'", false);
+	xhttp.open("GET", location.host +"/php_handler/"+ document.getElementById("name").innerHTML +"_handler.php?value='click'", false);
 	xhttp.send();
 }
 

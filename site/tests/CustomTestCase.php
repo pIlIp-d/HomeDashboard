@@ -99,7 +99,7 @@ class CustomTestCase extends TestCase
     public static function setUpBeforeClass(): void
     {
         new Initializer(
-            array("username" => "db_user", "password" => "db_user_pass"),
+            array("username" => getenv("MYSQL_USER"), "password" => getenv("MYSQL_PASSWORD")),
             CustomTestCase::$testDB, false, true
         );
     }
@@ -109,7 +109,6 @@ class CustomTestCase extends TestCase
         if (CustomTestCase::$testDB != getenv("MYSQL_DATABASE")) {
             $this->fail("Test environment is not active. (uncomment it in .env file)");
         }
-
     }
 
     protected function getResponse($data): string

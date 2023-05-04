@@ -52,12 +52,12 @@
 			<option value='null'>- select alarm -</option>
 		</select>
 		<div id="header_symbol">
-			<img id="alarm_mode" src="/HomeDashboard/images/bell-slash.svg" alt="bell-slash" onclick='toggle_alarm_mode()'>
-			<img id="bp_mode" src="/HomeDashboard/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
+			<img id="alarm_mode" src="/images/bell-slash.svg" alt="bell-slash" onclick='toggle_alarm_mode()'>
+			<img id="bp_mode" src="/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
 
 		</div>
-		<div id="tact" onclick="change_view(1); window.parent.postMessage('<?php echo $id; ?> set_show', 'http://'+location.host+'/HomeDashboard/dashboard.php');">
-				<img class="thermo" id="tact_symbol" src="/HomeDashboard/images/sym_thermo_black.svg" width="8%" height="8%" alt="thermometer">
+		<div id="tact" onclick="change_view(1); window.parent.postMessage('<?php echo $id; ?> set_show', 'http://'+location.host+'/dashboard.php');">
+				<img class="thermo" id="tact_symbol" src="/images/sym_thermo_black.svg" width="8%" height="8%" alt="thermometer">
 				<span class="temp" id="tact_value">230</span><sup class="unit" id="tact_unit"><?php echo $unit; ?></sup>
 		</div>
 

@@ -36,14 +36,14 @@
 	<div class="main" id="main" onload="canvg()"></div>
 
 	<!--LICENCE for html2canvas -MIT Licence https://github.com/niklasvh/html2canvas-->
-	<script src="/HomeDashboard/libs/html2canvas/dist/html2canvas.min.js"></script>
+	<script src="/libs/html2canvas/dist/html2canvas.min.js"></script>
 	<!--LICENSE for jspdf -MIT Licence https://github.com/MrRio/jsPDF-->
-	<script src="/HomeDashboard/libs/jspdf/dist/polyfills.umd.js"></script>
-	<!--<script src="/HomeDashboard/libs/jspdf/dist/jspdf.umd.min.js"></script>
+	<script src="/libs/jspdf/dist/polyfills.umd.js"></script>
+	<!--<script src="/libs/jspdf/dist/jspdf.umd.min.js"></script>
 -->
-	<script src="/HomeDashboard/libs/html2canvas/dist/html2canvas.min.js"></script>
-	<script src="/HomeDashboard/libs/jspdf.umd.min.js"></script>
-	<script src="/HomeDashboard/libs/canvg.min.js"></script>
+	<script src="/libs/html2canvas/dist/html2canvas.min.js"></script>
+	<script src="/libs/jspdf.umd.min.js"></script>
+	<script src="/libs/canvg.min.js"></script>
 
 
 	<script src="../javascript/base64.js"></script>

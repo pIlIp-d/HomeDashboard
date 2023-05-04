@@ -12,7 +12,6 @@ function showCheckboxes() {
   }
 }
 
-const HOMESERVER_URL= "/HomeDashboard/";
 const INTERVALL_MAIN_TICKER = 1000;
 
 var TACT_TOP = 250;
@@ -104,7 +103,7 @@ function check_checkboxes(){
 	var payload = "";
 	for (i=0;i<6;i++)
 		payload += widget[i];
-	window.parent.postMessage(payload+' set_widget', '/HomeDashboard/dashboard.php');
+	window.parent.postMessage(payload+' set_widget', '/dashboard.php');
 	document.getElementById("multiselect").innerHTML = "";
 }
 

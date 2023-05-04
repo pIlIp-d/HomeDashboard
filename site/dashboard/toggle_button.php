@@ -26,7 +26,7 @@
 		click_state ^= 1;
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function(){};
-		xhttp.open("GET", location.host +"/HomeDashboard/php_handler/"+ document.getElementById("name").innerHTML +"_handler.php?value="+(click_state^1), false);
+		xhttp.open("GET", location.host +"/php_handler/"+ document.getElementById("name").innerHTML +"_handler.php?value="+(click_state^1), false);
 		xhttp.send();
 	}
 

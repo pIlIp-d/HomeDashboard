@@ -99,8 +99,8 @@ var gv_res = null;
 var gv_bpr_id;
 var gv_order_no;
 
-var btn_unselected_svg = "/HomeDashboard/images/btn_unselected.svg";
-var btn_selected_svg = "/HomeDashboard/images/btn_selected.svg";
+var btn_unselected_svg = "/images/btn_unselected.svg";
+var btn_selected_svg = "/images/btn_selected.svg";
 
 var MENU_MAIN;
 var MENU_ELEMENTS;

@@ -64,8 +64,8 @@ var act_recipe = 4;
   function act_recipe_to_html(){
     var html = "";
     html += "<h2 class=\"rec_name\">"+ base64_2_specialchars(recipe_object[act_recipe].name) +"</h1>";
-    html += "<span class=\"rec_bakingtime\">"+ base64_2_specialchars(recipe_info[0].bakingtime) + "  <img id='clock' src=\"/HomeDashboard/images/clock_black.svg\"></span>";
-    html += "<span class=\"rec_bakingtemperature\">"+ base64_2_specialchars(recipe_info[0].bakingtemperature) +"  <img id='bakingtemperature' src=\"/HomeDashboard/images/sym_thermo_black.svg\"></span><br>";
+    html += "<span class=\"rec_bakingtime\">"+ base64_2_specialchars(recipe_info[0].bakingtime) + "  <img id='clock' src=\"/images/clock_black.svg\"></span>";
+    html += "<span class=\"rec_bakingtemperature\">"+ base64_2_specialchars(recipe_info[0].bakingtemperature) +"  <img id='bakingtemperature' src=\"/images/sym_thermo_black.svg\"></span><br>";
     html += "<table class=\"ingr_table\"><tr><th>Zutaten</th></tr>";
     for (i=0;i < recipe_ingredients.length;i++){
       html += "<tr><td>"+ base64_2_specialchars(recipe_ingredients[i].amount) +"</td>";

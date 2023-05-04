@@ -16,8 +16,8 @@ var gv_res = null;
 var gv_bpr_id;
 var gv_order_no;
 
-var btn_unselected_svg = "/HomeDashboard/images/btn_unselected.svg";
-var btn_selected_svg = "/HomeDashboard/images/btn_selected.svg";
+var btn_unselected_svg = "/images/btn_unselected.svg";
+var btn_selected_svg = "/images/btn_selected.svg";
 
 function sql_get_count(from, where){
 	var xhttp = new XMLHttpRequest();
@@ -1004,7 +1004,7 @@ function dlg_select_bakingplan_close(id){
 				xhttp.open("GET", DB_URL+"?json={\"request_name\":\"set_active_bakingplan\",\"bp_id\":\"" + id[0] + "\"}", false);
 				xhttp.send();
 				//send to dashboard
-				window.parent.postMessage('null reload', 'http://'+location.host+'/HomeDashboard/dashboard.php');
+				window.parent.postMessage('null reload', 'http://'+location.host+'/dashboard.php');
 				break;
 			case "Backplan löschen":
 				if (id[1] == "[active bakingplan]"){

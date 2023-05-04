@@ -205,16 +205,16 @@ function temperature_set_color(){
 	var tmax = parseInt(TMAX.value);
 
 	document.getElementById("tact_value").style.color = "green";
-	document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_green.svg";
+	document.getElementById("tact_symbol").src = "/images/sym_thermo_green.svg";
 	document.getElementById("tact_unit").style.color = "green";
 	if (tact < tmin){
 		document.getElementById("tact_value").style.color = "blue";
-		document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_blue.svg";
+		document.getElementById("tact_symbol").src = "/images/sym_thermo_blue.svg";
 		document.getElementById("tact_unit").style.color = "blue";
 	}
 	if (tact > tmax || TACT.innerHTML == "--"){
 		document.getElementById("tact_value").style.color = "red";
-		document.getElementById("tact_symbol").src = "/HomeDashboard/images/sym_thermo_red.svg";
+		document.getElementById("tact_symbol").src = "/images/sym_thermo_red.svg";
 		document.getElementById("tact_unit").style.color = "red";
 	}
 	//for drawing the graph

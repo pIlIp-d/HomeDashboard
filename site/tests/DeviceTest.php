@@ -29,6 +29,7 @@ class DeviceTest extends CustomTestCase
         $deviceId = $this->addDefaultDevice();
         $this->assertIsNumeric($deviceId);
         $this->removeDevice($deviceId);
+        echo $deviceId;
     }
 
     /**

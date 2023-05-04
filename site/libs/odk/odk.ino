@@ -30,7 +30,7 @@ const char* ssid = "";
 const char* password = "";
 const char* device_name = "ESP32 -- odk -- 001";
 // Homeserver
-const String homeserverurl = "http://192.168.115.9/HomeDashboard/";
+const String homeserverurl = "http://192.168.115.9/";
 HTTPClient http;
 
 int max6675SO = 19;     // Serial Output

@@ -25,8 +25,8 @@ NGINX_PORT=8080
 
 ## Start of the container
 1. `cd project_directory`
-2. start a webserver that can be accessed at localhost:${NGINX_PORT}/HomeDashboard `docker-compose up` or as daemon with `docker-compose up -d`
-3. create default tables, by opening `localhost:${NGINX_PORT}/HomeDashboard/initializer.php` in a browser
+2. start a webserver that can be accessed at localhost:${NGINX_PORT} `docker-compose up` or as daemon with `docker-compose up -d`
+3. create default tables, by opening `localhost:${NGINX_PORT}/initializer.php` in a browser
 and enter the admin credentials once from `.env`
 
 ### Simple starting of docker containers
@@ -259,7 +259,7 @@ standart is 0 and it can be toggled to 1 for a secondary view
 
 changing is only possible for iframes from the same host address  
 Example Command in javascript
-`window.parent.postMessage('id_of_widget set_show', 'http://'+location.host+'/HomeDashboard/dashboard.php');`
+`window.parent.postMessage('id_of_widget set_show', 'http://'+location.host+'/dashboard.php');`
 
 ### Add values to specific widgets
 

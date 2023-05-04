@@ -28,19 +28,19 @@
   buttons return their ID(Number) + their ID(name) through postMessage to dashboard
 -->
   <!-- up -->
-  <img src="/HomeDashboard/images/arrow_up.svg" class="grid-item button_up" aria-hidden="true" id='<?php echo $id; ?>'>
+  <img src="/images/arrow_up.svg" class="grid-item button_up" aria-hidden="true" id='<?php echo $id; ?>'>
   <!-- down -->
-  <img src="/HomeDashboard/images/arrow_up.svg" class="grid-item button_down" id='<?php echo $id; ?>'>
+  <img src="/images/arrow_up.svg" class="grid-item button_down" id='<?php echo $id; ?>'>
   <!-- left -->
-  <img src="/HomeDashboard/images/arrow_up.svg" class="grid-item button_left" id='<?php echo $id; ?>'>
+  <img src="/images/arrow_up.svg" class="grid-item button_left" id='<?php echo $id; ?>'>
   <!-- right -->
-  <img src="/HomeDashboard/images/arrow_up.svg" class="grid-item button_right" id='<?php echo $id; ?>'>
+  <img src="/images/arrow_up.svg" class="grid-item button_right" id='<?php echo $id; ?>'>
   <!-- delete -->
   <div id="btn_delete">
-  <img src="/HomeDashboard/images/btn_close.svg" class="grid-item button_delete" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_delete', 'http://'+location.host+'/HomeDashboard/dashboard.php')">
+  <img src="/images/btn_close.svg" class="grid-item button_delete" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_delete', 'http://'+location.host+'/dashboard.php')">
   </div>
   <!-- ok -->
-  <img src="/HomeDashboard/images/btn_save.svg" class="grid-item button_ok" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_ok', 'http://'+location.host+'/HomeDashboard/dashboard.php')">
+  <img src="/images/btn_save.svg" class="grid-item button_ok" id='<?php echo $id; ?>' onclick="window.parent.postMessage('<?php echo $id; ?> click_ok', 'http://'+location.host+'/dashboard.php')">
 </div>
 </body>
 <script type="text/javascript">
@@ -73,7 +73,7 @@
   }
   function click(sender){
     console.log("------------------");
-      window.parent.postMessage('<?php echo $id; ?> '+sender, 'http://'+location.host+'/HomeDashboard/dashboard.php');
+      window.parent.postMessage('<?php echo $id; ?> '+sender, 'http://'+location.host+'/dashboard.php');
   }
 </script>
 </html>

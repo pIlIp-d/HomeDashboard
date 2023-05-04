@@ -58,8 +58,8 @@ function act_recipe_to_html(){
     console.log(recipe_object);
   var html = "";
   html += "<h2 class=\"rec_name\">"+ base64_2_specialchars(recipe_object[act_recipe % recipe_count].name) +"</h1>";
-  html += "<div id='bakingtime_container'><span class=\"rec_bakingtime\">"+ base64_2_specialchars(recipe_info[0].bakingtime) + getSVG('/HomeDashboard/images/clock_black.svg')+"</div>";
-  html += "<div id='bakingtemparature_container'><span class=\"rec_bakingtemperature\">"+ base64_2_specialchars(recipe_info[0].bakingtemperature) + getSVG('/HomeDashboard/images/sym_thermo_black.svg')+"</div>";
+  html += "<div id='bakingtime_container'><span class=\"rec_bakingtime\">"+ base64_2_specialchars(recipe_info[0].bakingtime) + getSVG('/images/clock_black.svg')+"</div>";
+  html += "<div id='bakingtemparature_container'><span class=\"rec_bakingtemperature\">"+ base64_2_specialchars(recipe_info[0].bakingtemperature) + getSVG('/images/sym_thermo_black.svg')+"</div>";
   html += "<table class=\"ingr_table\"><tr><th>Zutaten</th></tr>";
   for (i=0;i < recipe_ingredients.length;i++){
     html += "<tr><td>"+ base64_2_specialchars(recipe_ingredients[i].amount) +"</td>";
@@ -127,5 +127,5 @@ function xhttp_request(request, id) {
 function exportpdf(request){
   const doc = document.getElementById('hidden_canvas');
   doc.innerHTML = "";
-  doc.innerHTML = "<iframe id='hidden_canvas' src='/HomeDashboard/dashboard/export.php?recipe="+act_recipe+"&request="+request+" '></iframe>";
+  doc.innerHTML = "<iframe id='hidden_canvas' src='/dashboard/export.php?recipe="+act_recipe+"&request="+request+" '></iframe>";
 }

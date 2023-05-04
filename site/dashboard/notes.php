@@ -22,7 +22,7 @@
         <select class="select" id="note_select">
             <option value='null'>- select note -</option>
         </select>
-        <img id="bp_mode" src="/HomeDashboard/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
+        <img id="bp_mode" src="/images/btn_list_regular.svg" onclick="toggle_bp_mode()" >
     </div>
     <div class="text" id="bp_text"></div>
     <textarea type="text" placeholder="Write Notes..."  id="text_area"  class="text" aria-label="Notes input."></textarea>
