@@ -119,9 +119,11 @@ function request_handling($request_name, $dbcon, $json_decoded): void
              */
             switch ($json_decoded->filtermode) {
                 case "none":
+                    // Select all recipes ordered by name
                     $stmt = $dbcon->prepare("SELECT `id`, `name` FROM `recipes` ORDER BY `name`");
                     break;
                 case "ingredients":
+                    // Select all recipes that contain any ingredient of the $json_decoded->id_list
                     $list = "";
                     for ($i = 0; $i < Count($json_decoded->id_list); $i++) {
                         if ($i == 0)
@@ -136,6 +138,7 @@ function request_handling($request_name, $dbcon, $json_decoded): void
                     $stmt->bindParam(":count", $json_decoded->count);
                     break;
                 case "recipes":
+                    // Select all recipes where the id is inside $json_decoded->id_list
                     $list = "";
                     for ($i = 0; $i < Count($json_decoded->id_list); $i++) {
                         if ($i == 0)
@@ -195,6 +198,7 @@ function request_handling($request_name, $dbcon, $json_decoded): void
             break;
 
         case "get_recipe_ingredients":
+            // Select all ingredients that are in the recipe with the id $json_decoded->rec_id
             $stmt = $dbcon->prepare(<<<Query
 			SELECT ri.amount AS amount, i.name
 			    AS name, ri.id AS ri_id, i.id AS i_id FROM `recipes`
@@ -316,6 +320,7 @@ function request_handling($request_name, $dbcon, $json_decoded): void
             break;
 
         case "get_all_bakingplan_recipes":
+            // get all recipes that are in the currently active bakingplan ordered by the order_no
             $stmt = $dbcon->prepare(<<<Query
 				SELECT r.id AS r_id, r.name AS r_name, r.bakingtime AS r_bakingtime, r.bakingtemperature AS r_bakingtemperature,bpr.order_no AS bpr_orderno, bpr.id AS bpr_id, bp.name AS bp_name
 				FROM recipes AS r, bakingplans_recipes AS bpr, bakingplans AS bp
@@ -540,6 +545,7 @@ function request_handling($request_name, $dbcon, $json_decoded): void
         //--------------------------------------------------------------------------
 
         case "set_timer":
+            // insert new timer if there is none for this preset_id and timer_id combination else only update the time of the existing one
             $stmt = $dbcon->prepare(
                 "IF EXISTS(SELECT id FROM timers WHERE timers.preset_id = :preset_id AND timers.timer_id = :timer_id) THEN
 						UPDATE timers SET timers.time = :time WHERE timers.preset_id = :preset_id AND timers.timer_id = :timer_id;
