@@ -1,0 +1,113 @@
+/*--------------------------------------------
+Settings Menu
+-------------------------------------------*/
+
+.material-element {
+    height: 45px;
+    padding: 12px;
+    border: 1px solid lightgray;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0 0 20px -18px;
+    border-radius: 12px;
+    background: lightgray;
+    margin: 0.15rem;
+}
+
+.material-left{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.material-right{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.material-center{
+    border-radius: 0;
+}
+
+.material-button:hover {
+    border: 2px solid lightgrey;
+    box-shadow: 0 0 20px -17px;
+}
+
+.material-button:active {
+    transform: scale(0.95);
+}
+
+.material-button[disabled] {
+    transform: none;
+    box-shadow: 0 0 0 0;
+    border: 12px;
+}
+
+.button:hover {
+    background-color: #dddddd;
+}
+
+.menu-toggle {
+    cursor: pointer;
+}
+
+.settings-menu {
+    margin:0;
+    position:  fixed;
+    background-color: #eeeeee;
+    top:  0;
+    right: 0;
+    width: 23rem;
+    height: auto;
+    transform:  translateX(100%);
+    transition:  0.6s ease;
+    padding: 0.25rem;
+}
+
+.settings-menu.open {
+    transform:  translateX(0);
+}
+.select:hover {
+    background-color: lightgray;
+}
+
+.select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background: #bbbbbb;
+    color: #000000;
+    cursor: pointer;
+    text-align: center;
+    font-family: Arial;
+    font-size: 1.0rem;
+    height: 2.5rem;
+    padding: 8px;
+    /* select arrow*/
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 50%;
+}
+
+.button-group {
+    wisth: 90%;
+    grid-template-columns: 33% 33% 33%;
+    display: grid;
+    justify-content: center;
+}
+
+.grid-two{
+    grid-template-columns: 50% 50%;
+}
+
+.grid-one {
+    grid-template-columns: 100%;
+}
+
+.select-group {
+    display: grid;
+    justify-content: center;
+    width:100%;
+}
